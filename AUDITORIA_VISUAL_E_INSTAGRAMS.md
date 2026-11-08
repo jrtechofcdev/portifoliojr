@@ -112,17 +112,17 @@ Período: 9/out a 7/nov de 2026. [OBSERVADO NA IMAGEM/PRINT]
 
 **Conclusão:** o site deve abrir com o trabalho de 2025–2026. Dalila & Maria entra com seleção rígida, só as fotos de cor contida, e os trabalhos de celular ficam fora. [RECOMENDAÇÃO]
 
-### 4.4 Vídeos (não assistidos: sem ffmpeg na máquina)
-| Arquivo | Tamanho | Observação |
+### 4.4 Vídeos (revisados em 08/11/2026 com ffprobe e quadros extraídos, tarefa 1.7)
+| Arquivo | Duração e formato | Conteúdo observado |
 |---|---|---|
-| `Bodas de Ouro/lv_0_20241025184102.mp4` | 91,7 MB | prefixo `lv_0_` típico de exportação do CapCut [HIPÓTESE A VALIDAR] |
-| `Bodas de Ouro/lv_0_20241026223248.mp4` | 35,1 MB | idem |
-| `Bodas de Ouro/lv_0_20241026225441.mp4` | 35,7 MB | idem |
-| `Bodas de Ouro/lv_0_20241026231643.mp4` | 16,4 MB | idem |
-| `Bodas de Ouro/D78BB865-B3EF-4256-A7E0-A75F9EF62B61.mov` | 50,1 MB | nome de arquivo de iPhone [HIPÓTESE A VALIDAR] |
-| `Manhã Com Deus/lv_0_20241216093019.mp4` | 64,8 MB | idem CapCut |
+| `Bodas de Ouro/lv_0_20241025184102.mp4` | 79 s, 1080×1920 vertical, com áudio | decoração (mesas, flores secas), retrato do casal, depois o casal com a família; letreiros em script ("Cada sorriso, cada abraço") |
+| `Bodas de Ouro/lv_0_20241026223248.mp4` | 31 s, vertical | abertura "Bodas de Ouro Nelson & Dalvina" em colagem, entrada do casal à noite, mesa de bolos; corações decorativos sobre a imagem |
+| `Bodas de Ouro/lv_0_20241026225441.mp4` | 31 s, vertical | "Café da Manhã Pós Comemoração": mesa comunitária, quintal, redes |
+| `Bodas de Ouro/lv_0_20241026231643.mp4` | 13 s, vertical | "Almoço de Domingo Pós Comemoração" com moldura de câmera "REC"; aparece uma criança |
+| `Bodas de Ouro/D78BB865-B3EF-4256-A7E0-A75F9EF62B61.mov` | 36 s, vertical | casal jovem dançando numa varanda; contexto não identificado |
+| `Manhã Com Deus/lv_0_20241216093019.mp4` | 57 s, 1080×1440 | culto: público, louvor com violão, pregador; termina com a arte do evento (Congregação Maanaim, 15 de dezembro) |
 
-Se forem edições entregues ao cliente, comprovam o serviço de vídeo e podem virar trechos curtos no site. [PENDENTE DE CONFIRMAÇÃO]
+[OBSERVADO NA IMAGEM/PRINT] Os cinco `lv_0_` são edições do CapCut gravadas com celular, com textos em script e molduras decorativas. Comprovam que ele edita vídeos curtos de eventos, mas a linguagem (script, corações, moldura "REC") não combina com o `DESIGN.md` e há criança identificável. **Decisão para a v1: nenhum vídeo no site.** Podem virar Reels no Instagram. Se o responsável confirmar que são entregas ao cliente, a frase sobre vídeos volta à seção Sobre (PENDENCIAS item 11).
 
 ---
 

@@ -1,21 +1,521 @@
 ---
-// Provisória até a Fase 3 (Início com as 8 seções do MAPA_DO_SITE_E_CONTEUDO.md §2).
 import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { ensaiosPublicaveis, fotoDe, mesAno, dadosFoto } from '../lib/fotos';
+import { CATEGORIAS, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+
+// Imagens da home: MAPA_DO_SITE_E_CONTEUDO.md §2. Cada bloco some se a foto não estiver autorizada.
+const abertura = await fotoDe('sara-e-yasmin', 'IMG_1081.jpg');
+const frentes = [
+  {
+    categoria: 'ensaios' as const,
+    foto: await fotoDe('sabrina', 'sabrina-22.png'),
+    texto: 'Luz do fim da tarde, um lugar da cidade e tempo para você ficar à vontade.',
+  },
+  {
+    categoria: 'casais' as const,
+    foto: await fotoDe('marlieth-e-paulo', 'Foto (18).jpg'),
+    texto: 'Orientação de pose sem deixar o abraço duro.',
+  },
+  {
+    categoria: 'eventos' as const,
+    foto: await fotoDe('manha-com-deus', 'IMG_0690.jpg'),
+    texto: 'Cultos, confraternizações, aniversários e bodas, registrados sem interromper o momento.',
+  },
+];
+const destaque = (
+  await Promise.all(['sabrina-01.png', 'sabrina-12.png', 'sabrina-36.png', 'sabrina-44.png'].map((a) => fotoDe('sabrina', a)))
+).filter((f) => f !== null);
+const pausa = await fotoDe('sara-e-yasmin', 'IMG_0957.jpg');
+const sobreFoto = await fotoDe('marlieth-e-paulo', 'Foto (6).jpg');
+
+const ensaios = await ensaiosPublicaveis();
+const sabrinaPublicavel = ensaios.some((e) => e.id === 'sabrina');
+const outros = ensaios.filter((e) => e.id !== 'sabrina');
+
+const passos = [
+  ['Conversa', 'Você conta o que quer pelo WhatsApp: ensaio, evento, data e cidade.'],
+  ['Plano', 'Combinamos lugar, horário de luz, roupa e o que vai ser entregue.'],
+  ['Sessão', 'Eu oriento as poses e deixo espaço para o que acontece de verdade.'],
+  ['Seleção e edição', 'Escolho e trato as melhores fotos.'],
+  ['Entrega', 'Você recebe as fotos editadas no formato combinado.'],
+];
+
+const jsonld = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: site.nome,
+  description: 'Fotografia de ensaios externos, casais, gestantes e eventos.',
+  url: Astro.site?.href,
+  founder: { '@type': 'Person', name: site.fotografo },
+  areaServed: [
+    { '@type': 'City', name: 'Imperatriz' },
+    { '@type': 'City', name: 'Bacabal' },
+  ],
+  telephone: `+${site.whatsapp}`,
+  email: site.email,
+  sameAs: [linkInstagram],
+  ...(abertura?.dados.og ? { image: new URL(abertura.dados.og, Astro.site).href } : {}),
+};
 ---
 
-<Base titulo="Jr_Tech_OFC Fotografia" descricao="Portfólio de José Renato, fotógrafo em Imperatriz e Bacabal, MA.">
-  <section class="contido provisoria">
-    <h1 class="display-xl">Jr_Tech_OFC</h1>
-    <p class="legenda">Site em construção.</p>
+<Base
+  titulo="Jr_Tech_OFC Fotografia | Ensaios e eventos em Imperatriz e Bacabal"
+  descricao="José Renato fotografa ensaios externos, casais, gestantes e eventos em Imperatriz e Bacabal, MA. Veja os trabalhos e chame no WhatsApp."
+  imagem={abertura?.dados.og}
+  jsonld={jsonld}
+>
+  <section class:list={['abertura', { 'sem-foto': !abertura }]}>
+    {
+      abertura && (
+        <div class="abertura-foto">
+          <Foto
+            slug={abertura.slug}
+            arquivo={abertura.arquivo}
+            alt={abertura.alt}
+            sizes="(min-width: 900px) 45vw, 100vw"
+            prioridade
+            recorte="50% 22%"
+          />
+        </div>
+      )
+    }
+    <div class="abertura-texto">
+      <h1 class="abertura-titulo">Fotografia natural de pessoas.</h1>
+      <p class="abertura-apoio">Ensaios externos, casais e celebrações em {site.cidades}.</p>
+      <div class="acoes">
+        <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+        <a class="botao-sec" href="#trabalhos">Ver trabalhos</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao wrap" id="trabalhos" aria-labelledby="frentes-titulo">
+    <div class="secao-topo">
+      <h2 class="h2" id="frentes-titulo">O que eu fotografo</h2>
+    </div>
+    <ul class="frentes">
+      {
+        frentes.map(({ categoria, foto, texto }) => (
+          <li class="frente">
+            {foto && (
+              <Foto slug={foto.slug} arquivo={foto.arquivo} alt={foto.alt} sizes="(min-width: 900px) 30vw, 100vw" />
+            )}
+            <h3 class="titulo">{CATEGORIAS[categoria].titulo}</h3>
+            <p>{texto}</p>
+            <a href={`/trabalhos?c=${categoria}`}>Ver {CATEGORIAS[categoria].nome.toLowerCase()}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    sabrinaPublicavel && destaque.length >= 2 && (
+      <section class="secao destaque" aria-labelledby="destaque-titulo">
+        <div class="wrap destaque-topo">
+          <p class="sobretitulo">Ensaio em destaque</p>
+          <h2 class="h2" id="destaque-titulo">Sabrina</h2>
+          <p class="legenda">Bacabal, {mesAno('2025-08-17')}</p>
+        </div>
+        <ul class="destaque-fotos" aria-label="Fotos do ensaio de Sabrina">
+          {destaque.map((f, i) => (
+            <li class:list={{ grande: i === 0 }}>
+              <Foto
+                slug={f.slug}
+                arquivo={f.arquivo}
+                alt={f.alt}
+                sizes={i === 0 ? '(min-width: 900px) 50vw, 80vw' : '(min-width: 900px) 25vw, 80vw'}
+              />
+            </li>
+          ))}
+        </ul>
+        <div class="wrap">
+          <a class="botao-sec" href="/trabalhos/sabrina">Ver o ensaio completo de Sabrina</a>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    pausa && (
+      <div class="pausa">
+        <Foto slug={pausa.slug} arquivo={pausa.arquivo} alt={pausa.alt} sizes="100vw" />
+      </div>
+    )
+  }
+
+  {
+    outros.length > 0 && (
+      <section class="secao wrap" aria-labelledby="mais-titulo">
+        <div class="secao-topo">
+          <h2 class="h2" id="mais-titulo">Outros ensaios e eventos</h2>
+        </div>
+        <ul class="lista-grande">
+          {outros.map((e) => {
+            const capa = dadosFoto(e.id, e.data.capa)!;
+            return (
+              <li>
+                <a href={`/trabalhos/${e.id}`}>
+                  <span class="nome">{e.data.nome}</span>
+                  <span class="legenda">
+                    {e.data.rotulo} · {e.data.data.slice(0, 4)}
+                  </span>
+                  <img class="previa" src={capa.srcset.webp.split(', ')[0].split(' ')[0]} alt="" width={capa.width} height={capa.height} loading="lazy" decoding="async" />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        <p class="mais-todos">
+          <a class="botao-sec" href="/trabalhos">Todos os trabalhos</a>
+        </p>
+      </section>
+    )
+  }
+
+  <section class="secao wrap como" id="como-funciona" aria-labelledby="como-titulo">
+    <div class="secao-topo">
+      <h2 class="h2" id="como-titulo">Como funciona um ensaio</h2>
+      <p class="texto">Se você nunca fez um ensaio, é assim, do primeiro contato à entrega.</p>
+    </div>
+    <ol class="passos">
+      {
+        passos.map(([titulo, texto], i) => (
+          <li>
+            <span class="passo-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="titulo">{titulo}</h3>
+              <p class="texto">{texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
+    <div class="wrap sobre-grade">
+      <div class="sobre-texto">
+        <p class="sobretitulo">Sobre</p>
+        <h2 class="h2" id="sobre-titulo">José Renato</h2>
+        <p class="texto">
+          Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
+          ao ar livre, e também cubro cultos, confraternizações e festas de família. Gosto de foto que parece com quem está
+          nela: natural, sem pose dura.
+        </p>
+        <p><a class="link-alvo" href={linkInstagram}>Instagram @{site.instagram}</a></p>
+      </div>
+      {
+        sobreFoto && (
+          <div class="sobre-foto">
+            <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 33vw, 100vw" />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="secao wrap contato" id="contato" aria-labelledby="contato-titulo">
+    <h2 class="h2" id="contato-titulo">Vamos marcar?</h2>
+    <p class="texto contato-apoio">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
+    <div class="acoes">
+      <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+      <a class="botao-sec" href={linkEmail}>Mandar e-mail</a>
+      <a class="botao-sec" href={linkInstagram}>Instagram</a>
+    </div>
+    <p class="legenda">Atendo em {site.cidades}. Outras cidades, sob consulta.</p>
   </section>
 </Base>
 
 <style>
-  .provisoria {
-    min-height: 100svh;
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s4);
+  }
+
+  /* Abertura (MAPA §2.1, DESIGN §5) */
+  /* A abertura ocupa exatamente uma tela: a foto cresce no espaço que o texto deixa. */
+  .abertura {
     display: grid;
+    grid-template-rows: minmax(240px, 1fr) auto;
+    height: calc(100svh - var(--barra));
+    min-height: 560px;
+  }
+  .abertura > * {
+    min-width: 0;
+    min-height: 0;
+  }
+  .abertura-foto {
+    height: 100%;
+  }
+  .sem-foto {
+    grid-template-rows: 1fr;
+  }
+  .abertura-texto {
+    display: grid;
+    gap: var(--s2);
+    padding-inline: var(--margem);
+    padding-block: var(--s3) var(--s5);
+  }
+  .abertura-titulo {
+    font-size: clamp(44px, 6.6vw, 112px);
+    font-stretch: 68%;
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    max-width: 11ch;
+  }
+  .abertura-apoio {
+    max-width: 36ch;
+    color: var(--texto-2);
+  }
+  .abertura .acoes {
+    margin-top: var(--s1);
+  }
+  .sem-foto .abertura-texto {
     align-content: end;
+  }
+  @media (min-width: 900px) {
+    .abertura {
+      grid-template-columns: 55fr 45fr;
+      grid-template-rows: 1fr;
+      padding-bottom: 28px;
+    }
+    .abertura-foto {
+      order: 2;
+    }
+    .abertura-texto {
+      align-content: center;
+      padding-block: var(--s5);
+      gap: var(--s3);
+    }
+    .sem-foto {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Três frentes: alturas diferentes (DESIGN §4) */
+  .frentes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s6);
+  }
+  .frente {
+    min-width: 0;
+    display: grid;
+    gap: var(--s2);
+    align-content: start;
+  }
+  .frente p {
+    max-width: 40ch;
+  }
+  .frente a {
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .frentes {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gutter);
+    }
+    .frente:nth-child(2) {
+      margin-top: 80px;
+    }
+    .frente:nth-child(3) {
+      margin-top: 32px;
+    }
+  }
+
+  /* Destaque: carrossel nativo no celular, composição assimétrica no desktop */
+  .destaque-topo {
+    display: grid;
+    gap: var(--s1);
+    margin-bottom: var(--s4);
+  }
+  .destaque-fotos {
+    list-style: none;
+    margin: 0 0 var(--s4);
+    padding: 0 var(--margem);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    gap: var(--s2);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--margem);
+    align-items: start;
+  }
+  .destaque-fotos li {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  @media (min-width: 900px) {
+    /* 1 vertical grande e 3 menores alinhadas pela base (DESIGN §6, composição assimétrica) */
+    .destaque-fotos {
+      overflow: visible;
+      grid-auto-flow: row;
+      grid-template-columns: 3fr 1fr 1fr 1fr;
+      grid-auto-columns: auto;
+      align-items: end;
+      gap: var(--gutter);
+    }
+  }
+
+  .pausa :global(img) {
+    width: 100%;
+  }
+
+  /* Mais trabalhos: lista em tipo grande, prévia da capa no hover (desktop) */
+  .lista-grande {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lista-grande li {
+    border-bottom: 1px solid var(--divisao);
+  }
+  .lista-grande a {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s1) var(--s3);
+    padding-block: var(--s3);
+    color: var(--texto);
+    text-decoration: none;
+  }
+  .nome {
+    font-size: clamp(32px, 6vw, 88px);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .lista-grande a:hover .nome,
+  .lista-grande a:focus-visible .nome {
+    color: var(--link-hover);
+  }
+  .previa {
+    display: none;
+  }
+  @media (hover: hover) and (min-width: 900px) {
+    .previa {
+      display: block;
+      position: absolute;
+      right: 18%;
+      top: 50%;
+      width: 220px;
+      height: auto;
+      transform: translateY(-50%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition:
+        opacity var(--t-estado),
+        visibility var(--t-estado);
+      z-index: 2;
+    }
+    .lista-grande a:hover .previa {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  .mais-todos {
+    margin-top: var(--s4);
+  }
+
+  /* Como funciona: lista numerada de texto puro */
+  .passos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s4);
+  }
+  .passos li {
+    display: grid;
+    grid-template-columns: auto 1fr;
     gap: var(--s3);
-    padding-block: var(--s6);
+    align-items: start;
+    padding-top: var(--s3);
+    border-top: 1px solid var(--divisao);
+  }
+  .passo-num {
+    font-size: var(--display-l);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 0.85;
+    color: var(--texto-2);
+    min-width: 2ch;
+  }
+  .passos h3 {
+    margin-bottom: var(--s1);
+  }
+  @media (min-width: 900px) {
+    .passos {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--s6);
+    }
+  }
+
+  /* Sobre */
+  .sobre {
+    background: var(--grafite);
+    --texto-2: var(--cinza);
+    --divisao: #3a3a3a;
+  }
+  .sobre-grade {
+    display: grid;
+    gap: var(--s5);
+    align-items: start;
+  }
+  .sobre-grade > * {
+    min-width: 0;
+  }
+  .sobre-texto {
+    display: grid;
+    gap: var(--s3);
+  }
+  .sobre-foto {
+    max-width: 420px;
+  }
+  @media (min-width: 900px) {
+    .sobre-foto {
+      max-width: none;
+    }
+  }
+  @media (min-width: 900px) {
+    /* Grade de 12 colunas: o texto ocupa 7, a foto começa na 8ª linha (DESIGN §4) */
+    .sobre-grade {
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 24px;
+    }
+    .sobre-texto {
+      grid-column: 1 / 8;
+    }
+    .sobre-foto {
+      grid-column: 8 / 13;
+    }
+  }
+
+  /* Contato */
+  .contato {
+    display: grid;
+    gap: var(--s4);
+  }
+  .pausa {
+    margin-block: calc(var(--secao) / 2);
+  }
+  .contato-apoio {
+    font-size: clamp(18px, 2vw, 24px);
   }
 </style>

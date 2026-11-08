@@ -1,0 +1,48 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { fotoDe } from '../lib/fotos';
+const detalhe = await fotoDe('confra-juventude-estrela-de-luz', 'IMG_1396.jpg');
+---
+
+<Base titulo="Página não encontrada | Jr_Tech_OFC Fotografia" descricao="Esta página não existe.">
+  <section class="wrap erro">
+    <div class="erro-texto">
+      <h1 class="display-xl">Esta página não existe.</h1>
+      <p class="texto">O endereço pode ter mudado. Comece pelo início ou veja os trabalhos.</p>
+      <p class="links"><a href="/">Ir para o início</a> <a href="/trabalhos">Ver trabalhos</a></p>
+    </div>
+    {detalhe && <div class="erro-foto"><Foto slug={detalhe.slug} arquivo={detalhe.arquivo} alt={detalhe.alt} sizes="(min-width: 900px) 30vw, 60vw" /></div>}
+  </section>
+</Base>
+
+<style>
+  .erro {
+    display: grid;
+    gap: var(--s5);
+    padding-block: var(--s6) var(--secao);
+    align-items: end;
+  }
+  .erro-texto {
+    display: grid;
+    gap: var(--s3);
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s4);
+  }
+  .links a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .erro-foto {
+    max-width: 360px;
+  }
+  @media (min-width: 900px) {
+    .erro {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+</style>

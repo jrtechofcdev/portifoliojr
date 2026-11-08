@@ -1,0 +1,95 @@
+---
+// Sequência editorial (DESIGN.md §6): horizontal em sangria, verticais em par ou sozinha.
+// Ordem do manifesto; nenhuma foto é recortada. Cada foto abre a visualização ampliada.
+import Foto from './Foto.astro';
+import Lightbox from './Lightbox.astro';
+import type { FotoEnsaio } from '../lib/fotos';
+
+interface Props {
+  fotos: FotoEnsaio[];
+  nome: string;
+}
+const { fotos, nome } = Astro.props;
+
+type Bloco = { tipo: 'sangria' | 'par' | 'unica'; itens: { foto: FotoEnsaio; i: number }[] };
+const blocos: Bloco[] = [];
+let pares = 0;
+for (let i = 0; i < fotos.length; i++) {
+  const f = fotos[i];
+  const horizontal = f.dados.width > f.dados.height;
+  const prox = fotos[i + 1];
+  const proxVertical = prox && prox.dados.width <= prox.dados.height;
+  if (horizontal) {
+    blocos.push({ tipo: 'sangria', itens: [{ foto: f, i }] });
+  } else if (pares % 3 !== 2 && proxVertical) {
+    blocos.push({ tipo: 'par', itens: [{ foto: f, i }, { foto: prox, i: i + 1 }] });
+    pares++;
+    i++;
+  } else {
+    blocos.push({ tipo: 'unica', itens: [{ foto: f, i }] });
+    pares++;
+  }
+}
+const tamanhos = { sangria: '100vw', par: '(min-width: 768px) 45vw, 100vw', unica: '(min-width: 768px) 60vw, 100vw' };
+---
+
+<div class="galeria" data-galeria>
+  {
+    blocos.map((b) => (
+      <div class:list={['bloco', `bloco-${b.tipo}`]}>
+        {b.itens.map(({ foto, i }) => (
+          <a
+            class="item"
+            href={foto.dados.grande}
+            data-indice={i}
+            data-avif={foto.dados.srcset.avif}
+            data-webp={foto.dados.srcset.webp}
+            data-jpg={foto.dados.srcset.jpg}
+            data-w={foto.dados.width}
+            data-h={foto.dados.height}
+            aria-label={`Ampliar foto ${i + 1} de ${fotos.length}: ${foto.alt}`}
+          >
+            <Foto slug={foto.slug} arquivo={foto.arquivo} alt={foto.alt} sizes={tamanhos[b.tipo]} />
+          </a>
+        ))}
+      </div>
+    ))
+  }
+</div>
+<Lightbox nome={nome} />
+
+<style>
+  .galeria {
+    display: grid;
+    gap: var(--s2);
+  }
+  .bloco {
+    display: grid;
+    gap: var(--s2);
+    padding-inline: var(--margem);
+  }
+  .bloco-sangria {
+    padding-inline: 0;
+  }
+  .item {
+    display: block;
+    cursor: zoom-in;
+  }
+  .item:focus-visible {
+    outline-offset: 4px;
+  }
+  @media (min-width: 768px) {
+    .galeria,
+    .bloco {
+      gap: var(--gutter);
+    }
+    .bloco-par {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+    .bloco-unica .item {
+      width: 60%;
+      justify-self: center;
+    }
+  }
+</style>

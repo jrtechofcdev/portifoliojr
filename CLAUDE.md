@@ -3,11 +3,12 @@
 Portfólio de fotografia de José Renato Alves da Silva (Jr_Tech_OFC Fotografia, "Nossa Arte, Seu Sucesso!"), Imperatriz e Bacabal, MA.
 
 ## Estado atual
-Fase 0 aprovada em 08/11/2026. Fase 2 (base técnica) concluída. Próxima: Fase 3, que depende do Chromium para a verificação da Taste Skill. **Cada fase nova começa só com aprovação do responsável.** Documento principal: `PLANO_GERAL_PORTFOLIO.md`. Ordem de execução: `ROADMAP_DE_EXECUCAO.md`. Dúvidas em aberto: `PENDENCIAS_E_DECISOES.md`.
+Fases 0 a 6 concluídas na parte do desenvolvimento em 08/11/2026 (ver `RELATORIO_ENTREGA.md`). Falta o que depende do responsável: autorizações de imagem, logo, domínio, teste em celular e publicação. Nada de `git push`, deploy ou publicação sem ele. Documento principal: `PLANO_GERAL_PORTFOLIO.md`. Manutenção: `README.md`. Dúvidas em aberto: `PENDENCIAS_E_DECISOES.md`.
 
 ## Comandos
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
 - `npm run build`: fotos só com `autorizacao: sim`, `astro check`, build e `scripts/verificar-dist.mjs`.
+- `npm run build:previa`: site completo com fotos pendentes e `noindex`, só para revisão local (`npm run preview`).
 - `npm run test:bloqueio`: prova que foto pendente não gera arquivo em produção.
 - Ensaios: um YAML por ensaio em `src/content/ensaios/` (esquema em `src/content.config.ts`). Siglas de pasta em `src/data/pastas.json`.
 - A primeira geração de fotos leva cerca de 20 min; depois usa `.cache/fotos/`.
@@ -26,5 +27,4 @@ Fase 0 aprovada em 08/11/2026. Fase 2 (base técnica) concluída. Próxima: Fase
 
 ## Regras de arquivo
 - `Fotos Para Potifolio/`, os prints e o briefing são originais: nunca editar, mover, renomear nem recomprimir. Versões web são geradas como cópias derivadas.
-- `taste-skill/` e `anti-slop/` na raiz são clones antigos e incompletos: não usar, não incluir no build.
 - Não publicar dados dos insights do Instagram, preços ou nomes de pacotes sem confirmação.

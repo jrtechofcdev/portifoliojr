@@ -1,0 +1,233 @@
+---
+import { linkWhatsApp, site } from '../data/site';
+
+const atual = Astro.url.pathname;
+const links = [
+  { href: '/trabalhos', texto: 'Trabalhos' },
+  { href: '/#sobre', texto: 'Sobre' },
+  { href: '/#contato', texto: 'Contato' },
+];
+---
+
+<header class="cabecalho nav">
+  <a class="pular botao" href="#conteudo">Pular para o conteúdo</a>
+  <div class="wrap barra">
+    <a class="marca" href="/" aria-label={`${site.marca}, voltar ao início`}>
+      {site.marca}<span class="marca-sub">Fotografia</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Principal">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={atual.startsWith(l.href) && l.href === '/trabalhos' ? 'page' : undefined}>
+                {l.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="botao botao-barra" href={linkWhatsApp()}>WhatsApp</a>
+    </nav>
+    <button class="menu-abrir" type="button" aria-expanded="false" aria-controls="menu-movel">Menu</button>
+  </div>
+  <div class="menu-movel" id="menu-movel" hidden>
+    <div class="wrap menu-topo">
+      <span class="marca" aria-hidden="true">{site.marca}</span>
+      <button class="menu-fechar" type="button">Fechar</button>
+    </div>
+    <nav class="wrap menu-lista" aria-label="Principal">
+      <ul>
+        <li><a href="/">Início</a></li>
+        {links.map((l) => <li><a href={l.href}>{l.texto}</a></li>)}
+      </ul>
+      <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const cab = document.querySelector<HTMLElement>('.cabecalho')!;
+  const abrir = cab.querySelector<HTMLButtonElement>('.menu-abrir')!;
+  const fechar = cab.querySelector<HTMLButtonElement>('.menu-fechar')!;
+  const menu = cab.querySelector<HTMLElement>('#menu-movel')!;
+
+  function focaveis() {
+    return [...menu.querySelectorAll<HTMLElement>('a, button')];
+  }
+  function teclas(ev: KeyboardEvent) {
+    if (ev.key === 'Escape') return fecharMenu();
+    if (ev.key !== 'Tab') return;
+    const f = focaveis();
+    const primeiro = f[0];
+    const ultimo = f[f.length - 1];
+    if (ev.shiftKey && document.activeElement === primeiro) {
+      ev.preventDefault();
+      ultimo.focus();
+    } else if (!ev.shiftKey && document.activeElement === ultimo) {
+      ev.preventDefault();
+      primeiro.focus();
+    }
+  }
+  function abrirMenu() {
+    menu.hidden = false;
+    abrir.setAttribute('aria-expanded', 'true');
+    document.documentElement.classList.add('menu-aberto');
+    document.addEventListener('keydown', teclas);
+    fechar.focus();
+  }
+  function fecharMenu() {
+    menu.hidden = true;
+    abrir.setAttribute('aria-expanded', 'false');
+    document.documentElement.classList.remove('menu-aberto');
+    document.removeEventListener('keydown', teclas);
+    abrir.focus();
+  }
+  abrir.addEventListener('click', abrirMenu);
+  fechar.addEventListener('click', fecharMenu);
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.hidden || fecharMenu()));
+
+  const rolar = () => cab.toggleAttribute('data-rolado', scrollY > 8);
+  rolar();
+  addEventListener('scroll', rolar, { passive: true });
+
+</script>
+
+<style>
+  .cabecalho {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--fundo);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--t-estado);
+  }
+  .cabecalho[data-rolado] {
+    border-bottom-color: var(--divisao);
+  }
+  .barra {
+    height: var(--barra);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s3);
+  }
+  .marca {
+    color: var(--texto);
+    text-decoration: none;
+    font-weight: 800;
+    font-stretch: 75%;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    min-height: 44px;
+    align-items: center;
+  }
+  .marca:hover {
+    color: var(--texto);
+  }
+  .marca-sub {
+    font-weight: 500;
+    font-stretch: 100%;
+    font-size: 14px;
+    color: var(--texto-2);
+  }
+  .nav-desktop {
+    display: none;
+  }
+  .menu-abrir,
+  .menu-fechar {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 var(--s1);
+    background: none;
+    border: 0;
+    color: var(--texto);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+    transition: color var(--t-estado);
+  }
+  .menu-abrir:hover,
+  .menu-fechar:hover {
+    color: var(--link-hover);
+  }
+  .menu-abrir:active,
+  .menu-fechar:active {
+    opacity: 0.7;
+  }
+  .menu-movel {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: var(--fundo);
+    overflow-y: auto;
+  }
+  .menu-topo {
+    height: var(--barra);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .menu-lista {
+    display: grid;
+    gap: var(--s5);
+    padding-block: var(--s5);
+  }
+  .menu-lista ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--s2);
+  }
+  .menu-lista ul a {
+    font-size: var(--display-l);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 1;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--texto);
+  }
+  .menu-lista .botao {
+    justify-self: start;
+  }
+  @media (min-width: 900px) {
+    .menu-abrir,
+    .menu-movel {
+      display: none !important;
+    }
+    .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: var(--s4);
+    }
+    .nav-desktop ul {
+      list-style: none;
+      display: flex;
+      gap: var(--s3);
+      margin: 0;
+      padding: 0;
+    }
+    .nav-desktop ul a {
+      color: var(--texto);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    .nav-desktop ul a:hover,
+    .nav-desktop ul a[aria-current] {
+      text-decoration: underline;
+      text-underline-offset: 0.3em;
+    }
+    .botao-barra {
+      min-height: 40px;
+    }
+  }
+</style>

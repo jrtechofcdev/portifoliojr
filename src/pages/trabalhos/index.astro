@@ -1,0 +1,181 @@
+---
+import Base from '../../layouts/Base.astro';
+import Foto from '../../components/Foto.astro';
+import { ensaiosPublicaveis } from '../../lib/fotos';
+import { CATEGORIAS, linkWhatsApp, type Categoria } from '../../data/site';
+
+const ensaios = await ensaiosPublicaveis();
+const usadas = new Set(ensaios.map((e) => e.data.categoria));
+const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.has(c));
+---
+
+<Base
+  titulo="Trabalhos | Jr_Tech_OFC Fotografia"
+  descricao="Ensaios externos, casais, gestantes e eventos fotografados por José Renato em Imperatriz e Bacabal, MA."
+>
+  <section class="wrap indice">
+    <div class="indice-topo">
+      <h1 class="display-xl">Trabalhos</h1>
+      {
+        filtros.length > 1 && (
+          <div class="filtro" role="group" aria-label="Filtrar por categoria" hidden data-filtro>
+            <button type="button" aria-pressed="true" data-c="">
+              Todos
+            </button>
+            {filtros.map((c) => (
+              <button type="button" aria-pressed="false" data-c={c}>
+                {CATEGORIAS[c].nome}
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    {ensaios.length === 0 && <p class="texto">Os trabalhos entram aqui assim que as autorizações de imagem forem confirmadas.</p>}
+
+    <ul class="lista" data-lista>
+      {
+        ensaios.map((e, i) => {
+          const alt = e.data.fotos.find((f) => f.arquivo === e.data.capa)!.alt;
+          return (
+            <li data-categoria={e.data.categoria}>
+              <a href={`/trabalhos/${e.id}`}>
+                <Foto slug={e.id} arquivo={e.data.capa} alt={alt} sizes="(min-width: 900px) 45vw, 100vw" prioridade={i === 0} />
+                <span class="nome">{e.data.nome}</span>
+                <span class="legenda">
+                  {[e.data.rotulo, e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · ')}
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    <p class="aviso-vazio texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
+
+    <section class="cta" aria-labelledby="cta-titulo">
+      <h2 class="display-l" id="cta-titulo">Quer um ensaio assim?</h2>
+      <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+    </section>
+  </section>
+</Base>
+
+<script>
+  const grupo = document.querySelector<HTMLElement>('[data-filtro]');
+  if (grupo) {
+    const botoes = [...grupo.querySelectorAll<HTMLButtonElement>('button')];
+    const itens = [...document.querySelectorAll<HTMLElement>('[data-lista] > li')];
+    const vazio = document.querySelector<HTMLElement>('[data-vazio]')!;
+    grupo.hidden = false;
+
+    function aplicar(c: string, atualizarUrl: boolean) {
+      if (!botoes.some((b) => b.dataset.c === c)) c = '';
+      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === c)));
+      let n = 0;
+      itens.forEach((li) => {
+        const mostra = !c || li.dataset.categoria === c;
+        li.hidden = !mostra;
+        if (mostra) n++;
+      });
+      vazio.hidden = n > 0;
+      if (atualizarUrl) {
+        const url = new URL(location.href);
+        c ? url.searchParams.set('c', c) : url.searchParams.delete('c');
+        history.replaceState(null, '', url);
+      }
+    }
+    botoes.forEach((b) => b.addEventListener('click', () => aplicar(b.dataset.c ?? '', true)));
+    aplicar(new URL(location.href).searchParams.get('c') ?? '', false);
+  }
+</script>
+
+<style>
+  .indice {
+    padding-block: var(--s5) var(--secao);
+  }
+  .indice-topo {
+    display: grid;
+    gap: var(--s4);
+    margin-bottom: var(--s6);
+  }
+  .filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s1) var(--s3);
+  }
+  .filtro[hidden] {
+    display: none;
+  }
+  .filtro button {
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--texto-2);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 2px;
+    transition:
+      color var(--t-estado),
+      text-decoration-color var(--t-estado);
+  }
+  .filtro button:hover {
+    color: var(--texto);
+  }
+  .filtro button[aria-pressed='true'] {
+    color: var(--texto);
+    text-decoration-color: currentColor;
+  }
+  .lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s6);
+  }
+  .lista li[hidden] {
+    display: none;
+  }
+  .lista li {
+    min-width: 0;
+  }
+  .lista a {
+    display: grid;
+    gap: var(--s1);
+    color: var(--texto);
+    text-decoration: none;
+  }
+  .nome {
+    margin-top: var(--s1);
+    font-size: var(--display-l);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 0.95;
+    text-transform: uppercase;
+    transition: opacity var(--t-estado);
+  }
+  .lista a:hover .nome {
+    opacity: 0.75;
+  }
+  @media (min-width: 900px) {
+    .lista {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--gutter);
+      align-items: start;
+    }
+    .lista li:nth-child(even) {
+      margin-top: 120px;
+    }
+  }
+  .cta {
+    display: grid;
+    gap: var(--s3);
+    justify-items: start;
+    margin-top: var(--secao);
+  }
+</style>

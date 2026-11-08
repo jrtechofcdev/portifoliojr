@@ -1,0 +1,64 @@
+---
+import { linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape closing" data-rodape>
+  <div class="wrap grade">
+    <div>
+      <p class="marca">{site.marca}</p>
+      <p class="legenda">{site.slogan}</p>
+    </div>
+    <ul class="contatos">
+      <li><a href={linkWhatsApp()}>WhatsApp {site.whatsappExibicao}</a></li>
+      <li><a href={linkEmail}>{site.email}</a></li>
+      <li><a href={linkInstagram}>Instagram @{site.instagram}</a></li>
+    </ul>
+    <p class="legenda fim">
+      Fotografia em {site.cidades}. © {ano} {site.fotografo}.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    background: var(--grafite);
+    color: var(--papel);
+    padding-block: var(--s6);
+    --link: var(--papel);
+    --link-hover: var(--ciano);
+    --texto-2: var(--cinza);
+    --foco: var(--verde);
+  }
+  .grade {
+    display: grid;
+    gap: var(--s4);
+  }
+  .marca {
+    font-weight: 800;
+    font-stretch: 68%;
+    font-size: var(--titulo);
+    line-height: 1;
+    margin-bottom: var(--s1);
+  }
+  .contatos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--s1);
+  }
+  .contatos a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  @media (min-width: 900px) {
+    .grade {
+      grid-template-columns: 1fr 1fr;
+    }
+    .fim {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

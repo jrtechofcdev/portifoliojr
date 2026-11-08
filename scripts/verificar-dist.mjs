@@ -18,6 +18,7 @@ const permitidos = new Set();
 for (const d of Object.values(fotos)) {
   if (!d.autorizada) falhas++;
   for (const lista of Object.values(d.srcset)) for (const item of lista.split(', ')) permitidos.add(item.split(' ')[0]);
+  if (d.og) permitidos.add(d.og);
 }
 const presentes = [];
 if (existsSync(dist)) {

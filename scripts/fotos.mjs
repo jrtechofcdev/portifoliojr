@@ -75,7 +75,9 @@ for (const arq of (await readdir(MANIFESTOS)).filter((f) => f.endsWith('.yaml'))
       continue;
     }
     const autorizacao = foto.autorizacao ?? m.autorizacao;
+    const abertura = m.abertura?.arquivo === foto.arquivo;
     entradas.push({
+      og: abertura ? (m.abertura.foco ?? '50% 50%') : null,
       chave: `${slug}/${foto.arquivo.normalize('NFC')}`,
       slug,
       origem: path.join(dirPasta, nomeDisco),
@@ -146,6 +148,28 @@ async function processar(e) {
     }
   }
   const padrao = dados.larguras.filter((w) => w <= 1200).at(-1) ?? dados.larguras[0];
+  const maior = dados.larguras.at(-1);
+
+  // Imagem de compartilhamento (Open Graph) 1200x630, recortada no ponto focal da abertura.
+  let og;
+  if (e.og) {
+    const cacheOg = path.join(dirCache, `og-${e.og.replace(/[^0-9]+/g, '-')}.jpg`);
+    if (!existsSync(cacheOg)) {
+      const [fx, fy] = e.og.split(' ').map((v) => parseFloat(v) / 100);
+      const escala = Math.max(1200 / dados.width, 630 / dados.height);
+      const rw = Math.round(dados.width * escala);
+      const rh = Math.round(dados.height * escala);
+      await sharp(e.origem)
+        .rotate()
+        .resize(rw, rh)
+        .extract({ left: Math.round((rw - 1200) * fx), top: Math.round((rh - 630) * fy), width: 1200, height: 630 })
+        .jpeg({ quality: 82, mozjpeg: true })
+        .toFile(cacheOg);
+    }
+    await copyFile(cacheOg, path.join(destino, `${e.nome}-og.jpg`));
+    og = `/fotos/${e.slug}/${e.nome}-og.jpg`;
+  }
+
   return [
     e.chave,
     {
@@ -155,6 +179,8 @@ async function processar(e) {
       lqip: dados.lqip,
       autorizada: e.autorizada,
       src: `/fotos/${e.slug}/${e.nome}-${padrao}.jpg`,
+      grande: `/fotos/${e.slug}/${e.nome}-${maior}.jpg`,
+      ...(og ? { og } : {}),
       srcset: Object.fromEntries(Object.entries(srcset).map(([k, v]) => [k, v.join(', ')])),
     },
   ];

@@ -10,6 +10,7 @@ Cada fase só começa com a anterior aceita, salvo onde está indicado "em paral
 Entregues: os 8 documentos, `CLAUDE.md` e as skills globais.
 
 ## Fase 1: conteúdo e decisões (JR, com apoio do DEV)
+Feito pelo DEV em 08/11/2026: 1.6 (Chromium e ffmpeg instalados pelo JR) e 1.7 (vídeos revisados, nenhum entra na v1). O resto depende do JR.
 | # | Tarefa | Quem | Esforço | Depende de | Aceite |
 |---|---|---|---|---|---|
 | 1.1 | Responder `PENDENCIAS_E_DECISOES.md`, bloco A | JR | M | n/a | cada item bloqueador com resposta escrita |
@@ -34,7 +35,7 @@ Resultado: Astro 7.4.7, TypeScript 6 estrito, 8 manifestos com 85 fotos, média 
 | 2.5 | Pipeline de imagens: leitura dos originais por caminho (normalizando NFD), derivados AVIF/WebP/JPEG em 5 larguras, LQIP, EXIF removido nos derivados | M | originais com hash idêntico antes e depois do build; peso médio por foto em 1200 px abaixo de 250 KB |
 | 2.6 | Bloqueio de publicação: foto com `autorizacao != "sim"` não entra no build de produção | P | teste com uma foto pendente não gera arquivo em `dist/` |
 
-## Fase 3: estrutura e páginas (DEV)
+## Fase 3: estrutura e páginas (DEV) ✅ concluída em 08/11/2026
 | # | Tarefa | Esforço | Aceite |
 |---|---|---|---|
 | 3.1 | Layout base: cabeçalho, navegação com menu móvel, rodapé, link "pular para o conteúdo" | M | navegação completa só com teclado; menu móvel com foco preso e Esc |
@@ -43,14 +44,14 @@ Resultado: Astro 7.4.7, TypeScript 6 estrito, 8 manifestos com 85 fotos, média 
 | 3.4 | Modelo de página de ensaio, com temas claro e escuro | M | as 8 páginas geradas pelo manifesto, sem página escrita à mão |
 | 3.5 | 404 | P | rota inexistente mostra a página com links |
 
-## Fase 4: galerias (DEV)
+## Fase 4: galerias (DEV) ✅ concluída em 08/11/2026
 | # | Tarefa | Esforço | Aceite |
 |---|---|---|---|
 | 4.1 | Lightbox `<dialog>`: setas, Esc, ← →, deslizar, contador, foco devolvido | M | teste manual com teclado e celular; `prefers-reduced-motion` respeitado |
 | 4.2 | Sequência editorial (vertical, par, sangria) dirigida pelo manifesto | M | nenhuma foto cortada fora da abertura |
 | 4.3 | Carregamento: `fetchpriority` na abertura, `lazy` no resto, `sizes` corretos | P | LCP abaixo de 2,5 s em 4G simulado (`perf.mjs` da Taste Skill ou Lighthouse) |
 
-## Fase 5: conversão e presença (DEV + JR)
+## Fase 5: conversão e presença (DEV + JR) ✅ parte do DEV concluída em 08/11/2026 (5.1 a 5.4); 5.1 no celular real e 5.5 com o JR
 | # | Tarefa | Quem | Esforço | Aceite |
 |---|---|---|---|---|
 | 5.1 | Links de WhatsApp com mensagem, mailto e Instagram | DEV | P | cada link testado em celular real pelo JR |
@@ -59,7 +60,7 @@ Resultado: Astro 7.4.7, TypeScript 6 estrito, 8 manifestos com 85 fotos, média 
 | 5.4 | Revisão final dos textos com `antislop-copywriting` | DEV | P | zero travessões, zero afirmações sem fonte |
 | 5.5 | Trocar o link da bio do Instagram para o site | JR | P | após publicação |
 
-## Fase 6: qualidade e publicação (DEV + JR)
+## Fase 6: qualidade e publicação (DEV + JR) ✅ parte do DEV concluída em 08/11/2026 (6.1 a 6.3 e 6.7; 6.4 coberta pelo `perf.mjs`, sem Lighthouse). Pendentes com o JR: 6.5 e 6.6. Resultados em `RELATORIO_ENTREGA.md`
 | # | Tarefa | Quem | Esforço | Aceite |
 |---|---|---|---|---|
 | 6.1 | `gate.mjs` e `consistency.mjs` da Taste Skill | DEV | M | nenhum FAIL corrigível restante |

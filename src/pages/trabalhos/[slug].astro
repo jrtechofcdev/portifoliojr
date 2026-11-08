@@ -1,0 +1,157 @@
+---
+import Base from '../../layouts/Base.astro';
+import Foto from '../../components/Foto.astro';
+import Galeria from '../../components/Galeria.astro';
+import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
+import { ensaiosPublicaveis, fotosDoEnsaio, mesAno, dadosFoto, type Ensaio } from '../../lib/fotos';
+import { CATEGORIAS, linkWhatsApp } from '../../data/site';
+
+export async function getStaticPaths() {
+  const ensaios = await ensaiosPublicaveis();
+  return ensaios.map((e, i) => {
+    const mesma = ensaios.filter((x) => x.data.categoria === e.data.categoria && x.id !== e.id);
+    const proximo = mesma[0] ?? ensaios[(i + 1) % ensaios.length];
+    return { params: { slug: e.id }, props: { ensaio: e, proximo: proximo.id !== e.id ? proximo : null } };
+  });
+}
+
+interface Props {
+  ensaio: Ensaio;
+  proximo: Ensaio | null;
+}
+const { ensaio, proximo } = Astro.props;
+const d = ensaio.data;
+const fotos = fotosDoEnsaio(ensaio);
+const abertura = fotos.find((f) => f.arquivo === d.abertura.arquivo)!;
+const sequencia = fotos.filter((f) => f !== abertura);
+const evento = d.categoria === 'eventos';
+const ficha = [d.rotulo, d.cidade, mesAno(d.data)].filter(Boolean).join(' · ');
+const pergunta = evento ? 'Tem um evento chegando?' : 'Quer um ensaio assim?';
+const mensagem = evento
+  ? `Olá, José Renato! Vi o trabalho "${d.nome}" no seu site e quero falar sobre um evento.`
+  : `Olá, José Renato! Vi o ensaio "${d.nome}" no seu site e quero saber como fazer um.`;
+const lugar = d.cidade ? ` em ${d.cidade}` : '';
+const titulo = `${d.nome}, ${d.rotulo.toLowerCase()}${lugar} | Jr_Tech_OFC Fotografia`;
+const descricao = `${d.rotulo} de ${d.nome}${lugar}, ${mesAno(d.data)}. ${fotos.length} fotos de José Renato, Jr_Tech_OFC Fotografia.`;
+const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
+---
+
+<Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
+  <article>
+    <header class="ensaio-abertura wrap">
+      <div class="ensaio-texto">
+        <p class="sobretitulo"><a href={`/trabalhos?c=${d.categoria}`}>{CATEGORIAS[d.categoria].titulo}</a></p>
+        <h1 class="ensaio-titulo">{d.titulo}</h1>
+        <p class="legenda">{ficha}</p>
+      </div>
+      <div class="ensaio-foto">
+        <Foto
+          slug={abertura.slug}
+          arquivo={abertura.arquivo}
+          alt={abertura.alt}
+          sizes="(min-width: 900px) 45vw, 100vw"
+          prioridade
+        />
+      </div>
+    </header>
+
+    <h2 class="visualmente-oculto">Fotos do trabalho</h2>
+    <Galeria fotos={sequencia} nome={d.nome} />
+  </article>
+
+  {
+    proximo && (
+      <nav class="secao wrap proximo" aria-label="Próximo trabalho">
+        <a href={`/trabalhos/${proximo.id}`}>
+          <span class="sobretitulo">Próximo trabalho</span>
+          <span class="proximo-nome">{proximo.data.nome}</span>
+          <span class="legenda">
+            {proximo.data.rotulo} · {proximo.data.data.slice(0, 4)}
+          </span>
+          {capaProx && (
+            <img
+              src={capaProx.srcset.webp.split(', ')[0].split(' ')[0]}
+              alt=""
+              width={capaProx.width}
+              height={capaProx.height}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </a>
+      </nav>
+    )
+  }
+
+  <section class="secao wrap contato" data-contato-ensaio aria-labelledby="contato-ensaio">
+    <h2 class="display-l" id="contato-ensaio">{pergunta}</h2>
+    <p class="texto">Me diga o que você quer, a data e a cidade. Respondo pelo WhatsApp.</p>
+    <a class="botao" href={linkWhatsApp(mensagem)}>Chamar no WhatsApp</a>
+  </section>
+
+  <BarraWhatsApp mensagem={mensagem} slot="depois" />
+</Base>
+
+<style>
+  .ensaio-abertura > * {
+    min-width: 0;
+  }
+  .ensaio-abertura {
+    display: grid;
+    gap: var(--s4);
+    padding-block: var(--s5) var(--s6);
+  }
+  .ensaio-texto {
+    display: grid;
+    gap: var(--s2);
+    align-content: end;
+  }
+  .ensaio-titulo {
+    font-size: clamp(56px, 11vw, 190px);
+    font-stretch: 62%;
+    font-weight: 800;
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .sobretitulo a {
+    color: inherit;
+  }
+  @media (min-width: 900px) {
+    .ensaio-abertura {
+      grid-template-columns: 55fr 45fr;
+      gap: var(--gutter);
+      align-items: end;
+    }
+  }
+
+  .proximo a {
+    display: grid;
+    gap: var(--s1);
+    color: var(--texto);
+    text-decoration: none;
+    border-top: 1px solid var(--divisao);
+    padding-top: var(--s4);
+  }
+  .proximo-nome {
+    font-size: var(--display-l);
+    font-weight: 800;
+    font-stretch: 68%;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .proximo a:hover .proximo-nome,
+  .proximo a:focus-visible .proximo-nome {
+    color: var(--link-hover);
+  }
+  .proximo img {
+    width: 240px;
+    margin-top: var(--s2);
+  }
+  .contato {
+    display: grid;
+    gap: var(--s3);
+    justify-items: start;
+    padding-top: 0;
+  }
+</style>

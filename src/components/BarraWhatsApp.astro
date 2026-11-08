@@ -1,0 +1,61 @@
+---
+// Botão fixo no rodapé da tela, só no celular, nas páginas de ensaio (DESIGN.md §7).
+// Some quando o rodapé real aparece, para não cobrir os contatos.
+import { linkWhatsApp } from '../data/site';
+interface Props {
+  mensagem: string;
+}
+const { mensagem } = Astro.props;
+---
+
+<div class="barra-wa" data-barra-wa>
+  <a class="botao" href={linkWhatsApp(mensagem)}>Chamar no WhatsApp</a>
+</div>
+
+<script>
+  const barra = document.querySelector<HTMLElement>('[data-barra-wa]');
+  const rodape = document.querySelector('[data-rodape]');
+  const contato = document.querySelector('[data-contato-ensaio]');
+  if (barra) {
+    const visiveis = new Set<Element>();
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => (e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target)));
+      barra.toggleAttribute('data-oculta', visiveis.size > 0);
+    });
+    [rodape, contato].forEach((el) => el && io.observe(el));
+  }
+</script>
+
+<style>
+  .barra-wa {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    padding: var(--s1) var(--margem) calc(var(--s1) + env(safe-area-inset-bottom));
+    background: var(--fundo);
+    border-top: 1px solid var(--divisao);
+    transition:
+      transform var(--t-estado),
+      visibility var(--t-estado);
+  }
+  .barra-wa .botao {
+    width: 100%;
+  }
+  .barra-wa[data-oculta] {
+    transform: translateY(100%);
+    visibility: hidden;
+  }
+  :global(body:has(.barra-wa)) {
+    padding-bottom: 72px;
+  }
+  @media (min-width: 900px) {
+    .barra-wa {
+      display: none;
+    }
+    :global(body:has(.barra-wa)) {
+      padding-bottom: 0;
+    }
+  }
+</style>

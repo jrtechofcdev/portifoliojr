@@ -25,12 +25,14 @@
   --fonte: 'Archivo Variable', system-ui, sans-serif;
   --display-xl: clamp(64px, 16vw, 220px);
   --display-l: clamp(44px, 9vw, 120px);
-  --titulo: clamp(28px, 4vw, 44px);
+  /* Na home e nas páginas internas o h1 é o maior; h2 e h3 descem um degrau cada (hierarquia real). */
+  --h2: clamp(40px, 6vw, 92px);
+  --titulo: clamp(24px, 2.6vw, 34px);
   --texto-base: 17px;
   --legenda: 14px;
 
   /* §4 Grid e ritmo (escala de 8 px) */
-  --margem: clamp(16px, 4vw, 56px);
+  --margem: clamp(16px, 5vw, 96px);
   --gutter: clamp(16px, 2vw, 24px);
   --secao: clamp(96px, 14vw, 200px);
   --medida: 65ch;
@@ -218,12 +220,27 @@ a:hover {
 }
 
 .botao-sec:hover {
-  color: var(--texto);
+  color: var(--link-hover);
   text-decoration-thickness: 3px;
 }
 
+.h2 {
+  font-size: var(--h2);
+  font-stretch: 68%;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.link-alvo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 /* Layout */
-.contido {
+.wrap {
   padding-inline: var(--margem);
 }
 
@@ -245,4 +262,39 @@ a:hover {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* No tema claro o verde não vai sobre --papel (DESIGN.md §2): o botão usa a versão escura. */
+.tema-claro .botao {
+  background: var(--verde-escuro);
+  color: var(--papel);
+}
+.tema-claro .botao:hover {
+  background: #00664a;
+  color: var(--papel);
+}
+.tema-claro .botao:active {
+  background: #005a40;
+}
+
+
+html.menu-aberto {
+  overflow: hidden;
+}
+
+/* Metade do respiro em cada lado: entre duas seções fica um só --secao. */
+.secao {
+  padding-block: calc(var(--secao) / 2);
+}
+
+.secao-topo {
+  display: grid;
+  gap: var(--s2);
+  margin-bottom: var(--s5);
+}
+
+.sobretitulo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto-2);
 }
