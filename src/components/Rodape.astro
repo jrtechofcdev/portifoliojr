@@ -6,7 +6,7 @@ const ano = new Date().getFullYear();
 <footer class="rodape closing" data-rodape>
   <div class="wrap grade">
     <div>
-      <p class="marca">{site.marca}</p>
+      <p class="marca serifa">{site.marca}</p>
       <p class="legenda">{site.slogan}</p>
     </div>
     <ul class="contatos">
@@ -21,22 +21,41 @@ const ano = new Date().getFullYear();
 </footer>
 
 <style>
+  /* Rodapé: couro mais escuro, cantos de cima arredondados e costura no alto */
   .rodape {
-    background: var(--grafite);
+    position: relative;
+    margin-top: var(--s4);
+    background: var(--couro-fundo) var(--textura);
+    background-blend-mode: overlay;
+    border-radius: var(--raio-g) var(--raio-g) 0 0;
     color: var(--papel);
     padding-block: var(--s6);
+    color-scheme: dark;
+    --texto: var(--papel);
     --link: var(--papel);
-    --link-hover: var(--ciano);
+    --link-hover: var(--verde);
     --texto-2: var(--cinza);
     --foco: var(--verde);
+    --relevo: 0 -1px 0 rgb(0 0 0 / 0.55);
+  }
+  .rodape::before {
+    content: '';
+    position: absolute;
+    top: 9px;
+    left: 9px;
+    right: 9px;
+    height: 40px;
+    border: 2px dashed rgb(0 252 168 / 0.5);
+    border-bottom: 0;
+    border-radius: calc(var(--raio-g) - 9px) calc(var(--raio-g) - 9px) 0 0;
+    pointer-events: none;
   }
   .grade {
     display: grid;
     gap: var(--s4);
   }
   .marca {
-    font-weight: 800;
-    font-stretch: 68%;
+    font-weight: 560;
     font-size: var(--titulo);
     line-height: 1;
     margin-bottom: var(--s1);

@@ -90,7 +90,7 @@ const { nome } = Astro.props;
     margin: 0;
     padding: 0;
     border: 0;
-    background: rgb(20 20 20 / 0.96);
+    background: rgb(11 17 15 / 0.97);
     color: #f2eee6;
     --foco: #00fca8;
   }
@@ -100,7 +100,7 @@ const { nome } = Astro.props;
     animation: lb-entrar var(--t-dialogo) ease-out;
   }
   .lightbox::backdrop {
-    background: rgb(20 20 20 / 0.96);
+    background: rgb(11 17 15 / 0.97);
   }
   .lb-palco {
     min-height: 0;
@@ -121,6 +121,7 @@ const { nome } = Astro.props;
     display: contents;
   }
   .lb-palco img {
+    border-radius: 14px;
     max-height: calc(100dvh - 56px - 72px);
   }
   .lb-controles {
@@ -139,18 +140,22 @@ const { nome } = Astro.props;
   .lb-botao {
     min-height: 44px;
     min-width: 44px;
-    padding: 0 var(--s2);
-    background: none;
-    border: 0;
+    padding: 0 20px;
+    background: transparent;
+    border: 1.5px dashed rgb(0 252 168 / 0.55);
+    border-radius: 999px;
     color: #f2eee6;
     font: inherit;
     font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
     cursor: pointer;
+    transition: color 180ms, border-color 180ms;
   }
   .lb-botao:hover {
-    color: #1cdaff;
+    color: #00fca8;
+    border-style: solid;
+  }
+  .lb-botao:active {
+    transform: scale(0.97);
   }
   .lb-botao:focus-visible {
     outline: 2px solid #00fca8;
@@ -158,7 +163,7 @@ const { nome } = Astro.props;
   }
   .lb-fechar {
     position: absolute;
-    top: 6px;
+    top: 10px;
     right: var(--margem);
   }
   @keyframes lb-entrar {

@@ -1,33 +1,50 @@
-/* Tokens e base. Fonte de verdade: DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento). */
+/* Tokens e base. Fonte de verdade: DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento).
+   Direção "álbum de couro" (08/11/2026): couro grafite-esverdeado com costura no verde da marca, cantos macios. */
 @import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/fraunces/full-italic.css';
 
 :root {
-  /* §2 Paleta */
-  --carvao: #141414;
+  /* §2 Cores da marca */
   --grafite: #292929;
   --papel: #f2eee6;
-  --cinza: #a8a39a;
-  --tinta: #5e5a54;
+  --cinza: #aaa69c;
+  --tinta: #574f45;
   --verde: #00fca8;
   --verde-escuro: #007a55;
   --ciano: #1cdaff;
 
+  /* §2 Couro: grafite puxado para o verde da marca */
+  --couro: #121b18;
+  --couro-painel: #1a2723;
+  --couro-fundo: #0b110f;
+  --couro-claro: #efe6d6;
+  --couro-claro-painel: #e5d8c2;
+
   /* Papéis por tema (escuro é o padrão) */
-  --fundo: var(--carvao);
+  --fundo: var(--couro);
+  --painel: var(--couro-painel);
   --texto: var(--papel);
   --texto-2: var(--cinza);
-  --divisao: var(--grafite);
+  --divisao: rgb(242 238 230 / 0.12);
+  --costura: rgb(0 252 168 / 0.55);
+  --costura-suave: rgb(0 252 168 / 0.28);
   --link: var(--papel);
-  --link-hover: var(--ciano);
+  --link-hover: var(--verde);
+  --destaque: var(--verde);
   --foco: var(--verde);
+  --sombra: 0 28px 48px -24px rgb(0 0 0 / 0.75), 0 2px 6px rgb(0 0 0 / 0.35);
+  --brilho: inset 0 1px 0 rgb(255 255 255 / 0.07), inset 0 -2px 8px rgb(0 0 0 / 0.35);
+  --relevo: 0 -1px 0 rgb(0 0 0 / 0.55), 0 1px 0 rgb(255 255 255 / 0.06);
+  --textura: url('/couro.webp');
 
   /* §3 Tipografia */
+  --serifa: 'Fraunces Variable', Georgia, serif;
   --fonte: 'Archivo Variable', system-ui, sans-serif;
-  --display-xl: clamp(64px, 16vw, 220px);
-  --display-l: clamp(44px, 9vw, 120px);
-  /* Na home e nas páginas internas o h1 é o maior; h2 e h3 descem um degrau cada (hierarquia real). */
-  --h2: clamp(40px, 6vw, 92px);
-  --titulo: clamp(24px, 2.6vw, 34px);
+  --display-xl: clamp(56px, 11vw, 168px);
+  --display-l: clamp(40px, 7vw, 104px);
+  --h2: clamp(38px, 5.4vw, 84px);
+  --titulo: clamp(24px, 2.4vw, 32px);
   --texto-base: 17px;
   --legenda: 14px;
 
@@ -43,15 +60,19 @@
   --s5: 48px;
   --s6: 64px;
 
-  /* §7 Componentes */
-  --raio: 2px;
+  /* §7 Componentes: nada de canto reto */
+  --raio: 999px;
+  --raio-g: clamp(22px, 2.4vw, 32px);
+  --raio-m: clamp(14px, 1.4vw, 20px);
   --alvo: 48px;
-  --barra: 56px;
+  --barra: 60px;
+  --cab: calc(var(--barra) + 10px);
 
   /* §8 Movimento */
-  --t-estado: 150ms;
-  --t-foto: 200ms;
+  --t-estado: 180ms;
+  --t-foto: 400ms;
   --t-dialogo: 180ms;
+  --curva: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   color-scheme: dark;
 }
@@ -62,15 +83,22 @@
   }
 }
 
-/* Páginas de ensaio de luz diurna declaram tema: claro no manifesto */
+/* Ensaios de luz do dia (tema: claro no manifesto): couro natural creme */
 .tema-claro {
-  --fundo: var(--papel);
-  --texto: var(--carvao);
+  --fundo: var(--couro-claro);
+  --painel: var(--couro-claro-painel);
+  --texto: #1b1a17;
   --texto-2: var(--tinta);
-  --divisao: #dcd6cb;
+  --divisao: rgb(27 26 23 / 0.14);
+  --costura: rgb(0 122 85 / 0.7);
+  --costura-suave: rgb(0 122 85 / 0.35);
   --link: var(--verde-escuro);
-  --link-hover: var(--carvao);
+  --link-hover: #1b1a17;
+  --destaque: var(--verde-escuro);
   --foco: var(--verde-escuro);
+  --sombra: 0 28px 48px -26px rgb(70 48 20 / 0.45), 0 2px 6px rgb(70 48 20 / 0.12);
+  --brilho: inset 0 1px 0 rgb(255 255 255 / 0.6), inset 0 -2px 8px rgb(70 48 20 / 0.12);
+  --relevo: 0 1px 0 rgb(255 255 255 / 0.55);
   color-scheme: light;
 }
 
@@ -101,13 +129,13 @@ html {
 
 body {
   margin: 0;
-  background: var(--fundo);
+  background: var(--fundo) var(--textura);
+  background-blend-mode: overlay;
   color: var(--texto);
   font-family: var(--fonte);
   font-size: var(--texto-base);
-  font-stretch: 100%;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.6;
   overflow-x: clip;
 }
 
@@ -133,7 +161,7 @@ a {
   color: var(--link);
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.22em;
   transition: color var(--t-estado);
 }
 
@@ -143,18 +171,28 @@ a:hover {
 
 :focus-visible {
   outline: 2px solid var(--foco);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* Tipos */
+/* Tipos: serifa macia (Fraunces, eixo SOFT) nos títulos, Archivo no texto */
 .display-xl,
-.display-l {
-  font-stretch: 68%;
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
+.display-l,
+.h2,
+.titulo,
+.serifa {
+  font-family: var(--serifa);
+  font-optical-sizing: auto;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
+  font-weight: 480;
+  letter-spacing: -0.02em;
+  text-shadow: var(--relevo);
+  overflow-wrap: break-word;
+}
+
+.display-xl,
+.display-l,
+.h2 {
+  line-height: 0.98;
 }
 
 .display-xl {
@@ -165,11 +203,22 @@ a:hover {
   font-size: var(--display-l);
 }
 
+.h2 {
+  font-size: var(--h2);
+}
+
 .titulo {
   font-size: var(--titulo);
-  font-stretch: 75%;
-  font-weight: 800;
-  line-height: 1.05;
+  font-weight: 560;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+/* Palavra em itálico na cor da marca, dentro dos títulos */
+:is(.display-xl, .display-l, .h2, .serifa) em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--destaque);
 }
 
 .legenda {
@@ -186,28 +235,94 @@ a:hover {
   font-weight: 600;
 }
 
-/* Botões (§7) */
+/* Couro: painel acolchoado com costura (§7). O tile cinza vira grão por overlay sobre a cor. */
+.couro {
+  position: relative;
+  isolation: isolate;
+  background: var(--painel) var(--textura);
+  background-blend-mode: overlay;
+  border-radius: var(--raio-g);
+  box-shadow: var(--brilho), var(--sombra);
+}
+
+.couro::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border: 2px dashed var(--costura);
+  border-radius: calc(var(--raio-g) - 9px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Linha de costura usada como divisória */
+.costura {
+  border: 0;
+  border-top: 2px dashed var(--costura-suave);
+}
+
+/* Botões (§7): aba de couro verde com costura escura */
 .botao {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   min-height: var(--alvo);
-  padding: 0 var(--s3);
+  padding: 0 28px;
   border-radius: var(--raio);
-  background: var(--verde);
-  color: var(--carvao);
-  font-weight: 600;
+  background: var(--verde) linear-gradient(180deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0) 55%, rgb(0 0 0 / 0.1));
+  color: #0d1512;
+  font-weight: 650;
+  letter-spacing: 0.005em;
   text-decoration: none;
-  transition: background-color var(--t-estado);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 10px 22px -10px rgb(0 252 168 / 0.45),
+    0 2px 4px rgb(0 0 0 / 0.3);
+  transition:
+    transform var(--t-estado) var(--curva),
+    background-color var(--t-estado),
+    box-shadow var(--t-estado);
+}
+
+.botao::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1.5px dashed rgb(13 21 18 / 0.4);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .botao:hover {
-  color: var(--carvao);
-  background: #5dffc6;
+  color: #0d1512;
+  background-color: #4dffc2;
+  transform: translateY(-2px);
 }
 
 .botao:active {
-  background: #00d68f;
+  transform: translateY(0) scale(0.98);
+  background-color: #00e096;
+}
+
+.tema-claro .botao {
+  background-color: var(--verde-escuro);
+  color: var(--papel);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.25),
+    0 10px 22px -12px rgb(0 80 55 / 0.6),
+    0 2px 4px rgb(70 48 20 / 0.2);
+}
+.tema-claro .botao::before {
+  border-color: rgb(242 238 230 / 0.5);
+}
+.tema-claro .botao:hover {
+  background-color: #00664a;
+  color: var(--papel);
+}
+.tema-claro .botao:active {
+  background-color: #005a40;
 }
 
 .botao-sec {
@@ -215,28 +330,37 @@ a:hover {
   align-items: center;
   min-height: var(--alvo);
   color: var(--texto);
-  text-decoration-thickness: 1px;
-  transition: text-decoration-thickness var(--t-estado);
+  font-weight: 550;
+  text-decoration-color: var(--costura);
+  text-decoration-thickness: 2px;
+  text-decoration-style: dashed;
+  transition:
+    color var(--t-estado),
+    text-decoration-color var(--t-estado);
 }
 
 .botao-sec:hover {
   color: var(--link-hover);
-  text-decoration-thickness: 3px;
-}
-
-.h2 {
-  font-size: var(--h2);
-  font-stretch: 68%;
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
 }
 
 .link-alvo {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
+}
+
+/* Foto com moldura macia; dentro de um link, aproxima de leve no hover (§8) */
+.foto {
+  border-radius: var(--raio-m);
+  overflow: hidden;
+}
+a .foto img {
+  transition: transform var(--t-foto) var(--curva);
+}
+a:hover .foto img {
+  transform: scale(1.03);
 }
 
 /* Layout */
@@ -252,7 +376,7 @@ a:hover {
 }
 
 .pular:focus {
-  top: var(--s1);
+  top: var(--s2);
 }
 
 .visualmente-oculto {
@@ -263,20 +387,6 @@ a:hover {
   clip-path: inset(50%);
   white-space: nowrap;
 }
-
-/* No tema claro o verde não vai sobre --papel (DESIGN.md §2): o botão usa a versão escura. */
-.tema-claro .botao {
-  background: var(--verde-escuro);
-  color: var(--papel);
-}
-.tema-claro .botao:hover {
-  background: #00664a;
-  color: var(--papel);
-}
-.tema-claro .botao:active {
-  background: #005a40;
-}
-
 
 html.menu-aberto {
   overflow: hidden;
@@ -294,7 +404,18 @@ html.menu-aberto {
 }
 
 .sobretitulo {
-  font-size: 15px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   color: var(--texto-2);
+}
+
+.sobretitulo::before {
+  content: '';
+  width: 28px;
+  border-top: 2px dashed var(--costura);
 }

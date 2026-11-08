@@ -41,10 +41,10 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
     <header class="ensaio-abertura wrap">
       <div class="ensaio-texto">
         <p class="sobretitulo"><a href={`/trabalhos?c=${d.categoria}`}>{CATEGORIAS[d.categoria].titulo}</a></p>
-        <h1 class="ensaio-titulo">{d.titulo}</h1>
+        <h1 class="ensaio-titulo display-xl">{d.nome}</h1>
         <p class="legenda">{ficha}</p>
       </div>
-      <div class="ensaio-foto">
+      <div class="ensaio-foto couro moldura">
         <Foto
           slug={abertura.slug}
           arquivo={abertura.arquivo}
@@ -62,9 +62,9 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
   {
     proximo && (
       <nav class="secao wrap proximo" aria-label="Próximo trabalho">
-        <a href={`/trabalhos/${proximo.id}`}>
+        <a class="couro" href={`/trabalhos/${proximo.id}`}>
           <span class="sobretitulo">Próximo trabalho</span>
-          <span class="proximo-nome">{proximo.data.nome}</span>
+          <span class="proximo-nome serifa">{proximo.data.nome}</span>
           <span class="legenda">
             {proximo.data.rotulo} · {proximo.data.data.slice(0, 4)}
           </span>
@@ -83,10 +83,12 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
     )
   }
 
-  <section class="secao wrap contato" data-contato-ensaio aria-labelledby="contato-ensaio">
-    <h2 class="display-l" id="contato-ensaio">{pergunta}</h2>
-    <p class="texto">Me diga o que você quer, a data e a cidade. Respondo pelo WhatsApp.</p>
-    <a class="botao" href={linkWhatsApp(mensagem)}>Chamar no WhatsApp</a>
+  <section class="secao wrap" data-contato-ensaio aria-labelledby="contato-ensaio">
+    <div class="contato couro">
+      <h2 class="display-l" id="contato-ensaio">{pergunta}</h2>
+      <p class="texto">Me diga o que você quer, a data e a cidade. Respondo pelo WhatsApp.</p>
+      <a class="botao" href={linkWhatsApp(mensagem)}>Chamar no WhatsApp</a>
+    </div>
   </section>
 
   <BarraWhatsApp mensagem={mensagem} slot="depois" />
@@ -105,17 +107,21 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
     display: grid;
     gap: var(--s2);
     align-content: end;
+    justify-items: start;
   }
   .ensaio-titulo {
-    font-size: clamp(56px, 11vw, 190px);
-    font-stretch: 62%;
-    font-weight: 800;
-    line-height: 0.88;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-size: clamp(56px, 10vw, 170px);
+    line-height: 0.95;
   }
   .sobretitulo a {
     color: inherit;
+  }
+  .moldura {
+    padding: 16px;
+  }
+  .moldura::before {
+    inset: 6px;
+    border-radius: calc(var(--raio-g) - 6px);
   }
   @media (min-width: 900px) {
     .ensaio-abertura {
@@ -124,34 +130,44 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
       align-items: end;
     }
   }
-
   .proximo a {
     display: grid;
-    gap: var(--s1);
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--s1) var(--s4);
+    padding: clamp(28px, 4vw, 56px);
     color: var(--texto);
     text-decoration: none;
-    border-top: 1px solid var(--divisao);
-    padding-top: var(--s4);
+    transition: transform var(--t-estado) var(--curva);
+  }
+  .proximo a:hover {
+    transform: translateY(-2px);
+  }
+  .proximo a > span {
+    grid-column: 1;
   }
   .proximo-nome {
     font-size: var(--display-l);
-    font-weight: 800;
-    font-stretch: 68%;
-    line-height: 0.95;
-    text-transform: uppercase;
+    line-height: 1;
+    transition: color var(--t-estado);
   }
   .proximo a:hover .proximo-nome,
   .proximo a:focus-visible .proximo-nome {
     color: var(--link-hover);
+    font-style: italic;
   }
   .proximo img {
-    width: 240px;
-    margin-top: var(--s2);
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    width: clamp(96px, 16vw, 200px);
+    border-radius: var(--raio-m);
+    box-shadow: var(--sombra);
   }
   .contato {
     display: grid;
     gap: var(--s3);
-    justify-items: start;
-    padding-top: 0;
+    justify-items: center;
+    text-align: center;
+    padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
   }
 </style>

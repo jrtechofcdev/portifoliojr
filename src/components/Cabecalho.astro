@@ -11,8 +11,8 @@ const links = [
 
 <header class="cabecalho nav">
   <a class="pular botao" href="#conteudo">Pular para o conteúdo</a>
-  <div class="wrap barra">
-    <a class="marca" href="/" aria-label={`${site.marca}, voltar ao início`}>
+  <div class="barra couro">
+    <a class="marca serifa" href="/" aria-label={`${site.marca}, voltar ao início`}>
       {site.marca}<span class="marca-sub">Fotografia</span>
     </a>
     <nav class="nav-desktop" aria-label="Principal">
@@ -33,13 +33,13 @@ const links = [
   </div>
   <div class="menu-movel" id="menu-movel" hidden>
     <div class="wrap menu-topo">
-      <span class="marca" aria-hidden="true">{site.marca}</span>
+      <span class="marca serifa" aria-hidden="true">{site.marca}</span>
       <button class="menu-fechar" type="button">Fechar</button>
     </div>
     <nav class="wrap menu-lista" aria-label="Principal">
       <ul>
-        <li><a href="/">Início</a></li>
-        {links.map((l) => <li><a href={l.href}>{l.texto}</a></li>)}
+        <li><a class="serifa" href="/">Início</a></li>
+        {links.map((l) => <li><a class="serifa" href={l.href}>{l.texto}</a></li>)}
       </ul>
       <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
     </nav>
@@ -94,16 +94,12 @@ const links = [
 </script>
 
 <style>
+  /* Cabeçalho: alça de couro flutuante, com costura */
   .cabecalho {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--fundo);
-    border-bottom: 1px solid transparent;
-    transition: border-color var(--t-estado);
-  }
-  .cabecalho[data-rolado] {
-    border-bottom-color: var(--divisao);
+    padding: 10px var(--margem) 0;
   }
   .barra {
     height: var(--barra);
@@ -111,17 +107,24 @@ const links = [
     align-items: center;
     justify-content: space-between;
     gap: var(--s3);
+    padding-inline: 22px 8px;
+    border-radius: 999px;
+    transition: box-shadow var(--t-estado);
+  }
+  .barra::before {
+    inset: 5px;
+    border-radius: 999px;
+    border-width: 1.5px;
   }
   .marca {
     color: var(--texto);
     text-decoration: none;
-    font-weight: 800;
-    font-stretch: 75%;
-    font-size: 20px;
+    font-weight: 620;
+    font-size: 21px;
     letter-spacing: -0.01em;
     display: inline-flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 8px;
     min-height: 44px;
     align-items: center;
   }
@@ -129,46 +132,57 @@ const links = [
     color: var(--texto);
   }
   .marca-sub {
+    font-family: var(--fonte);
     font-weight: 500;
-    font-stretch: 100%;
-    font-size: 14px;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--texto-2);
+    text-shadow: none;
   }
   .nav-desktop {
     display: none;
+  }
+  @media (max-width: 440px) {
+    .marca-sub {
+      display: none;
+    }
   }
   .menu-abrir,
   .menu-fechar {
     min-height: 44px;
     min-width: 44px;
-    padding: 0 var(--s1);
-    background: none;
-    border: 0;
+    padding: 0 18px;
+    background: transparent;
+    border: 1.5px dashed var(--costura);
+    border-radius: 999px;
     color: var(--texto);
     font: inherit;
     font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
     cursor: pointer;
-    transition: color var(--t-estado);
+    transition:
+      color var(--t-estado),
+      border-color var(--t-estado);
   }
   .menu-abrir:hover,
   .menu-fechar:hover {
     color: var(--link-hover);
+    border-style: solid;
   }
   .menu-abrir:active,
   .menu-fechar:active {
-    opacity: 0.7;
+    transform: scale(0.97);
   }
   .menu-movel {
     position: fixed;
     inset: 0;
     z-index: 60;
-    background: var(--fundo);
+    background: var(--fundo) var(--textura);
+    background-blend-mode: overlay;
     overflow-y: auto;
   }
   .menu-topo {
-    height: var(--barra);
+    height: calc(var(--barra) + 10px);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -183,16 +197,20 @@ const links = [
     padding: 0;
     margin: 0;
     display: grid;
-    gap: var(--s2);
+    gap: var(--s1);
   }
   .menu-lista ul a {
+    display: block;
+    padding-block: var(--s1);
     font-size: var(--display-l);
-    font-weight: 800;
-    font-stretch: 68%;
-    line-height: 1;
-    text-transform: uppercase;
+    line-height: 1.05;
     text-decoration: none;
     color: var(--texto);
+    border-bottom: 2px dashed var(--costura-suave);
+  }
+  .menu-lista ul a:hover {
+    color: var(--link-hover);
+    font-style: italic;
   }
   .menu-lista .botao {
     justify-self: start;
@@ -220,14 +238,17 @@ const links = [
       display: inline-flex;
       align-items: center;
       min-height: 44px;
+      font-weight: 550;
     }
     .nav-desktop ul a:hover,
     .nav-desktop ul a[aria-current] {
-      text-decoration: underline;
-      text-underline-offset: 0.3em;
+      color: var(--link-hover);
+      text-decoration: underline dashed;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 0.4em;
     }
     .botao-barra {
-      min-height: 40px;
+      min-height: 44px;
     }
   }
 </style>

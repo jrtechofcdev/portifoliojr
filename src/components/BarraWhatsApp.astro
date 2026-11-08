@@ -33,15 +33,18 @@ const { mensagem } = Astro.props;
     right: 0;
     bottom: 0;
     z-index: 40;
-    padding: var(--s1) var(--margem) calc(var(--s1) + env(safe-area-inset-bottom));
-    background: var(--fundo);
-    border-top: 1px solid var(--divisao);
+    padding: 0 var(--margem) calc(10px + env(safe-area-inset-bottom));
+    pointer-events: none;
     transition:
       transform var(--t-estado),
       visibility var(--t-estado);
   }
   .barra-wa .botao {
     width: 100%;
+    pointer-events: auto;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 14px 30px -8px rgb(0 0 0 / 0.6);
   }
   .barra-wa[data-oculta] {
     transform: translateY(100%);

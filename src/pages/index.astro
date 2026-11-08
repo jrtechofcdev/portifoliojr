@@ -68,7 +68,7 @@ const jsonld = {
   <section class:list={['abertura', { 'sem-foto': !abertura }]}>
     {
       abertura && (
-        <div class="abertura-foto">
+        <div class="abertura-foto couro moldura">
           <Foto
             slug={abertura.slug}
             arquivo={abertura.arquivo}
@@ -81,7 +81,7 @@ const jsonld = {
       )
     }
     <div class="abertura-texto">
-      <h1 class="abertura-titulo">Fotografia natural de pessoas.</h1>
+      <h1 class="abertura-titulo serifa">Fotografia <em>natural</em> de pessoas.</h1>
       <p class="abertura-apoio">Ensaios externos, casais e celebrações em {site.cidades}.</p>
       <div class="acoes">
         <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
@@ -92,18 +92,22 @@ const jsonld = {
 
   <section class="secao wrap" id="trabalhos" aria-labelledby="frentes-titulo">
     <div class="secao-topo">
-      <h2 class="h2" id="frentes-titulo">O que eu fotografo</h2>
+      <h2 class="h2" id="frentes-titulo">O que eu <em>fotografo</em></h2>
     </div>
     <ul class="frentes">
       {
         frentes.map(({ categoria, foto, texto }) => (
-          <li class="frente">
+          <li class="frente couro">
             {foto && (
-              <Foto slug={foto.slug} arquivo={foto.arquivo} alt={foto.alt} sizes="(min-width: 900px) 30vw, 100vw" />
+              <a class="frente-foto" href={`/trabalhos?c=${categoria}`} tabindex="-1" aria-hidden="true">
+                <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="(min-width: 900px) 30vw, 100vw" />
+              </a>
             )}
-            <h3 class="titulo">{CATEGORIAS[categoria].titulo}</h3>
-            <p>{texto}</p>
-            <a href={`/trabalhos?c=${categoria}`}>Ver {CATEGORIAS[categoria].nome.toLowerCase()}</a>
+            <div class="frente-texto">
+              <h3 class="titulo">{CATEGORIAS[categoria].titulo}</h3>
+              <p>{texto}</p>
+              <a class="botao-sec" href={`/trabalhos?c=${categoria}`}>Ver {CATEGORIAS[categoria].nome.toLowerCase()}</a>
+            </div>
           </li>
         ))
       }
@@ -115,7 +119,7 @@ const jsonld = {
       <section class="secao destaque" aria-labelledby="destaque-titulo">
         <div class="wrap destaque-topo">
           <p class="sobretitulo">Ensaio em destaque</p>
-          <h2 class="h2" id="destaque-titulo">Sabrina</h2>
+          <h2 class="display-l" id="destaque-titulo">Sabrina</h2>
           <p class="legenda">Bacabal, {mesAno('2025-08-17')}</p>
         </div>
         <ul class="destaque-fotos" aria-label="Fotos do ensaio de Sabrina">
@@ -130,7 +134,7 @@ const jsonld = {
             </li>
           ))}
         </ul>
-        <div class="wrap">
+        <div class="wrap destaque-link">
           <a class="botao-sec" href="/trabalhos/sabrina">Ver o ensaio completo de Sabrina</a>
         </div>
       </section>
@@ -139,7 +143,7 @@ const jsonld = {
 
   {
     pausa && (
-      <div class="pausa">
+      <div class="pausa wrap">
         <Foto slug={pausa.slug} arquivo={pausa.arquivo} alt={pausa.alt} sizes="100vw" />
       </div>
     )
@@ -157,7 +161,7 @@ const jsonld = {
             return (
               <li>
                 <a href={`/trabalhos/${e.id}`}>
-                  <span class="nome">{e.data.nome}</span>
+                  <span class="nome serifa">{e.data.nome}</span>
                   <span class="legenda">
                     {e.data.rotulo} · {e.data.data.slice(0, 4)}
                   </span>
@@ -175,6 +179,7 @@ const jsonld = {
   }
 
   <section class="secao wrap como" id="como-funciona" aria-labelledby="como-titulo">
+    <div class="como-painel couro">
     <div class="secao-topo">
       <h2 class="h2" id="como-titulo">Como funciona um ensaio</h2>
       <p class="texto">Se você nunca fez um ensaio, é assim, do primeiro contato à entrega.</p>
@@ -183,7 +188,7 @@ const jsonld = {
       {
         passos.map(([titulo, texto], i) => (
           <li>
-            <span class="passo-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="passo-num serifa" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <div>
               <h3 class="titulo">{titulo}</h3>
               <p class="texto">{texto}</p>
@@ -192,13 +197,14 @@ const jsonld = {
         ))
       }
     </ol>
+    </div>
   </section>
 
-  <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
-    <div class="wrap sobre-grade">
+  <section class="secao wrap sobre" id="sobre" aria-labelledby="sobre-titulo">
+    <div class="sobre-grade">
       <div class="sobre-texto">
         <p class="sobretitulo">Sobre</p>
-        <h2 class="h2" id="sobre-titulo">José Renato</h2>
+        <h2 class="h2" id="sobre-titulo">José <em>Renato</em></h2>
         <p class="texto">
           Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
           ao ar livre, e também cubro cultos, confraternizações e festas de família. Gosto de foto que parece com quem está
@@ -208,7 +214,7 @@ const jsonld = {
       </div>
       {
         sobreFoto && (
-          <div class="sobre-foto">
+          <div class="sobre-foto couro moldura">
             <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 33vw, 100vw" />
           </div>
         )
@@ -216,8 +222,9 @@ const jsonld = {
     </div>
   </section>
 
-  <section class="secao wrap contato" id="contato" aria-labelledby="contato-titulo">
-    <h2 class="h2" id="contato-titulo">Vamos marcar?</h2>
+  <section class="secao wrap" id="contato" aria-labelledby="contato-titulo">
+    <div class="contato couro">
+    <h2 class="display-l" id="contato-titulo">Vamos <em>marcar?</em></h2>
     <p class="texto contato-apoio">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
     <div class="acoes">
       <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
@@ -225,8 +232,10 @@ const jsonld = {
       <a class="botao-sec" href={linkInstagram}>Instagram</a>
     </div>
     <p class="legenda">Atendo em {site.cidades}. Outras cidades, sob consulta.</p>
+    </div>
   </section>
 </Base>
+
 
 <style>
   .acoes {
@@ -236,19 +245,32 @@ const jsonld = {
     gap: var(--s2) var(--s4);
   }
 
-  /* Abertura (MAPA §2.1, DESIGN §5) */
-  /* A abertura ocupa exatamente uma tela: a foto cresce no espaço que o texto deixa. */
+  /* Moldura de couro em volta de uma foto: a costura corre por fora da imagem */
+  .moldura {
+    padding: 16px;
+  }
+  .moldura::before {
+    inset: 6px;
+    border-radius: calc(var(--raio-g) - 6px);
+  }
+
+  /* Abertura: exatamente uma tela; a foto cresce no espaço que o texto deixa */
   .abertura {
     display: grid;
     grid-template-rows: minmax(240px, 1fr) auto;
-    height: calc(100svh - var(--barra));
+    height: calc(100svh - var(--cab));
     min-height: 560px;
+    padding-top: var(--s2);
   }
   .abertura > * {
     min-width: 0;
     min-height: 0;
   }
   .abertura-foto {
+    margin-inline: var(--margem);
+    display: grid;
+  }
+  .abertura-foto :global(.foto) {
     height: 100%;
   }
   .sem-foto {
@@ -258,15 +280,11 @@ const jsonld = {
     display: grid;
     gap: var(--s2);
     padding-inline: var(--margem);
-    padding-block: var(--s3) var(--s5);
+    padding-block: var(--s3) var(--s4);
   }
   .abertura-titulo {
-    font-size: clamp(44px, 6.6vw, 112px);
-    font-stretch: 68%;
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    font-size: clamp(44px, 6.4vw, 108px);
+    line-height: 0.98;
     max-width: 11ch;
   }
   .abertura-apoio {
@@ -283,10 +301,11 @@ const jsonld = {
     .abertura {
       grid-template-columns: 55fr 45fr;
       grid-template-rows: 1fr;
-      padding-bottom: 28px;
+      padding-block: var(--s2) var(--s4);
     }
     .abertura-foto {
       order: 2;
+      margin-left: 0;
     }
     .abertura-texto {
       align-content: center;
@@ -298,32 +317,43 @@ const jsonld = {
     }
   }
 
-  /* Três frentes: alturas diferentes (DESIGN §4) */
+  /* Três frentes: cartões de couro, alturas desencontradas no desktop (DESIGN §4) */
   .frentes {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: var(--s6);
+    gap: var(--s4);
   }
   .frente {
     min-width: 0;
     display: grid;
-    gap: var(--s2);
     align-content: start;
+    padding: 16px;
+    transition: transform var(--t-estado) var(--curva);
+  }
+  .frente:hover {
+    transform: translateY(-2px);
+  }
+  .frente-foto {
+    display: block;
+  }
+  .frente-texto {
+    display: grid;
+    gap: var(--s1);
+    padding: var(--s3) var(--s2) var(--s1);
   }
   .frente p {
     max-width: 40ch;
+    color: var(--texto-2);
   }
-  .frente a {
+  .frente .botao-sec {
     justify-self: start;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
   }
   @media (min-width: 900px) {
     .frentes {
       grid-template-columns: repeat(3, 1fr);
+      align-items: start;
       gap: var(--gutter);
     }
     .frente:nth-child(2) {
@@ -337,7 +367,7 @@ const jsonld = {
   /* Destaque: carrossel nativo no celular, composição assimétrica no desktop */
   .destaque-topo {
     display: grid;
-    gap: var(--s1);
+    gap: var(--s2);
     margin-bottom: var(--s4);
   }
   .destaque-fotos {
@@ -357,30 +387,65 @@ const jsonld = {
     scroll-snap-align: start;
     min-width: 0;
   }
+  .destaque-fotos :global(.foto) {
+    box-shadow: var(--sombra);
+  }
   @media (min-width: 900px) {
-    /* 1 vertical grande e 3 menores alinhadas pela base (DESIGN §6, composição assimétrica) */
-    .destaque-fotos {
-      overflow: visible;
-      grid-auto-flow: row;
+    /* Foto grande à esquerda; à direita, título em cima, três fotos e o link embaixo */
+    .destaque {
+      display: grid;
       grid-template-columns: 3fr 1fr 1fr 1fr;
-      grid-auto-columns: auto;
-      align-items: end;
-      gap: var(--gutter);
+      grid-template-rows: 1fr auto auto;
+      column-gap: var(--gutter);
+      padding-inline: var(--margem);
+    }
+    .destaque > .wrap {
+      padding-inline: 0;
+    }
+    .destaque-topo {
+      grid-column: 2 / 5;
+      grid-row: 1;
+      align-self: end;
+      padding-left: var(--s4);
+    }
+    .destaque-fotos {
+      display: contents;
+    }
+    .destaque-fotos .grande {
+      grid-column: 1;
+      grid-row: 1 / 4;
+    }
+    .destaque-fotos li:not(.grande) {
+      grid-row: 2;
+      align-self: end;
+    }
+    .destaque-link {
+      grid-column: 2 / 5;
+      grid-row: 3;
+      padding-top: var(--s3);
+      padding-left: var(--s4);
     }
   }
 
+  .pausa {
+    margin-block: calc(var(--secao) / 2);
+  }
+  .pausa :global(.foto) {
+    border-radius: var(--raio-g);
+    box-shadow: var(--sombra);
+  }
   .pausa :global(img) {
     width: 100%;
   }
 
-  /* Mais trabalhos: lista em tipo grande, prévia da capa no hover (desktop) */
+  /* Mais trabalhos: nomes em serifa grande, separados por costura; prévia da capa no hover */
   .lista-grande {
     list-style: none;
     margin: 0;
     padding: 0;
   }
   .lista-grande li {
-    border-bottom: 1px solid var(--divisao);
+    border-bottom: 2px dashed var(--costura-suave);
   }
   .lista-grande a {
     position: relative;
@@ -394,15 +459,14 @@ const jsonld = {
     text-decoration: none;
   }
   .nome {
-    font-size: clamp(32px, 6vw, 88px);
-    font-weight: 800;
-    font-stretch: 68%;
-    line-height: 0.95;
-    text-transform: uppercase;
+    font-size: clamp(32px, 5.4vw, 80px);
+    line-height: 1;
+    transition: color var(--t-estado);
   }
   .lista-grande a:hover .nome,
   .lista-grande a:focus-visible .nome {
     color: var(--link-hover);
+    font-style: italic;
   }
   .previa {
     display: none;
@@ -415,7 +479,9 @@ const jsonld = {
       top: 50%;
       width: 220px;
       height: auto;
-      transform: translateY(-50%);
+      border-radius: var(--raio-m);
+      box-shadow: var(--sombra);
+      transform: translateY(-50%) rotate(0deg);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -433,7 +499,10 @@ const jsonld = {
     margin-top: var(--s4);
   }
 
-  /* Como funciona: lista numerada de texto puro */
+  /* Como funciona: um painel de couro, passos separados por costura */
+  .como-painel {
+    padding: clamp(32px, 5vw, 72px);
+  }
   .passos {
     list-style: none;
     margin: 0;
@@ -447,18 +516,21 @@ const jsonld = {
     gap: var(--s3);
     align-items: start;
     padding-top: var(--s3);
-    border-top: 1px solid var(--divisao);
+    border-top: 2px dashed var(--costura-suave);
   }
   .passo-num {
-    font-size: var(--display-l);
-    font-weight: 800;
-    font-stretch: 68%;
+    font-size: clamp(40px, 5vw, 72px);
+    font-style: italic;
+    font-weight: 380;
     line-height: 0.85;
-    color: var(--texto-2);
-    min-width: 2ch;
+    color: var(--destaque);
+    min-width: 1.4ch;
   }
   .passos h3 {
     margin-bottom: var(--s1);
+  }
+  .passos .texto {
+    color: var(--texto-2);
   }
   @media (min-width: 900px) {
     .passos {
@@ -468,15 +540,10 @@ const jsonld = {
   }
 
   /* Sobre */
-  .sobre {
-    background: var(--grafite);
-    --texto-2: var(--cinza);
-    --divisao: #3a3a3a;
-  }
   .sobre-grade {
     display: grid;
     gap: var(--s5);
-    align-items: start;
+    align-items: center;
   }
   .sobre-grade > * {
     min-width: 0;
@@ -484,17 +551,13 @@ const jsonld = {
   .sobre-texto {
     display: grid;
     gap: var(--s3);
+    justify-items: start;
   }
   .sobre-foto {
     max-width: 420px;
   }
   @media (min-width: 900px) {
-    .sobre-foto {
-      max-width: none;
-    }
-  }
-  @media (min-width: 900px) {
-    /* Grade de 12 colunas: o texto ocupa 7, a foto começa na 8ª linha (DESIGN §4) */
+    /* Grade de 12 colunas: o texto ocupa 7, a foto começa na 8ª (DESIGN §4) */
     .sobre-grade {
       grid-template-columns: repeat(12, 1fr);
       column-gap: 24px;
@@ -504,18 +567,23 @@ const jsonld = {
     }
     .sobre-foto {
       grid-column: 8 / 13;
+      max-width: none;
     }
   }
 
-  /* Contato */
+  /* Contato: cartão de couro centralizado */
   .contato {
     display: grid;
     gap: var(--s4);
+    justify-items: center;
+    text-align: center;
+    padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
   }
-  .pausa {
-    margin-block: calc(var(--secao) / 2);
+  .contato .acoes {
+    justify-content: center;
   }
   .contato-apoio {
-    font-size: clamp(18px, 2vw, 24px);
+    font-size: clamp(18px, 2vw, 22px);
+    color: var(--texto-2);
   }
 </style>

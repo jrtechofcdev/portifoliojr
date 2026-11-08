@@ -24,3 +24,4 @@ src/generated/
 
 # Configuração local do Claude Code
 .claude/settings.local.json
+shots/
