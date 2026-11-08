@@ -1,0 +1,248 @@
+/* Tokens e base. Fonte de verdade: DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento). */
+@import '@fontsource-variable/archivo/wdth.css';
+
+:root {
+  /* §2 Paleta */
+  --carvao: #141414;
+  --grafite: #292929;
+  --papel: #f2eee6;
+  --cinza: #a8a39a;
+  --tinta: #5e5a54;
+  --verde: #00fca8;
+  --verde-escuro: #007a55;
+  --ciano: #1cdaff;
+
+  /* Papéis por tema (escuro é o padrão) */
+  --fundo: var(--carvao);
+  --texto: var(--papel);
+  --texto-2: var(--cinza);
+  --divisao: var(--grafite);
+  --link: var(--papel);
+  --link-hover: var(--ciano);
+  --foco: var(--verde);
+
+  /* §3 Tipografia */
+  --fonte: 'Archivo Variable', system-ui, sans-serif;
+  --display-xl: clamp(64px, 16vw, 220px);
+  --display-l: clamp(44px, 9vw, 120px);
+  --titulo: clamp(28px, 4vw, 44px);
+  --texto-base: 17px;
+  --legenda: 14px;
+
+  /* §4 Grid e ritmo (escala de 8 px) */
+  --margem: clamp(16px, 4vw, 56px);
+  --gutter: clamp(16px, 2vw, 24px);
+  --secao: clamp(96px, 14vw, 200px);
+  --medida: 65ch;
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
+
+  /* §7 Componentes */
+  --raio: 2px;
+  --alvo: 48px;
+  --barra: 56px;
+
+  /* §8 Movimento */
+  --t-estado: 150ms;
+  --t-foto: 200ms;
+  --t-dialogo: 180ms;
+
+  color-scheme: dark;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --texto-base: 18px;
+  }
+}
+
+/* Páginas de ensaio de luz diurna declaram tema: claro no manifesto */
+.tema-claro {
+  --fundo: var(--papel);
+  --texto: var(--carvao);
+  --texto-2: var(--tinta);
+  --divisao: #dcd6cb;
+  --link: var(--verde-escuro);
+  --link-hover: var(--carvao);
+  --foco: var(--verde-escuro);
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-estado: 0ms;
+    --t-foto: 0ms;
+    --t-dialogo: 0ms;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte);
+  font-size: var(--texto-base);
+  font-stretch: 100%;
+  font-weight: 400;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+img,
+picture,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+ol,
+ul {
+  margin: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--t-estado);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 2px;
+}
+
+/* Tipos */
+.display-xl,
+.display-l {
+  font-stretch: 68%;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.display-xl {
+  font-size: var(--display-xl);
+}
+
+.display-l {
+  font-size: var(--display-l);
+}
+
+.titulo {
+  font-size: var(--titulo);
+  font-stretch: 75%;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.legenda {
+  font-size: var(--legenda);
+  font-weight: 500;
+  color: var(--texto-2);
+}
+
+.texto {
+  max-width: var(--medida);
+}
+
+.texto strong {
+  font-weight: 600;
+}
+
+/* Botões (§7) */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--alvo);
+  padding: 0 var(--s3);
+  border-radius: var(--raio);
+  background: var(--verde);
+  color: var(--carvao);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--t-estado);
+}
+
+.botao:hover {
+  color: var(--carvao);
+  background: #5dffc6;
+}
+
+.botao:active {
+  background: #00d68f;
+}
+
+.botao-sec {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--alvo);
+  color: var(--texto);
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness var(--t-estado);
+}
+
+.botao-sec:hover {
+  color: var(--texto);
+  text-decoration-thickness: 3px;
+}
+
+/* Layout */
+.contido {
+  padding-inline: var(--margem);
+}
+
+.pular {
+  position: absolute;
+  left: var(--margem);
+  top: -100px;
+  z-index: 100;
+}
+
+.pular:focus {
+  top: var(--s1);
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

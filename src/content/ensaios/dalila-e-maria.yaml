@@ -1,0 +1,25 @@
+# Seleção: CURADORIA §4.2, só fotos de cor contida.
+nome: Dalila & Maria
+titulo: DALILA & MARIA
+categoria: ensaios
+rotulo: Ensaio externo
+cidade: null
+data: "2024-10-22"
+tema: claro
+autorizacao: pendente
+pasta: DM
+abertura: { arquivo: Dalila e Maria (29).jpg, foco: 50% 50% }
+capa: Dalila e Maria (29).jpg
+fotos:
+  - { arquivo: Dalila e Maria (29).jpg, alt: "Silhueta no lago ao pôr do sol" }
+  - { arquivo: Dalila e Maria (14).jpg, alt: "Sol refletido na água do lago" }
+  - { arquivo: Dalila e Maria (15).jpg, alt: "Ensaio no lago ao fim da tarde" }
+  - { arquivo: Dalila e Maria (56).jpg, alt: "Sorriso ao pôr do sol" }
+  - { arquivo: Dalila e Maria (7).jpg, alt: "Ensaio externo de Dalila e Maria" }
+  - { arquivo: Dalila e Maria (52).jpg, alt: "Dentro da água do lago" }
+  - { arquivo: Dalila e Maria (13).jpg, alt: "Retrato no azul do começo da noite" }
+  - { arquivo: Dalila e Maria (64).jpg, alt: "Olhos fechados sob luz suave" }
+  - { arquivo: Dalila e Maria (36).jpg, alt: "Dalila e Maria juntas" }
+  - { arquivo: Dalila e Maria (61).jpg, alt: "Ensaio externo de Dalila e Maria" }
+  - { arquivo: Dalila e Maria (49).jpg, alt: "Silhueta com vestido de organza" }
+  - { arquivo: Dalila e Maria (59).jpg, alt: "Ensaio externo de Dalila e Maria" }

@@ -1,0 +1,29 @@
+# Seleção: CURADORIA_E_INVENTARIO_DE_ASSETS.md §4.2. Textos alternativos em rascunho, revisar na Fase 6.3.
+nome: Sabrina
+titulo: SABRINA
+categoria: ensaios
+rotulo: Ensaio externo
+cidade: Bacabal
+data: "2025-08-17"
+tema: claro
+autorizacao: pendente
+pasta: SAB
+abertura: { arquivo: sabrina-20.png, foco: 50% 30% }
+capa: sabrina-20.png
+fotos:
+  - { arquivo: sabrina-01.png, alt: "Sabrina de corpo inteiro com vestido laranja sob céu azul" }
+  - { arquivo: sabrina-02.png, alt: "Sabrina em close, olhando para a câmera" }
+  - { arquivo: sabrina-22.png, alt: "Sabrina rindo com a mão no rosto" }
+  - { arquivo: sabrina-20.png, alt: "Retrato de Sabrina com os cachos em contraluz, olhar firme" }
+  - { arquivo: sabrina-05.png, alt: "Sabrina durante o ensaio externo em Bacabal" }
+  - { arquivo: sabrina-12.png, alt: "Retrato de Sabrina em preto e branco" }
+  - { arquivo: sabrina-16.png, alt: "Sabrina durante o ensaio externo em Bacabal" }
+  - { arquivo: sabrina-24.png, alt: "Sabrina de perfil segurando uma flor" }
+  - { arquivo: sabrina-29.png, alt: "Sabrina durante o ensaio externo em Bacabal" }
+  - { arquivo: sabrina-36.png, alt: "Rosto de Sabrina iluminado pela luz dourada do fim da tarde" }
+  - { arquivo: sabrina-40.png, alt: "Sabrina de óculos, vista de baixo para cima" }
+  - { arquivo: sabrina-43.png, alt: "Sabrina lendo um livro" }
+  - { arquivo: sabrina-44.png, alt: "Sabrina com um livro aberto nas mãos" }
+  - { arquivo: sabrina-49.png, alt: "Sabrina sobre o calçamento da rua" }
+  - { arquivo: sabrina-52.png, alt: "Sabrina durante o ensaio externo em Bacabal" }
+  - { arquivo: sabrina-53.png, alt: "Sabrina de costas, com prédios ao fundo" }

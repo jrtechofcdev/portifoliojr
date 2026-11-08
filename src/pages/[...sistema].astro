@@ -1,0 +1,135 @@
+---
+// Página de conferência do sistema visual (tarefa 2.3 do roadmap). Só existe no desenvolvimento:
+// em produção getStaticPaths não gera nenhuma rota.
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { ensaiosPublicaveis } from '../lib/fotos';
+
+export function getStaticPaths() {
+  return import.meta.env.DEV ? [{ params: { sistema: 'sistema' } }] : [];
+}
+
+const ensaios = await ensaiosPublicaveis();
+const cores = [
+  ['--carvao', '#141414'],
+  ['--grafite', '#292929'],
+  ['--papel', '#F2EEE6'],
+  ['--cinza', '#A8A39A'],
+  ['--tinta', '#5E5A54'],
+  ['--verde', '#00FCA8'],
+  ['--verde-escuro', '#007A55'],
+  ['--ciano', '#1CDAFF'],
+];
+---
+
+<Base titulo="Sistema visual | Jr_Tech_OFC (desenvolvimento)" descricao="Conferência de tokens, tipos e fotos.">
+  <div class="contido sistema">
+    <section>
+      <p class="legenda">Display XL · Archivo 68% · 800</p>
+      <p class="display-xl">Sabrina</p>
+    </section>
+    <section>
+      <p class="legenda">Display L</p>
+      <p class="display-l">Vamos marcar?</p>
+    </section>
+    <section>
+      <p class="legenda">Título</p>
+      <h2 class="titulo">Ensaios externos</h2>
+    </section>
+    <section class="texto">
+      <p class="legenda">Texto base · 17/18 px · entrelinha 1,55 · até 65 caracteres</p>
+      <p>
+        Você conta o que quer pelo WhatsApp: ensaio, evento, data e cidade. Combinamos lugar, horário de luz, roupa e o que
+        vai ser entregue. <strong>Destaque em 600.</strong> <a href="#cores">Link no texto</a>.
+      </p>
+    </section>
+    <section class="acoes">
+      <a class="botao" href="#cores">Chamar no WhatsApp</a>
+      <a class="botao-sec" href="#cores">Ver trabalhos</a>
+    </section>
+    <section id="cores" class="cores">
+      {
+        cores.map(([nome, hex]) => (
+          <div>
+            <span class="amostra" style={`background:${hex}`} />
+            <span class="legenda">
+              {nome} {hex}
+            </span>
+          </div>
+        ))
+      }
+    </section>
+  </div>
+
+  <div class="tema-claro claro contido">
+    <p class="display-l">Tema claro</p>
+    <p class="texto">Texto em <code>--carvao</code> sobre <code>--papel</code>, <a href="#cores">link em verde-escuro</a>.</p>
+    <p class="legenda">Legenda em --tinta</p>
+  </div>
+
+  <div class="contido sistema">
+    <h2 class="titulo">Fotos geradas ({ensaios.length} ensaios)</h2>
+    {
+      ensaios.map((e) => (
+        <section class="ensaio">
+          <p class="display-l">{e.data.titulo}</p>
+          <p class="legenda">
+            {e.data.rotulo} · {e.data.cidade ?? 'cidade pendente'} · {e.data.data} · tema {e.data.tema}
+          </p>
+          <div class="grade">
+            {e.data.fotos.map((f) => (
+              <Foto slug={e.id} arquivo={f.arquivo} alt={f.alt} sizes="(min-width: 768px) 25vw, 50vw" />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .sistema {
+    display: grid;
+    gap: var(--s6);
+    padding-block: var(--s6);
+  }
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s3);
+    align-items: center;
+  }
+  .cores {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--s2);
+  }
+  .amostra {
+    display: block;
+    height: 64px;
+    border-radius: var(--raio);
+    border: 1px solid var(--grafite);
+  }
+  .claro {
+    background: var(--fundo);
+    color: var(--texto);
+    display: grid;
+    gap: var(--s3);
+    padding-block: var(--s6);
+  }
+  .ensaio {
+    display: grid;
+    gap: var(--s2);
+  }
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--s1);
+    align-items: start;
+  }
+  @media (min-width: 768px) {
+    .grade {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

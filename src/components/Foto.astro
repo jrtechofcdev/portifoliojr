@@ -1,0 +1,75 @@
+---
+// Foto com AVIF, WebP e JPEG em srcset, LQIP e cor dominante enquanto carrega.
+// Proporção original sempre (DESIGN.md §5); recorte só com `recorte` (aberturas).
+import { dadosFoto } from '../lib/fotos';
+
+interface Props {
+  slug: string;
+  arquivo: string;
+  alt: string;
+  sizes: string;
+  prioridade?: boolean;
+  recorte?: string; // object-position, ex. "50% 30%"
+  class?: string;
+}
+
+const { slug, arquivo, alt, sizes, prioridade = false, recorte, class: classe } = Astro.props;
+const d = dadosFoto(slug, arquivo);
+---
+
+{
+  d && (
+    <picture
+      class:list={['foto', classe, { 'foto-recorte': recorte }]}
+      style={`--cor:${d.cor};--lqip:url(${d.lqip});${recorte ? `--foco:${recorte};` : ''}`}
+      data-pendente={d.autorizada ? undefined : ''}
+    >
+      <source type="image/avif" srcset={d.srcset.avif} sizes={sizes} />
+      <source type="image/webp" srcset={d.srcset.webp} sizes={sizes} />
+      <img
+        src={d.src}
+        srcset={d.srcset.jpg}
+        sizes={sizes}
+        width={d.width}
+        height={d.height}
+        alt={alt}
+        loading={prioridade ? 'eager' : 'lazy'}
+        fetchpriority={prioridade ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </picture>
+  )
+}
+
+<style>
+  .foto {
+    display: block;
+    position: relative;
+    background: var(--cor) var(--lqip) center / cover no-repeat;
+  }
+  .foto img {
+    width: 100%;
+    height: auto;
+  }
+  .foto-recorte,
+  .foto-recorte img {
+    height: 100%;
+  }
+  .foto-recorte img {
+    object-fit: cover;
+    object-position: var(--foco, 50% 50%);
+  }
+  /* Só aparece no desenvolvimento: no build de produção a foto pendente nem existe. */
+  .foto[data-pendente]::after {
+    content: 'autorização pendente';
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    background: #141414;
+    color: #f2eee6;
+    font-size: 12px;
+    font-weight: 600;
+  }
+</style>

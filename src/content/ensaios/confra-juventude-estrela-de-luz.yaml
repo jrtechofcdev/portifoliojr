@@ -1,0 +1,20 @@
+# Seleção: CURADORIA §4.4, sem a série do pedido de namoro (PENDENCIAS item 3).
+nome: Confra Juventude Estrela de Luz
+titulo: CONFRA JEL
+categoria: eventos
+rotulo: Evento gospel
+cidade: null
+data: "2024-12-16"
+tema: escuro
+autorizacao: pendente
+pasta: JEL
+abertura: { arquivo: IMG_1272.jpg, foco: 50% 40% }
+capa: IMG_1272.jpg
+fotos:
+  - { arquivo: IMG_1272.jpg, alt: "Jovens reagindo com alegria na confraternização" }
+  - { arquivo: IMG_1205.jpg, alt: "Mesa posta com taças" }
+  - { arquivo: IMG_1216.jpg, alt: "Painel com a palavra Gratidão e o símbolo da juventude" }
+  - { arquivo: IMG_1274.jpg, alt: "Jovens comemorando" }
+  - { arquivo: IMG_1388.jpg, alt: "Amigas juntas na confraternização" }
+  - { arquivo: IMG_1396.jpg, alt: "Detalhe de uma rosa azul" }
+  - { arquivo: IMG_1404.jpg, alt: "Mesa decorada da confraternização" }

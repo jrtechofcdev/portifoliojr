@@ -1,0 +1,120 @@
+# DESIGN.md: Jr_Tech_OFC Fotografia
+
+Direção visual para a implementação do portfólio. É a fonte de direção que o Anti-Slop exige (R-37) e a base do sistema da Taste Skill.
+Fundamentado na auditoria de 08/11/2026 (`AUDITORIA_VISUAL_E_INSTAGRAMS.md`, `CURADORIA_E_INVENTARIO_DE_ASSETS.md`). Siglas de pastas conforme a seção 2 da curadoria.
+
+**Leitura de design:** site de portfólio de fotógrafo de pessoas, para jovens e famílias de Imperatriz e Bacabal, em linguagem editorial escura com tipografia condensada. **Dial: ENERGY 2 / RHYTHM 2 / MOTION 1.**
+A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alterna fotos em sangria com blocos de texto curtos. O movimento se limita a transições e estados.
+
+---
+
+## 1. Conceito
+
+**"A foto fala primeiro."** Cada tela tem uma fotografia real como foco, e o resto se recolhe: texto curto, tipografia grande quando há algo a dizer, cor da marca só onde o visitante age.
+
+O motivo de identidade vem do próprio responsável: a capa `SAB/SabrinaCapa.png` usa o **nome da pessoa retratada em tipo condensado enorme, creme, sobre fundo quase preto**. O site repete esse gesto em cada ensaio. O título de uma página de ensaio é o primeiro nome da pessoa ou do casal, em escala de cartaz, e é o único elemento gráfico forte da página.
+
+**Atributos:** natural, próximo, cuidadoso, direto. Não: futurista, "tech", luxuoso, fofo.
+
+O nome "Jr_Tech_OFC" contém "Tech", mas o site é de fotografia de pessoas. Nada de linguagem de software, terminal, código, grade de pontos ou glow. [RECOMENDAÇÃO]
+
+## 2. Paleta e papéis
+
+| Token | Hex | Papel | Onde nunca usar |
+|---|---|---|---|
+| `--carvao` | `#141414` | fundo principal (home, índice, lightbox) | n/a |
+| `--grafite` | `#292929` | cor oficial da marca: superfícies secundárias, rodapé, divisões de bloco, fundo de placeholder de imagem | texto |
+| `--papel` | `#F2EEE6` | texto principal no escuro; **fundo claro** das páginas de ensaio de luz diurna (Sabrina, Dália, Marlieth) | n/a |
+| `--cinza` | `#A8A39A` | texto secundário no escuro (legendas, datas, locais) | texto longo sobre `--papel` |
+| `--tinta` | `#5E5A54` | texto secundário sobre `--papel` | fundo escuro |
+| `--verde` | `#00FCA8` | cor oficial: **um único papel de ação**, o botão WhatsApp/orçamento e o anel de foco | fundos grandes, títulos, ícones decorativos, sobre `--papel` |
+| `--verde-escuro` | `#007A55` | versão do verde para links e foco sobre `--papel` | fundo escuro |
+| `--ciano` | `#1CDAFF` | cor oficial: **só no símbolo do logo** e no estado de link visitado/hover no escuro | botões, fundos |
+
+Contrastes medidos com `antislop-human/contrast-check.py` (AA texto normal ≥ 4,5:1):
+`--papel`/`--carvao` 15,92 · `--cinza`/`--carvao` 7,34 · `--cinza`/`--grafite` 5,80 · `--verde`/`--carvao` 13,59 (e `--carvao` sobre `--verde` igual) · `--ciano`/`--carvao` 10,99 · `--papel`/`--grafite` 12,57 · `--tinta`/`--papel` 5,92 · `--verde-escuro`/`--papel` 4,64.
+
+Regras:
+- Verde e ciano juntos só no logo. **Sem degradê verde-ciano** fora do símbolo.
+- A cor da interface nunca encosta na foto: nada de moldura colorida, sobreposição tingida ou sombra verde.
+- Fundo claro ou escuro por ensaio: o ensaio declara `tema: claro | escuro` no manifesto. Escuro: SY (noite com flash), MCD, JEL, BO noturno. Claro: SAB, DAL, MP, DM (lago diurno).
+
+## 3. Tipografia
+
+- **Família única:** Archivo (variável, eixos de peso e largura, licença OFL, hospedada no próprio site via `@fontsource-variable/archivo`). Uma família só reduz peso e incoerência.
+- **Display:** Archivo, largura 62–75, peso 800, caixa alta, entrelinha 0,9, tracking -0,01em. Uso: nome do ensaio, frase de abertura, títulos de seção. Recria o gesto da `SabrinaCapa.png`.
+- **Texto:** Archivo, largura 100, peso 400; destaque em 600. Tamanho base 18 px (celular 17 px), entrelinha 1,55, até 65 caracteres por linha.
+- **Escala** (clamp fluido de 390 a 1440 px): display XL `clamp(64px, 16vw, 220px)` · display L `clamp(44px, 9vw, 120px)` · título `clamp(28px, 4vw, 44px)` · texto 18 · legenda 14 (mínimo, peso 500, `--cinza`).
+- Proibido: script ou caligrafia (como na capa de SY), monoespaçada decorativa, mais de 2 pesos visíveis na mesma tela, texto em degradê.
+
+## 4. Grid, largura e ritmo
+
+- Grid de 12 colunas no desktop, 6 no tablet, 4 no celular. Margem lateral `clamp(16px, 4vw, 56px)`. Gutter 16 a 24 px.
+- Largura de texto máxima de 65ch. As fotos podem ir de borda a borda.
+- Ritmo vertical em escala de 8 px. Entre seções: `clamp(96px, 14vw, 200px)`. Entre título e conteúdo: 32 a 48 px.
+- **Cada seção tem composição própria** (RHYTHM 2). Exemplo da home: abertura em sangria; três frentes em 3 colunas de alturas diferentes; destaque em foto única com texto ao lado; processo em lista numerada de texto puro; contato em tipo grande. Nunca três blocos iguais de "título + subtítulo + grade de cartões".
+
+## 5. Linguagem fotográfica
+
+- **Proporções originais preservadas.** Nunca forçar 1:1, nunca cortar cabeças. O acervo é majoritariamente vertical 2:3 (1366×2048, 2321×3480), e o layout é pensado para vertical: no desktop, verticais em pares ou ao lado do texto.
+- Recorte permitido só na abertura (hero), com ponto focal definido por foto (`objectPosition` no manifesto). As três candidatas a hero são verticais (1366×2048). Por isso, no desktop a abertura é **dividida**: foto vertical em altura total ocupando cerca de 45% da largura, e frase e botão sobre `--carvao` no restante. No celular a foto vai em sangria com o texto abaixo. Exemplo: `SY/IMG_1081.jpg` com foco no rosto, no terço superior.
+- Horizontais disponíveis para momentos de sangria: `SY/IMG_0957.jpg` (cabelo em leque com pétalas), `DM/Dalila e Maria (3).jpg`, `BO/Wedding Anniversary (35).jpg`.
+- **Sem filtros** aplicados pelo site (nada de sépia, P&B automático ou overlay). A edição é do fotógrafo.
+- Legenda só quando informa algo: local e data ("Bacabal, agosto de 2025"). Nunca descrição poética.
+- Ordem dentro do ensaio: abertura forte, depois variação de plano (aberto, médio, detalhe) e fecho com uma imagem calma. Exemplo SAB: `sabrina-01` (aberto) → `-02` (close) → `-22` (gesto espontâneo) → `-12` (P&B como pausa) → `-44` (série do livro) → `-53` (costas, fecho).
+- Fotos de cor saturada (parte de DM) ficam fora, para que o conjunto pareça de um mesmo autor.
+
+## 6. Galerias
+
+- Página de ensaio: sequência editorial de uma ou duas colunas, alternando vertical inteira, par de verticais e horizontal em sangria. **Não usar masonry automático**, porque a ordem importa.
+- Índice `/trabalhos`: cada ensaio é **uma foto de capa e o nome em display L**, com categoria e data em legenda. Sem cartões com borda ou sombra; o hover só troca a opacidade do texto.
+- Filtro por categoria (Ensaios, Casais, Eventos e celebrações) com botões de texto e `aria-pressed`; funciona sem JS mostrando tudo.
+- **Visualização ampliada:** `<dialog>` nativo com fundo `--carvao` a 96%; setas, contador "4 / 16", fechar com Esc, navegar com ← →, deslizar no celular, foco preso no diálogo e devolvido à miniatura ao fechar. Carrega a versão de 1600 a 2400 px só ao abrir.
+
+## 7. Componentes
+
+- **Botão primário (um por tela):** fundo `--verde`, texto `--carvao` 600, altura 48 px, raio 2 px (quase reto, ecoando os paralelogramos do símbolo). Texto de ação concreta: "Chamar no WhatsApp", "Pedir orçamento".
+- **Botão secundário:** texto `--papel` com sublinhado de 1 px que engrossa no hover. Sem contorno de pílula.
+- **Links no texto:** sublinhados sempre (não só no hover). No escuro, `--papel`, com hover em `--ciano`; no claro, `--verde-escuro`.
+- **Navegação:** barra fixa fina (56 px) com logo à esquerda, "Trabalhos · Sobre · Contato" à direita e WhatsApp como único botão verde. No celular: logo e botão "Menu" (texto, não ícone sozinho) abrindo painel em tela cheia. A barra ganha fundo `--carvao` só após rolar.
+- **Barra de contato no celular:** botão WhatsApp fixo no rodapé da tela nas páginas de ensaio, 56 px, que some quando o rodapé real aparece.
+- **Formulário:** não há na v1.
+- Raio padrão 2 px em tudo. Sem sombra (no escuro, separar com `--grafite`).
+
+## 8. Movimento (MOTION 1)
+
+- Permitido: fade de 200 ms nas fotos ao carregar (do LQIP para a imagem); transição de 150 ms em hover e foco; abertura do lightbox com fade e escala 0,98→1 em 180 ms.
+- Proibido: parallax, scroll-jacking, reveal de cada bloco ao rolar, cursor customizado, carrossel automático, contadores animados, texto digitando.
+- `prefers-reduced-motion: reduce` desliga tudo, exceto mudanças de estado instantâneas.
+
+## 9. Responsividade
+
+- Mobile-first, testado em 390, 768, 1024 e 1440 px (larguras da Taste Skill).
+- Celular: uma coluna, fotos em 100% da largura útil, display XL com no máximo 2 linhas, alvos de toque ≥ 44 px, nada de rolagem horizontal.
+- Imagens com `srcset` e `sizes` reais; a abertura com `fetchpriority="high"` e o resto com `loading="lazy"`.
+- A abertura no celular usa a mesma foto com ponto focal ajustado, não uma foto diferente.
+
+## 10. Acessibilidade e estados
+
+- Contraste AA mínimo em todo texto (seção 2).
+- Foco visível: anel de 2 px `--verde` com 2 px de afastamento no escuro, `--verde-escuro` no claro. Nunca `outline: none` sem substituto.
+- Ordem de teclado igual à visual; link "Pular para o conteúdo".
+- `alt` descritivo e factual em cada foto ("Sabrina sentada no banco da praça, vestido laranja, fim de tarde"), sem "imagem de".
+- Estados: hover, foco, ativo, visitado (links), carregando (cor dominante da foto) e erro de imagem (bloco `--grafite` com o nome do ensaio).
+- Idioma `pt-BR`, títulos de página únicos, landmarks (`header`, `nav`, `main`, `footer`).
+
+## 11. Proibido neste site
+
+Degradê roxo-azul ou verde-ciano fora do logo · glassmorphism · cartões com borda e sombra para cada item · ícones em quadrado colorido · brilho ou neon nos verdes · grade de pontos ou linhas no fundo · emoji na interface · texto com travessão · números inventados ("+500 clientes", "100% satisfação") · depoimentos sem fonte real · fotos de banco, stand-ins ou IA · mockups de celular · lista de equipamentos como argumento de venda · preços e nomes de pacote não confirmados · arte de Natal ou peças do Canva como conteúdo de portfólio · carrossel automático no topo.
+
+## 12. Exemplos concretos do acervo
+
+| Situação | Arquivo | Tratamento |
+|---|---|---|
+| Abertura da home | `SY/IMG_1081.jpg` (vertical) | desktop: foto em altura total à direita, frase em display XL `--papel` à esquerda sobre `--carvao`, botão verde abaixo; celular: foto em sangria, frase e botão abaixo |
+| Página Sabrina | `SAB/sabrina-20.png` (abertura), tema claro | "SABRINA" em display XL `--carvao` sobre `--papel`, foto ao lado (desktop) ou abaixo (celular) |
+| Frente "Casais" na home | `MP/Foto (18).jpg` | vertical, metade da largura, legenda "Marlieth e Paulo, ensaio gestante, 2026" |
+| Frente "Eventos" na home | `MCD/IMG_0690.jpg` | vertical, emoção do louvor; legenda com a congregação só se autorizado |
+| Pausa entre seções | `SY/IMG_0957.jpg` (horizontal) | sangria total, sem texto |
+| Silhueta no lago | `DM/Dalila e Maria (29).jpg` (vertical) | abertura da página Dalila & Maria, ou par com `(14).jpg` |
+| Detalhe de evento | `JEL/IMG_1392.jpg` ou `MP/Foto (6).jpg` | foto pequena ao lado de texto curto sobre o processo |

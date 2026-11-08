@@ -1,0 +1,29 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  tema?: 'claro' | 'escuro';
+}
+
+const { titulo, descricao, tema = 'escuro' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descricao} />
+    <meta name="theme-color" content={tema === 'claro' ? '#F2EEE6' : '#141414'} />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class:list={{ 'tema-claro': tema === 'claro' }}>
+    <a class="pular botao" href="#conteudo">Pular para o conteúdo</a>
+    <main id="conteudo">
+      <slot />
+    </main>
+  </body>
+</html>
