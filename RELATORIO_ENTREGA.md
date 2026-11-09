@@ -121,3 +121,23 @@ Três rodadas. Corrigido no caminho: rolagem lateral de 1024 a 1280 px, anel de 
 3. Logo em arquivo, para trocar o nome em texto e o favicon provisório.
 4. Testar o WhatsApp num celular real.
 5. Revisar os textos-rascunho do site e os textos alternativos das 85 fotos (escritos a partir das fotos, sem nomes de quem é quem em Sara & Yasmin e Dalila & Maria).
+
+
+---
+
+## Revisão de 09/11/2026: álbum de couro e curadoria
+
+**O que mudou**
+- Visual "álbum de couro" (`DESIGN.md` §0). A home abre com o álbum fechado; cada amostra tem o próprio álbum de folhear (`src/components/Album.astro`, capa em `CapaAlbum.astro`). `/trabalhos` virou uma estante de álbuns.
+- Página `/curadoria`, só no desenvolvimento: as 1.335 fotos das 16 pastas, com estrela (entra no álbum) e casinha (capa). A seleção fica em `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`.
+- Autorizações confirmadas pelo responsável: os 8 manifestos estão com `autorizacao: sim`.
+
+**Testes**
+- Build de produção: 85 fotos, 1.118 arquivos em `dist/fotos`, 0 fora da lista (`verificar-dist` PASS); `/curadoria` não existe em `dist/`. `astro check`: 0 erros.
+- Interação (CDP): 22/22 PASS, sem rolagem lateral em 7 páginas × 6 larguras. Álbum: seta do teclado vira, contador, último lado desativa o botão, troca de modo duplo/simples mantém a página.
+- Curadoria: marcar, desmarcar, ver grande e "Aplicar no site" testados pela API do servidor de desenvolvimento.
+- Originais: 1.341 arquivos com SHA-1 idêntico ao de 08/11/2026.
+
+**Gate da Taste Skill:** `GATE: OPEN 25 (rounds used up)` (rodada 1: 46 FAILs).
+Waivers (5): `phone-number` ×2 (WhatsApp comercial dado no briefing), `moment-none` (o momento é a virada de página por clique, que o verificador não reconhece), `hero-fold` (no celular o álbum fica logo abaixo do título; h1 e botão na primeira tela), `button-styles` (o verde-escuro do tema claro é a mesma forma de botão).
+FAILs abertos: `section-height` 5, `one-section` 4, `one-heading` 1, `sparse` 1 (regra de uma tela por seção, contrária ao ritmo do `DESIGN.md`); `container-edges` 8, `row-lines` 2, `split-pair` 1, `edge-left` 1 (painéis de couro com recuo interno e rodapé em duas colunas); `copy-headings` 1 (nomes das etapas de "Como funciona"); `hidden-content` 1 (o botão Voltar some na capa, onde não há para onde voltar).

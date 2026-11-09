@@ -19,6 +19,18 @@ Feito com [Astro](https://astro.build) (site estático, sem servidor). As fotos 
 
 A primeira geração de fotos demora (cerca de 20 minutos para as 85 fotos atuais). Depois ela fica guardada em `.cache/fotos/` e leva segundos.
 
+## Escolher as fotos: estrela e casinha
+
+1. Rode `npm run dev` e abra http://localhost:4321/curadoria (essa página só existe no seu computador, nunca vai para o site publicado).
+2. Escolha a amostra (pasta) no alto. Aparecem **todas** as fotos da pasta.
+3. **★ Estrela:** a foto entra no álbum daquela amostra. **⌂ Casinha:** a capa da amostra (uma por amostra).
+4. Clique na foto para ver grande. No modo grande: `E` marca estrela, `C` marca casinha, `←` e `→` trocam de foto.
+5. Cada clique fica salvo na hora em `src/data/curadoria.json` e, em texto fácil de ler, em `FOTOS_ESCOLHIDAS.txt`.
+6. Clique em **Aplicar no site**. A amostra aparece no portfólio quando tem 1 casinha e pelo menos 4 estrelas.
+
+As fotos novas entram com um texto alternativo provisório (marcado `# alt a revisar` no arquivo do ensaio); depois ele é trocado por uma descrição de verdade.
+Na primeira vez numa máquina nova, gere as miniaturas: `node scripts/miniaturas.mjs` (cerca de 5 minutos).
+
 ## Como liberar um ensaio para publicação
 
 Cada ensaio tem um arquivo em `src/content/ensaios/`, por exemplo `sabrina.yaml`. Quando a pessoa autorizar o uso das fotos:

@@ -1,23 +1,24 @@
-# Seleção: CURADORIA §4.3.
-nome: Marlieth & Paulo
-titulo: MARLIETH & PAULO
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Marlieth & Paulo"
+titulo: "MARLIETH & PAULO"
 categoria: casais
-rotulo: Ensaio gestante
+rotulo: "Ensaio gestante"
 cidade: null
 data: "2026-03-21"
 tema: claro
-autorizacao: pendente
+autorizacao: sim
 pasta: MP
-abertura: { arquivo: Foto (18).jpg, foco: 50% 35% }
-capa: Foto (18).jpg
+abertura: { arquivo: "Foto (18).jpg", foco: 50% 35% }
+capa: "Foto (18).jpg"
 fotos:
-  - { arquivo: Foto (18).jpg, alt: "Marlieth e Paulo abraçados, rosto colado" }
-  - { arquivo: Foto (28).jpg, alt: "O casal encostado numa árvore" }
-  - { arquivo: Foto (5).jpg, alt: "Marlieth e Paulo se beijando" }
-  - { arquivo: Foto (26).jpg, alt: "O casal sentado lado a lado" }
-  - { arquivo: Foto (6).jpg, alt: "Mãos do casal segurando um sapatinho de bebê" }
-  - { arquivo: Foto (13).jpg, alt: "Marlieth sentada, sozinha" }
-  - { arquivo: Foto (3).jpg, alt: "Marlieth com um livro, prédios ao fundo" }
-  - { arquivo: Foto (9).jpg, alt: "Marlieth encostada no ombro de Paulo, a mão sobre a barriga" }
-  - { arquivo: Foto (27).jpg, alt: "Varal com roupinhas de bebê" }
-  - { arquivo: Foto (24).jpg, alt: "Marlieth com um ursinho de pelúcia" }
+  - { arquivo: "Foto (18).jpg", alt: "Marlieth e Paulo abraçados, rosto colado" }
+  - { arquivo: "Foto (3).jpg", alt: "Marlieth com um livro, prédios ao fundo" }
+  - { arquivo: "Foto (5).jpg", alt: "Marlieth e Paulo se beijando" }
+  - { arquivo: "Foto (6).jpg", alt: "Mãos do casal segurando um sapatinho de bebê" }
+  - { arquivo: "Foto (9).jpg", alt: "Marlieth encostada no ombro de Paulo, a mão sobre a barriga" }
+  - { arquivo: "Foto (13).jpg", alt: "Marlieth sentada, sozinha" }
+  - { arquivo: "Foto (24).jpg", alt: "Marlieth com um ursinho de pelúcia" }
+  - { arquivo: "Foto (26).jpg", alt: "O casal sentado lado a lado" }
+  - { arquivo: "Foto (27).jpg", alt: "Varal com roupinhas de bebê" }
+  - { arquivo: "Foto (28).jpg", alt: "O casal encostado numa árvore" }

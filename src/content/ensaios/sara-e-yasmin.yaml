@@ -1,29 +1,30 @@
-# Seleção: CURADORIA §4.2. Cidade pendente (PENDENCIAS item 13).
-nome: Sara & Yasmin
-titulo: SARA & YASMIN
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Sara & Yasmin"
+titulo: "SARA & YASMIN"
 categoria: ensaios
-rotulo: Ensaio externo
+rotulo: "Ensaio externo"
 cidade: null
 data: "2026-10-18"
 tema: escuro
-autorizacao: pendente
+autorizacao: sim
 pasta: SY
-abertura: { arquivo: IMG_1081.jpg, foco: 50% 25% }
-capa: IMG_1081.jpg
+abertura: { arquivo: "IMG_1081.jpg", foco: 50% 25% }
+capa: "IMG_1081.jpg"
 fotos:
-  - { arquivo: IMG_1081.jpg, alt: "Retrato noturno com flash sob céu de tempestade, olhar direto para a câmera" }
-  - { arquivo: IMG_0725.jpg, alt: "Sorriso na luz de fim de tarde" }
-  - { arquivo: IMG_0787.jpg, alt: "De costas, com vestido floral" }
-  - { arquivo: IMG_0808.jpg, alt: "Vestido preto contra o céu" }
-  - { arquivo: IMG_0866.jpg, alt: "Retrato diante de um muro branco" }
-  - { arquivo: IMG_0906.jpg, alt: "Sorriso de lado diante de uma parede branca, vestido preto" }
-  - { arquivo: IMG_0914.jpg, alt: "Sentada, sorrindo, vestido preto de um ombro só" }
-  - { arquivo: IMG_0957.jpg, alt: "Deitada no gramado, cabelo aberto em leque com pétalas, vista de cima" }
-  - { arquivo: IMG_0994.jpg, alt: "Cabelo arrumado em forma de coração" }
-  - { arquivo: IMG_1031.jpg, alt: "Vestido preto ao entardecer, cabelo longo sobre o ombro" }
-  - { arquivo: IMG_1032.jpg, alt: "Sorriso largo com vestido estampado de flores vermelhas, fim de tarde" }
-  - { arquivo: IMG_1050.jpg, alt: "Sorriso por cima do ombro, vestido de flores vermelhas" }
-  - { arquivo: IMG_1057.jpg, alt: "Olhar por cima do ombro" }
-  - { arquivo: IMG_1072.jpg, alt: "Corpo inteiro de vestido preto, descalça no asfalto molhado, céu escuro" }
-  - { arquivo: IMG_1077.jpg, alt: "De costas, olhando por cima do ombro, vestido preto com saia transparente" }
-  - { arquivo: IMG_1084.jpg, alt: "Retrato noturno com flash sob céu escuro" }
+  - { arquivo: "IMG_1081.jpg", alt: "Retrato noturno com flash sob céu de tempestade, olhar direto para a câmera" }
+  - { arquivo: "IMG_0725.jpg", alt: "Sorriso na luz de fim de tarde" }
+  - { arquivo: "IMG_0787.jpg", alt: "De costas, com vestido floral" }
+  - { arquivo: "IMG_0808.jpg", alt: "Vestido preto contra o céu" }
+  - { arquivo: "IMG_0866.jpg", alt: "Retrato diante de um muro branco" }
+  - { arquivo: "IMG_0906.jpg", alt: "Sorriso de lado diante de uma parede branca, vestido preto" }
+  - { arquivo: "IMG_0914.jpg", alt: "Sentada, sorrindo, vestido preto de um ombro só" }
+  - { arquivo: "IMG_0957.jpg", alt: "Deitada no gramado, cabelo aberto em leque com pétalas, vista de cima" }
+  - { arquivo: "IMG_0994.jpg", alt: "Cabelo arrumado em forma de coração" }
+  - { arquivo: "IMG_1031.jpg", alt: "Vestido preto ao entardecer, cabelo longo sobre o ombro" }
+  - { arquivo: "IMG_1032.jpg", alt: "Sorriso largo com vestido estampado de flores vermelhas, fim de tarde" }
+  - { arquivo: "IMG_1050.jpg", alt: "Sorriso por cima do ombro, vestido de flores vermelhas" }
+  - { arquivo: "IMG_1057.jpg", alt: "Olhar por cima do ombro" }
+  - { arquivo: "IMG_1072.jpg", alt: "Corpo inteiro de vestido preto, descalça no asfalto molhado, céu escuro" }
+  - { arquivo: "IMG_1077.jpg", alt: "De costas, olhando por cima do ombro, vestido preto com saia transparente" }
+  - { arquivo: "IMG_1084.jpg", alt: "Retrato noturno com flash sob céu escuro" }

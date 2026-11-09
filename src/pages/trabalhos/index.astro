@@ -1,8 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Foto from '../../components/Foto.astro';
-import { ensaiosPublicaveis } from '../../lib/fotos';
-import { CATEGORIAS, linkWhatsApp, type Categoria } from '../../data/site';
+import CapaAlbum from '../../components/CapaAlbum.astro';
+import { capaDe, ensaiosPublicaveis } from '../../lib/fotos';
+import { CATEGORIAS, linkWhatsApp, site, type Categoria } from '../../data/site';
 
 const ensaios = await ensaiosPublicaveis();
 const usadas = new Set(ensaios.map((e) => e.data.categoria));
@@ -36,20 +36,23 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
 
     <ul class="lista" data-lista>
       {
-        ensaios.map((e, i) => {
-          const alt = e.data.fotos.find((f) => f.arquivo === e.data.capa)!.alt;
-          return (
-            <li class="couro" data-categoria={e.data.categoria}>
-              <a href={`/trabalhos/${e.id}`}>
-                <Foto slug={e.id} arquivo={e.data.capa} alt={alt} sizes="(min-width: 900px) 45vw, 100vw" prioridade={i === 0} />
-                <span class="nome serifa">{e.data.nome}</span>
-                <span class="legenda">
-                  {[e.data.rotulo, e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · ')}
-                </span>
-              </a>
-            </li>
-          );
-        })
+        ensaios.map((e, i) => (
+          <li data-categoria={e.data.categoria}>
+            <a href={`/trabalhos/${e.id}`} aria-label={`${e.data.nome}: ${e.data.rotulo}, ${e.data.data.slice(0, 4)}`}>
+              <span class="livro">
+                <CapaAlbum
+                  foto={capaDe(e)}
+                  titulo={e.data.nome}
+                  sobre={site.marca}
+                  rodape={[e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · ')}
+                  sizes="(min-width: 1100px) 26vw, (min-width: 640px) 44vw, 88vw"
+                  prioridade={i === 0}
+                />
+              </span>
+              <span class="legenda">{e.data.rotulo}</span>
+            </a>
+          </li>
+        ))
       }
     </ul>
     <p class="aviso-vazio texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
@@ -135,53 +138,46 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     border-style: solid;
     border-color: var(--costura);
   }
+  /* Estante de álbuns: cada trabalho é um álbum fechado */
   .lista {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    gap: var(--s6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--s6) var(--s5);
   }
   .lista li[hidden] {
     display: none;
   }
   .lista li {
     min-width: 0;
-    padding: 16px;
-    transition: transform var(--t-estado) var(--curva);
-  }
-  .lista li:hover {
-    transform: translateY(-2px);
   }
   .lista a {
     display: grid;
-    gap: var(--s1);
+    gap: var(--s2);
     color: var(--texto);
     text-decoration: none;
   }
-  .nome {
-    margin-top: var(--s2);
-    padding-inline: var(--s2);
-    font-size: var(--display-l);
-    line-height: 1;
-    transition: color var(--t-estado);
+  .livro {
+    display: block;
+    aspect-ratio: 2 / 3;
+    border-radius: 4px 12px 12px 4px;
+    overflow: hidden;
+    /* Miolo do álbum aparecendo pela borda */
+    box-shadow:
+      5px 5px 0 -1px #e9e1d2,
+      6px 6px 0 -1px #cfc5b3,
+      0 30px 50px -22px rgb(0 0 0 / 0.75);
+    transition:
+      transform var(--t-estado) var(--curva),
+      box-shadow var(--t-estado);
+  }
+  .lista a:hover .livro {
+    transform: translateY(-4px);
   }
   .lista .legenda {
-    padding: 0 var(--s2) var(--s2);
-  }
-  .lista a:hover .nome {
-    color: var(--link-hover);
-    font-style: italic;
-  }
-  @media (min-width: 900px) {
-    .lista {
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--gutter);
-      align-items: start;
-    }
-    .lista li:nth-child(even) {
-      margin-top: 120px;
-    }
+    text-align: center;
   }
   .cta {
     display: grid;

@@ -35,14 +35,18 @@ export function fotosDoEnsaio(e: Ensaio): FotoEnsaio[] {
   });
 }
 
-/** Uma foto específica de um ensaio, com o texto alternativo do manifesto. */
+/** Uma foto específica de um ensaio, com o texto alternativo do manifesto.
+ *  Devolve null se o ensaio ou a foto saíram da seleção (página /curadoria) ou não entram neste build. */
 export async function fotoDe(slug: string, arquivo: string): Promise<FotoEnsaio | null> {
   const e = await getEntry('ensaios', slug);
-  if (!e) throw new Error(`ensaio inexistente: ${slug}`);
-  const f = e.data.fotos.find((x) => x.arquivo === arquivo);
-  if (!f) throw new Error(`foto fora do manifesto de ${slug}: ${arquivo}`);
-  const dados = dadosFoto(slug, arquivo);
-  return dados ? { ...f, slug, dados } : null;
+  const f = e?.data.fotos.find((x) => x.arquivo === arquivo);
+  const dados = f ? dadosFoto(slug, arquivo) : null;
+  return f && dados ? { ...f, slug, dados } : null;
+}
+
+/** A capa (casinha) de um ensaio, pronta para o componente Foto. */
+export function capaDe(e: Ensaio): FotoEnsaio | null {
+  return fotosDoEnsaio(e).find((f) => f.arquivo === e.data.capa) ?? null;
 }
 
 /** Ensaios com a capa e a abertura publicáveis, do mais recente ao mais antigo. */

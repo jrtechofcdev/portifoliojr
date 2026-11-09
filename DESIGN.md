@@ -8,6 +8,19 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0. Revisão de 09/11/2026: álbum de couro (vale sobre qualquer item abaixo que a contradiga)
+
+Pedido do responsável: "luxo com estética confortável", "couro com as cores da marca" e, para quem chega pelo link do Instagram, "como se tivesse folheado um álbum de luxo". O site é o **portfólio** da marca, não o site institucional.
+
+- **Conceito:** o site é um álbum de fotografia de luxo. A home abre com o álbum fechado; cada página dupla é uma amostra (capa à esquerda, nome e duas fotos à direita). Cada amostra tem o próprio álbum, que se folheia.
+- **Materiais:** fundo em couro grafite puxado para o verde (`--couro #121b18`, painel `#1a2723`), grão gerado por `scripts/couro.mjs` (`public/couro.webp`, 4 KB, aplicado com `overlay`). Ensaios de luz do dia usam couro natural creme (`#efe6d6`). Páginas internas em papel creme.
+- **Costura** tracejada no verde da marca em painéis, capas, divisórias e no botão. **Hot stamping** verde-ciano (as cores do símbolo) só no nome gravado nas capas.
+- **Tipografia:** títulos em Fraunces (serifa variável, eixo SOFT 100) com uma palavra em itálico na cor da marca; texto em Archivo. Sai o caixa-alta condensado.
+- **Formas:** nada de canto reto. Botões em pílula, fotos com raio de 14 a 20 px, painéis com 22 a 32 px.
+- **Movimento:** a virada de página (0,9 s, só por clique, tecla ou deslize, nunca ligada à rolagem) é o momento do site. Com `prefers-reduced-motion` a página troca sem animação.
+- **Curadoria:** as fotos são escolhidas pelo fotógrafo na página `/curadoria` (estrela = entra no álbum, casinha = capa). Ver `README.md`.
+- Deixam de valer: §1 "Não: luxuoso", §3 família única e caixa alta, §6 "sem cartões", §7 raio 2 px e "sem sombra", §11 "cartões com borda e sombra" e "degradê verde-ciano fora do logo" (o hot stamping usa as cores do logo).
+
 ## 1. Conceito
 
 **"A foto fala primeiro."** Cada tela tem uma fotografia real como foco, e o resto se recolhe: texto curto, tipografia grande quando há algo a dizer, cor da marca só onde o visitante age.

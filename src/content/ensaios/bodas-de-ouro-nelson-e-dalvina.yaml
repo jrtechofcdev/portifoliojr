@@ -1,23 +1,24 @@
-# Seleção: CURADORIA §4.4. Fotos com crianças exigem autorização dos responsáveis.
-nome: Bodas de Ouro de Nelson e Dalvina
-titulo: BODAS DE OURO
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Bodas de Ouro de Nelson e Dalvina"
+titulo: "BODAS DE OURO"
 categoria: eventos
-rotulo: Celebração
+rotulo: "Celebração"
 cidade: null
 data: "2024-10-19"
 tema: escuro
-autorizacao: pendente
+autorizacao: sim
 pasta: BO
-abertura: { arquivo: Wedding Anniversary (20).jpg, foco: 50% 50% }
-capa: Wedding Anniversary (20).jpg
+abertura: { arquivo: "Wedding Anniversary (20).jpg", foco: 50% 50% }
+capa: "Wedding Anniversary (20).jpg"
 fotos:
-  - { arquivo: Wedding Anniversary (20).jpg, alt: "Nelson e Dalvina caminhando de mãos dadas" }
-  - { arquivo: Wedding Anniversary (3).jpg, alt: "Letreiro com o número 50" }
-  - { arquivo: Wedding Anniversary (29).jpg, alt: "Entrada do casal na celebração" }
-  - { arquivo: Wedding Anniversary (21).jpg, alt: "Pastor durante o culto de bodas" }
-  - { arquivo: Wedding Anniversary (102).jpg, alt: "Louvor durante a celebração" }
-  - { arquivo: Wedding Anniversary (32).jpg, alt: "Nelson e Dalvina lado a lado à noite, convidados ao fundo" }
-  - { arquivo: Wedding Anniversary (40).jpg, alt: "Nelson e Dalvina de mãos dadas, frente a frente" }
-  - { arquivo: Wedding Anniversary (214).jpg, alt: "Casal jovem da família na festa" }
-  - { arquivo: Breakfast & Lunch (13).jpg, alt: "Almoço comunitário da celebração" }
-  - { arquivo: Breakfast & Lunch (18).jpg, alt: "Sorriso ao servir o almoço" }
+  - { arquivo: "Wedding Anniversary (20).jpg", alt: "Nelson e Dalvina caminhando de mãos dadas" }
+  - { arquivo: "Breakfast & Lunch (13).jpg", alt: "Almoço comunitário da celebração" }
+  - { arquivo: "Breakfast & Lunch (18).jpg", alt: "Sorriso ao servir o almoço" }
+  - { arquivo: "Wedding Anniversary (3).jpg", alt: "Letreiro com o número 50" }
+  - { arquivo: "Wedding Anniversary (21).jpg", alt: "Pastor durante o culto de bodas" }
+  - { arquivo: "Wedding Anniversary (29).jpg", alt: "Entrada do casal na celebração" }
+  - { arquivo: "Wedding Anniversary (32).jpg", alt: "Nelson e Dalvina lado a lado à noite, convidados ao fundo" }
+  - { arquivo: "Wedding Anniversary (40).jpg", alt: "Nelson e Dalvina de mãos dadas, frente a frente" }
+  - { arquivo: "Wedding Anniversary (102).jpg", alt: "Louvor durante a celebração" }
+  - { arquivo: "Wedding Anniversary (214).jpg", alt: "Casal jovem da família na festa" }

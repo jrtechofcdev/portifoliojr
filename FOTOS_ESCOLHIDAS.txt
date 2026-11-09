@@ -1,0 +1,113 @@
+FOTOS ESCOLHIDAS NA PÁGINA /curadoria
+Gerado automaticamente a cada clique. Não edite à mão: use a página /curadoria (npm run dev).
+Atualizado em 09/11/2026, 10:48:28
+Cada amostra entra no site com 1 capa (casinha) e pelo menos 4 estrelas.
+
+== BO: 💍💛💐📖 Bodas de Ouro - Nelson e Dalvina - 19_10_2024
+   ENTRA NO SITE · 10 com estrela · capa: Wedding Anniversary (20).jpg
+     ★ Breakfast & Lunch (13).jpg
+     ★ Breakfast & Lunch (18).jpg
+     ★ Wedding Anniversary (3).jpg
+   ⌂ ★ Wedding Anniversary (20).jpg
+     ★ Wedding Anniversary (21).jpg
+     ★ Wedding Anniversary (29).jpg
+     ★ Wedding Anniversary (32).jpg
+     ★ Wedding Anniversary (40).jpg
+     ★ Wedding Anniversary (102).jpg
+     ★ Wedding Anniversary (214).jpg
+
+== DAL: 📸🖼️ Ensaio Fotográfico - Dália - 21_10_2024
+   ENTRA NO SITE · 6 com estrela · capa: Dalila (3).jpg
+     ★ Dalila (1).jpg
+   ⌂ ★ Dalila (3).jpg
+     ★ Dalila (9).jpg
+     ★ Dalila (11).jpg
+     ★ Dalila (12).jpg
+     ★ Dalila (16).jpg
+
+== DM: 📸⛱️ Ensaio fotográfico - Dalila e Maria - 22_10_2024
+   ENTRA NO SITE · 12 com estrela · capa: Dalila e Maria (29).jpg
+     ★ Dalila e Maria (7).jpg
+     ★ Dalila e Maria (13).jpg
+     ★ Dalila e Maria (14).jpg
+     ★ Dalila e Maria (15).jpg
+   ⌂ ★ Dalila e Maria (29).jpg
+     ★ Dalila e Maria (36).jpg
+     ★ Dalila e Maria (49).jpg
+     ★ Dalila e Maria (52).jpg
+     ★ Dalila e Maria (56).jpg
+     ★ Dalila e Maria (59).jpg
+     ★ Dalila e Maria (61).jpg
+     ★ Dalila e Maria (64).jpg
+
+== JEL: 📸✨🎊🎉 Confraternização Juventude JEL - 16_12_2024
+   ENTRA NO SITE · 7 com estrela · capa: IMG_1272.jpg
+     ★ IMG_1205.jpg
+     ★ IMG_1216.jpg
+   ⌂ ★ IMG_1272.jpg
+     ★ IMG_1274.jpg
+     ★ IMG_1388.jpg
+     ★ IMG_1396.jpg
+     ★ IMG_1404.jpg
+
+== MCD: 🌅📖✨🙇🏻‍♀️ Manhã Com Deus - Cong_ Maanaim - 15_12_2024
+   ENTRA NO SITE · 8 com estrela · capa: IMG_0690.jpg
+     ★ IMG_0672.jpg
+   ⌂ ★ IMG_0690.jpg
+     ★ IMG_0701.jpg
+     ★ IMG_0705.jpg
+     ★ IMG_0725.jpg
+     ★ IMG_0732.jpg
+     ★ IMG_0736.jpg
+     ★ IMG_0741.jpg
+
+== MP: 📸✨🌿🤍 Ensaio Fotográfico - Marlieth & Paulo - Fotógrafo José Renato CEO Jr_Tech_OFC - 21_03_2026
+   ENTRA NO SITE · 10 com estrela · capa: Foto (18).jpg
+     ★ Foto (3).jpg
+     ★ Foto (5).jpg
+     ★ Foto (6).jpg
+     ★ Foto (9).jpg
+     ★ Foto (13).jpg
+   ⌂ ★ Foto (18).jpg
+     ★ Foto (24).jpg
+     ★ Foto (26).jpg
+     ★ Foto (27).jpg
+     ★ Foto (28).jpg
+
+== SAB: 📸✨🌿🤍 Ensaio Fotografico - Sabrina - Fotografo Jose Renato CEO Jr_Tech_OFC - 17_08_2025
+   ENTRA NO SITE · 16 com estrela · capa: sabrina-20.png
+     ★ sabrina-01.png
+     ★ sabrina-02.png
+     ★ sabrina-05.png
+     ★ sabrina-12.png
+     ★ sabrina-16.png
+   ⌂ ★ sabrina-20.png
+     ★ sabrina-22.png
+     ★ sabrina-24.png
+     ★ sabrina-29.png
+     ★ sabrina-36.png
+     ★ sabrina-40.png
+     ★ sabrina-43.png
+     ★ sabrina-44.png
+     ★ sabrina-49.png
+     ★ sabrina-52.png
+     ★ sabrina-53.png
+
+== SY: 📸❤️✨🌹 Ensaio Fotografico - Sara & Yasmin - JR_TECH_OFC - 18_10_2026
+   ENTRA NO SITE · 16 com estrela · capa: IMG_1081.jpg
+     ★ IMG_0725.jpg
+     ★ IMG_0787.jpg
+     ★ IMG_0808.jpg
+     ★ IMG_0866.jpg
+     ★ IMG_0906.jpg
+     ★ IMG_0914.jpg
+     ★ IMG_0957.jpg
+     ★ IMG_0994.jpg
+     ★ IMG_1031.jpg
+     ★ IMG_1032.jpg
+     ★ IMG_1050.jpg
+     ★ IMG_1057.jpg
+     ★ IMG_1072.jpg
+     ★ IMG_1077.jpg
+   ⌂ ★ IMG_1081.jpg
+     ★ IMG_1084.jpg

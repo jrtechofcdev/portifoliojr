@@ -1,0 +1,127 @@
+{
+  "BO": {
+    "estrelas": [
+      "Breakfast & Lunch (13).jpg",
+      "Breakfast & Lunch (18).jpg",
+      "Wedding Anniversary (3).jpg",
+      "Wedding Anniversary (20).jpg",
+      "Wedding Anniversary (21).jpg",
+      "Wedding Anniversary (29).jpg",
+      "Wedding Anniversary (32).jpg",
+      "Wedding Anniversary (40).jpg",
+      "Wedding Anniversary (102).jpg",
+      "Wedding Anniversary (214).jpg"
+    ],
+    "casa": "Wedding Anniversary (20).jpg"
+  },
+  "DAL": {
+    "estrelas": [
+      "Dalila (1).jpg",
+      "Dalila (3).jpg",
+      "Dalila (9).jpg",
+      "Dalila (11).jpg",
+      "Dalila (12).jpg",
+      "Dalila (16).jpg"
+    ],
+    "casa": "Dalila (3).jpg"
+  },
+  "DM": {
+    "estrelas": [
+      "Dalila e Maria (7).jpg",
+      "Dalila e Maria (13).jpg",
+      "Dalila e Maria (14).jpg",
+      "Dalila e Maria (15).jpg",
+      "Dalila e Maria (29).jpg",
+      "Dalila e Maria (36).jpg",
+      "Dalila e Maria (49).jpg",
+      "Dalila e Maria (52).jpg",
+      "Dalila e Maria (56).jpg",
+      "Dalila e Maria (59).jpg",
+      "Dalila e Maria (61).jpg",
+      "Dalila e Maria (64).jpg"
+    ],
+    "casa": "Dalila e Maria (29).jpg"
+  },
+  "JEL": {
+    "estrelas": [
+      "IMG_1205.jpg",
+      "IMG_1216.jpg",
+      "IMG_1272.jpg",
+      "IMG_1274.jpg",
+      "IMG_1388.jpg",
+      "IMG_1396.jpg",
+      "IMG_1404.jpg"
+    ],
+    "casa": "IMG_1272.jpg"
+  },
+  "MCD": {
+    "estrelas": [
+      "IMG_0672.jpg",
+      "IMG_0690.jpg",
+      "IMG_0701.jpg",
+      "IMG_0705.jpg",
+      "IMG_0725.jpg",
+      "IMG_0732.jpg",
+      "IMG_0736.jpg",
+      "IMG_0741.jpg"
+    ],
+    "casa": "IMG_0690.jpg"
+  },
+  "MP": {
+    "estrelas": [
+      "Foto (3).jpg",
+      "Foto (5).jpg",
+      "Foto (6).jpg",
+      "Foto (9).jpg",
+      "Foto (13).jpg",
+      "Foto (18).jpg",
+      "Foto (24).jpg",
+      "Foto (26).jpg",
+      "Foto (27).jpg",
+      "Foto (28).jpg"
+    ],
+    "casa": "Foto (18).jpg"
+  },
+  "SAB": {
+    "estrelas": [
+      "sabrina-01.png",
+      "sabrina-02.png",
+      "sabrina-05.png",
+      "sabrina-12.png",
+      "sabrina-16.png",
+      "sabrina-20.png",
+      "sabrina-22.png",
+      "sabrina-24.png",
+      "sabrina-29.png",
+      "sabrina-36.png",
+      "sabrina-40.png",
+      "sabrina-43.png",
+      "sabrina-44.png",
+      "sabrina-49.png",
+      "sabrina-52.png",
+      "sabrina-53.png"
+    ],
+    "casa": "sabrina-20.png"
+  },
+  "SY": {
+    "estrelas": [
+      "IMG_0725.jpg",
+      "IMG_0787.jpg",
+      "IMG_0808.jpg",
+      "IMG_0866.jpg",
+      "IMG_0906.jpg",
+      "IMG_0914.jpg",
+      "IMG_0957.jpg",
+      "IMG_0994.jpg",
+      "IMG_1031.jpg",
+      "IMG_1032.jpg",
+      "IMG_1050.jpg",
+      "IMG_1057.jpg",
+      "IMG_1072.jpg",
+      "IMG_1077.jpg",
+      "IMG_1081.jpg",
+      "IMG_1084.jpg"
+    ],
+    "casa": "IMG_1081.jpg"
+  }
+}

@@ -5,10 +5,7 @@ Só o que a pasta e o briefing **não** respondem. Já está respondido e não s
 ## A. Bloqueadoras
 
 ### A1. Para publicar o site
-1. **Autorização de imagem**, por ensaio, das pessoas em destaque: Sabrina; Sara e Yasmin; Dalila e Maria; Dália; Marlieth e Paulo. Para cada um: pode publicar? com nome? com cidade?
-2. **Menores de idade:** pode publicar Kiara (15 anos), crianças em Bodas de Ouro e algum registro do Bombeiro Mirim? Exige consentimento dos responsáveis legais.
-3. **Pedido de namoro na Confra Juventude Estrela de Luz:** o casal autoriza? Se não, a galeria do evento sai sem essa série.
-4. **Instituições:** a Congregação Maanaim e a Juventude Estrela de Luz autorizam o nome no site? (O 6º BBM e a escola da Feira de Ciências só se você quiser esses trabalhos no site, o que não recomendo para a v1.)
+1. ~~**Autorizações de imagem** (pessoas, menores, pedido de namoro, instituições)~~: **confirmadas pelo responsável em 09/11/2026** ("Já tenho todas as autorizações, das modelos e da mãe do bebê"). Os manifestos estão com `autorizacao: sim`. Quais fotos entram é decisão dele na página `/curadoria`.
 5. **WhatsApp e e-mail:** `(99) 98278-5958` e `jrtechofc@gmail.com` continuam sendo os contatos comerciais?
 
 ### A2. Para começar a implementação

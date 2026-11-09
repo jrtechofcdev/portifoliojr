@@ -1,19 +1,20 @@
-# Seleção: CURADORIA §4.2. Nome da retratada pendente (PENDENCIAS item 12: Dália ou Dalila).
-nome: Dália
-titulo: DÁLIA
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Dália"
+titulo: "DÁLIA"
 categoria: ensaios
-rotulo: Ensaio externo
+rotulo: "Ensaio externo"
 cidade: null
 data: "2024-10-21"
 tema: claro
-autorizacao: pendente
+autorizacao: sim
 pasta: DAL
-abertura: { arquivo: Dalila (3).jpg, foco: 50% 40% }
-capa: Dalila (3).jpg
+abertura: { arquivo: "Dalila (3).jpg", foco: 50% 40% }
+capa: "Dalila (3).jpg"
 fotos:
-  - { arquivo: Dalila (1).jpg, alt: "De costas, caminhando na estrada" }
-  - { arquivo: Dalila (3).jpg, alt: "Na estrada, com um caminhão ao fundo" }
-  - { arquivo: Dalila (9).jpg, alt: "De perfil, com a mão apoiada na cerca" }
-  - { arquivo: Dalila (11).jpg, alt: "De camiseta branca e jeans, de pé no meio da estrada" }
-  - { arquivo: Dalila (12).jpg, alt: "Ajoelhada na estrada, de costas, olhando para o lado" }
-  - { arquivo: Dalila (16).jpg, alt: "Em meio ao capim seco" }
+  - { arquivo: "Dalila (3).jpg", alt: "Na estrada, com um caminhão ao fundo" }
+  - { arquivo: "Dalila (1).jpg", alt: "De costas, caminhando na estrada" }
+  - { arquivo: "Dalila (9).jpg", alt: "De perfil, com a mão apoiada na cerca" }
+  - { arquivo: "Dalila (11).jpg", alt: "De camiseta branca e jeans, de pé no meio da estrada" }
+  - { arquivo: "Dalila (12).jpg", alt: "Ajoelhada na estrada, de costas, olhando para o lado" }
+  - { arquivo: "Dalila (16).jpg", alt: "Em meio ao capim seco" }

@@ -1,37 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
-import { ensaiosPublicaveis, fotoDe, mesAno, dadosFoto } from '../lib/fotos';
+import Album from '../components/Album.astro';
+import CapaAlbum from '../components/CapaAlbum.astro';
+import { capaDe, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, mesAno, type FotoEnsaio } from '../lib/fotos';
 import { CATEGORIAS, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
 
-// Imagens da home: MAPA_DO_SITE_E_CONTEUDO.md §2. Cada bloco some se a foto não estiver autorizada.
-const abertura = await fotoDe('sara-e-yasmin', 'IMG_1081.jpg');
-const frentes = [
-  {
-    categoria: 'ensaios' as const,
-    foto: await fotoDe('sabrina', 'sabrina-22.png'),
-    texto: 'Luz do fim da tarde, um lugar da cidade e tempo para você ficar à vontade.',
-  },
-  {
-    categoria: 'casais' as const,
-    foto: await fotoDe('marlieth-e-paulo', 'Foto (18).jpg'),
-    texto: 'Orientação de pose sem deixar o abraço duro.',
-  },
-  {
-    categoria: 'eventos' as const,
-    foto: await fotoDe('manha-com-deus', 'IMG_0690.jpg'),
-    texto: 'Cultos, confraternizações, aniversários e bodas, registrados sem interromper o momento.',
-  },
-];
-const destaque = (
-  await Promise.all(['sabrina-01.png', 'sabrina-12.png', 'sabrina-36.png', 'sabrina-44.png'].map((a) => fotoDe('sabrina', a)))
-).filter((f) => f !== null);
-const pausa = await fotoDe('sara-e-yasmin', 'IMG_0957.jpg');
-const sobreFoto = await fotoDe('marlieth-e-paulo', 'Foto (6).jpg');
-
+// A home é um álbum: capa, índice, uma página dupla por amostra (capa escolhida com a casinha
+// na página /curadoria) e o contato no fim. Tudo some sozinho se a foto sair da seleção.
 const ensaios = await ensaiosPublicaveis();
-const sabrinaPublicavel = ensaios.some((e) => e.id === 'sabrina');
-const outros = ensaios.filter((e) => e.id !== 'sabrina');
+const amostras = ensaios.map((e) => {
+  const fotos = fotosDoEnsaio(e);
+  return { e, capa: capaDe(e), extras: fotos.filter((f) => f.arquivo !== e.data.capa).slice(0, 2) };
+});
+const abertura = (await fotoDe('sara-e-yasmin', 'IMG_1081.jpg')) ?? amostras[0]?.capa ?? null;
+const anos = ensaios.map((e) => e.data.data.slice(0, 4)).sort();
+const periodo = anos.length ? (anos[0] === anos.at(-1) ? anos[0] : `${anos[0]} a ${anos.at(-1)}`) : '';
+
+// Índice das páginas: 0 capa, 1 índice, 2 apresentação, depois foto e texto de cada amostra.
+const paginaDaAmostra = (i: number) => 3 + i * 2;
+const vertical = (f: FotoEnsaio) => f.dados.width / f.dados.height < 0.8;
+
+const capaDaCategoria = (c: string) => amostras.find((a) => a.e.data.categoria === c);
+const textos = {
+  ensaios: 'Luz do fim da tarde, um lugar da cidade e tempo para você ficar à vontade.',
+  casais: 'Orientação de pose sem deixar o abraço duro.',
+  eventos: 'Cultos, confraternizações, aniversários e bodas, registrados sem interromper o momento.',
+};
+const frentes = (Object.keys(textos) as (keyof typeof textos)[]).map((categoria) => {
+  const a = capaDaCategoria(categoria);
+  return { categoria, foto: a?.extras[0] ?? a?.capa ?? null, texto: textos[categoria] };
+});
+const sobreFoto = await fotoDe('marlieth-e-paulo', 'Foto (6).jpg');
 
 const passos = [
   ['Conversa', 'Você conta o que quer pelo WhatsApp: ensaio, evento, data e cidade.'],
@@ -60,37 +60,93 @@ const jsonld = {
 ---
 
 <Base
-  titulo="Jr_Tech_OFC Fotografia | Ensaios e eventos em Imperatriz e Bacabal"
-  descricao="José Renato fotografa ensaios externos, casais, gestantes e eventos em Imperatriz e Bacabal, MA. Veja os trabalhos e chame no WhatsApp."
+  titulo="Portfólio de José Renato | Jr_Tech_OFC Fotografia, Imperatriz e Bacabal"
+  descricao="Folheie o portfólio de José Renato: ensaios externos, casais, gestantes e eventos em Imperatriz e Bacabal, MA. Chame no WhatsApp."
   imagem={abertura?.dados.og}
   jsonld={jsonld}
 >
-  <section class:list={['abertura', { 'sem-foto': !abertura }]}>
-    {
-      abertura && (
-        <div class="abertura-foto couro moldura">
-          <Foto
-            slug={abertura.slug}
-            arquivo={abertura.arquivo}
-            alt={abertura.alt}
-            sizes="(min-width: 900px) 45vw, 100vw"
-            prioridade
-            recorte="50% 22%"
-          />
+  <section class="abertura">
+    <div class="wrap">
+    <Album rotulo="Portfólio de José Renato" abertura id="album">
+      <div slot="fechado" class="abertura-texto">
+        <p class="sobretitulo">Portfólio · {site.marca} Fotografia</p>
+        <h1 class="abertura-titulo serifa">Fotografia <em>natural</em> de pessoas.</h1>
+        <p class="abertura-apoio">Ensaios externos, casais e celebrações em {site.cidades}. Abra o álbum e folheie os trabalhos.</p>
+        <div class="acoes">
+          <button type="button" class="botao" data-album-abrir>Abrir o álbum</button>
+          <a class="botao-sec" href={linkWhatsApp()}>Chamar no WhatsApp</a>
         </div>
-      )
-    }
-    <div class="abertura-texto">
-      <h1 class="abertura-titulo serifa">Fotografia <em>natural</em> de pessoas.</h1>
-      <p class="abertura-apoio">Ensaios externos, casais e celebrações em {site.cidades}.</p>
-      <div class="acoes">
-        <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
-        <a class="botao-sec" href="#trabalhos">Ver trabalhos</a>
       </div>
+
+      <div class="pagina">
+        <CapaAlbum foto={abertura} titulo="Portfólio" sobre={`${site.marca}`} rodape={`José Renato · ${periodo}`} sizes="(min-width: 900px) 30vw, 70vw" prioridade />
+      </div>
+
+      <div class="pagina pagina-couro pagina-texto">
+        <p class="sobretitulo">Neste álbum</p>
+        <ol class="indice">
+          {
+            amostras.map((a, i) => (
+              <li>
+                <a href={`/trabalhos/${a.e.id}`} data-album-pagina={paginaDaAmostra(i)}>
+                  <span>{a.e.data.nome}</span>
+                  <span class="indice-ano">{a.e.data.data.slice(0, 4)}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="pagina pagina-papel pagina-texto">
+        <p class="titulo-pagina">Foto que parece com <em>quem está nela.</em></p>
+        <p class="texto-pagina">
+          Cada página dupla deste álbum é um trabalho de verdade, de {site.cidades}. Ao lado de cada foto de capa há um
+          link para o álbum completo.
+        </p>
+        <p class="assinatura">José Renato</p>
+      </div>
+
+      {
+        amostras.map((a) => (
+          <>
+            <div class:list={['pagina pagina-papel pagina-foto', { sangria: a.capa && vertical(a.capa) }]}>
+              {a.capa && <Foto slug={a.capa.slug} arquivo={a.capa.arquivo} alt={a.capa.alt} sizes="(min-width: 900px) 34vw, 90vw" />}
+            </div>
+            <div class="pagina pagina-papel pagina-texto amostra-texto">
+              <p class="sobretitulo">{a.e.data.rotulo}</p>
+              <h2 class="titulo-pagina">{a.e.data.nome}</h2>
+              <p class="legenda">{[a.e.data.cidade, mesAno(a.e.data.data)].filter(Boolean).join(' · ')}</p>
+              {a.extras.length > 0 && (
+                <div class="amostra-extras">
+                  {a.extras.map((f) => (
+                    <Foto slug={f.slug} arquivo={f.arquivo} alt={f.alt} sizes="(min-width: 900px) 14vw, 40vw" recorte="50% 30%" />
+                  ))}
+                </div>
+              )}
+              <a class="botao-sec" href={`/trabalhos/${a.e.id}`}>Abrir o álbum de {a.e.data.nome}</a>
+            </div>
+          </>
+        ))
+      }
+
+      <div class="pagina pagina-papel pagina-texto fim-album">
+        <p class="titulo-pagina">Quer um álbum <em>assim?</em></p>
+        <p class="texto-pagina">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
+        <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+        <a class="botao-sec" href="/trabalhos">Ver todos os trabalhos</a>
+      </div>
+
+      <div class="pagina pagina-couro pagina-texto contracapa">
+        <p class="contracapa-marca">{site.marca}</p>
+        <p class="legenda">{site.slogan}</p>
+      </div>
+    </Album>
     </div>
   </section>
 
-  <section class="secao wrap" id="trabalhos" aria-labelledby="frentes-titulo">
+  <section class="secao" id="trabalhos" aria-labelledby="frentes-titulo">
+    <div class="wrap">
     <div class="secao-topo">
       <h2 class="h2" id="frentes-titulo">O que eu <em>fotografo</em></h2>
     </div>
@@ -112,73 +168,11 @@ const jsonld = {
         ))
       }
     </ul>
+    </div>
   </section>
 
-  {
-    sabrinaPublicavel && destaque.length >= 2 && (
-      <section class="secao destaque" aria-labelledby="destaque-titulo">
-        <div class="wrap destaque-topo">
-          <p class="sobretitulo">Ensaio em destaque</p>
-          <h2 class="display-l" id="destaque-titulo">Sabrina</h2>
-          <p class="legenda">Bacabal, {mesAno('2025-08-17')}</p>
-        </div>
-        <ul class="destaque-fotos" aria-label="Fotos do ensaio de Sabrina">
-          {destaque.map((f, i) => (
-            <li class:list={{ grande: i === 0 }}>
-              <Foto
-                slug={f.slug}
-                arquivo={f.arquivo}
-                alt={f.alt}
-                sizes={i === 0 ? '(min-width: 900px) 50vw, 80vw' : '(min-width: 900px) 25vw, 80vw'}
-              />
-            </li>
-          ))}
-        </ul>
-        <div class="wrap destaque-link">
-          <a class="botao-sec" href="/trabalhos/sabrina">Ver o ensaio completo de Sabrina</a>
-        </div>
-      </section>
-    )
-  }
-
-  {
-    pausa && (
-      <div class="pausa wrap">
-        <Foto slug={pausa.slug} arquivo={pausa.arquivo} alt={pausa.alt} sizes="100vw" />
-      </div>
-    )
-  }
-
-  {
-    outros.length > 0 && (
-      <section class="secao wrap" aria-labelledby="mais-titulo">
-        <div class="secao-topo">
-          <h2 class="h2" id="mais-titulo">Outros ensaios e eventos</h2>
-        </div>
-        <ul class="lista-grande">
-          {outros.map((e) => {
-            const capa = dadosFoto(e.id, e.data.capa)!;
-            return (
-              <li>
-                <a href={`/trabalhos/${e.id}`}>
-                  <span class="nome serifa">{e.data.nome}</span>
-                  <span class="legenda">
-                    {e.data.rotulo} · {e.data.data.slice(0, 4)}
-                  </span>
-                  <img class="previa" src={capa.srcset.webp.split(', ')[0].split(' ')[0]} alt="" width={capa.width} height={capa.height} loading="lazy" decoding="async" />
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        <p class="mais-todos">
-          <a class="botao-sec" href="/trabalhos">Todos os trabalhos</a>
-        </p>
-      </section>
-    )
-  }
-
-  <section class="secao wrap como" id="como-funciona" aria-labelledby="como-titulo">
+  <section class="secao como" id="como-funciona" aria-labelledby="como-titulo">
+    <div class="wrap">
     <div class="como-painel couro">
     <div class="secao-topo">
       <h2 class="h2" id="como-titulo">Como funciona um ensaio</h2>
@@ -198,13 +192,14 @@ const jsonld = {
       }
     </ol>
     </div>
+    </div>
   </section>
 
-  <section class="secao wrap sobre" id="sobre" aria-labelledby="sobre-titulo">
-    <div class="sobre-grade">
+  <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
+    <div class="wrap sobre-grade">
       <div class="sobre-texto">
         <p class="sobretitulo">Sobre</p>
-        <h2 class="h2" id="sobre-titulo">José <em>Renato</em></h2>
+        <h2 class="h2" id="sobre-titulo">José Renato</h2>
         <p class="texto">
           Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
           ao ar livre, e também cubro cultos, confraternizações e festas de família. Gosto de foto que parece com quem está
@@ -222,9 +217,10 @@ const jsonld = {
     </div>
   </section>
 
-  <section class="secao wrap" id="contato" aria-labelledby="contato-titulo">
+  <section class="secao" id="contato" aria-labelledby="contato-titulo">
+    <div class="wrap">
     <div class="contato couro">
-    <h2 class="display-l" id="contato-titulo">Vamos <em>marcar?</em></h2>
+    <h2 class="h2" id="contato-titulo">Vamos <em>marcar?</em></h2>
     <p class="texto contato-apoio">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
     <div class="acoes">
       <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
@@ -233,18 +229,113 @@ const jsonld = {
     </div>
     <p class="legenda">Atendo em {site.cidades}. Outras cidades, sob consulta.</p>
     </div>
+    </div>
   </section>
 </Base>
 
-
 <style>
+  /* Abertura: o álbum fechado ocupa uma tela; no desktop o texto fica no lugar da página da esquerda */
+  .abertura {
+    min-height: calc(100svh - var(--cab));
+    display: grid;
+    align-content: center;
+    padding-block: var(--s2);
+  }
+  .abertura-texto {
+    display: grid;
+    gap: var(--s2);
+    margin-bottom: var(--s2);
+  }
+  .abertura-titulo {
+    font-size: clamp(42px, 5vw, 88px);
+    line-height: 0.98;
+  }
+  .abertura-apoio {
+    max-width: 38ch;
+    color: var(--texto-2);
+  }
+  .abertura .acoes {
+    margin-top: var(--s1);
+  }
+
+  /* Páginas internas do álbum da home */
+  .indice {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .indice a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s2);
+    min-height: min(44px, 7cqh);
+    align-items: center;
+    line-height: 1.15;
+    border-bottom: 1.5px dashed var(--costura-suave);
+    font-family: var(--serifa);
+    font-size: clamp(14px, 3cqh, 21px);
+    text-decoration: none;
+  }
+  .indice a:hover {
+    font-style: italic;
+  }
+  .indice-ano {
+    font-family: var(--fonte);
+    font-size: 13px;
+    color: var(--texto-2);
+  }
+  .texto-pagina {
+    color: var(--texto-2);
+    font-size: clamp(14px, 2.7cqh, 18px);
+  }
+  .assinatura {
+    font-family: var(--serifa);
+    font-style: italic;
+    font-size: clamp(20px, 4.6cqh, 34px);
+    color: var(--destaque);
+  }
+  .amostra-texto .sobretitulo,
+  .pagina-texto .sobretitulo {
+    font-size: 12px;
+  }
+  .amostra-extras {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    height: clamp(90px, 30cqh, 260px);
+  }
+  .amostra-extras :global(.foto) {
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: 0 8px 18px -10px rgb(0 0 0 / 0.5);
+  }
+  .amostra-texto .botao-sec,
+  .fim-album .botao,
+  .fim-album .botao-sec {
+    justify-self: start;
+  }
+  .contracapa {
+    justify-items: center;
+    text-align: center;
+  }
+  .contracapa-marca {
+    font-family: var(--serifa);
+    font-style: italic;
+    font-size: clamp(26px, 7cqh, 54px);
+    background: linear-gradient(105deg, #00c98a, #8affd9 32%, #00fca8 50%, #1cdaff 78%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   .acoes {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: var(--s2) var(--s4);
   }
-
   /* Moldura de couro em volta de uma foto: a costura corre por fora da imagem */
   .moldura {
     padding: 16px;
@@ -252,69 +343,6 @@ const jsonld = {
   .moldura::before {
     inset: 6px;
     border-radius: calc(var(--raio-g) - 6px);
-  }
-
-  /* Abertura: exatamente uma tela; a foto cresce no espaço que o texto deixa */
-  .abertura {
-    display: grid;
-    grid-template-rows: minmax(240px, 1fr) auto;
-    height: calc(100svh - var(--cab));
-    min-height: 560px;
-    padding-top: var(--s2);
-  }
-  .abertura > * {
-    min-width: 0;
-    min-height: 0;
-  }
-  .abertura-foto {
-    margin-inline: var(--margem);
-    display: grid;
-  }
-  .abertura-foto :global(.foto) {
-    height: 100%;
-  }
-  .sem-foto {
-    grid-template-rows: 1fr;
-  }
-  .abertura-texto {
-    display: grid;
-    gap: var(--s2);
-    padding-inline: var(--margem);
-    padding-block: var(--s3) var(--s4);
-  }
-  .abertura-titulo {
-    font-size: clamp(44px, 6.4vw, 108px);
-    line-height: 0.98;
-    max-width: 11ch;
-  }
-  .abertura-apoio {
-    max-width: 36ch;
-    color: var(--texto-2);
-  }
-  .abertura .acoes {
-    margin-top: var(--s1);
-  }
-  .sem-foto .abertura-texto {
-    align-content: end;
-  }
-  @media (min-width: 900px) {
-    .abertura {
-      grid-template-columns: 55fr 45fr;
-      grid-template-rows: 1fr;
-      padding-block: var(--s2) var(--s4);
-    }
-    .abertura-foto {
-      order: 2;
-      margin-left: 0;
-    }
-    .abertura-texto {
-      align-content: center;
-      padding-block: var(--s5);
-      gap: var(--s3);
-    }
-    .sem-foto {
-      grid-template-columns: 1fr;
-    }
   }
 
   /* Três frentes: cartões de couro, alturas desencontradas no desktop (DESIGN §4) */
@@ -356,147 +384,6 @@ const jsonld = {
       align-items: start;
       gap: var(--gutter);
     }
-    .frente:nth-child(2) {
-      margin-top: 80px;
-    }
-    .frente:nth-child(3) {
-      margin-top: 32px;
-    }
-  }
-
-  /* Destaque: carrossel nativo no celular, composição assimétrica no desktop */
-  .destaque-topo {
-    display: grid;
-    gap: var(--s2);
-    margin-bottom: var(--s4);
-  }
-  .destaque-fotos {
-    list-style: none;
-    margin: 0 0 var(--s4);
-    padding: 0 var(--margem);
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 78%;
-    gap: var(--s2);
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--margem);
-    align-items: start;
-  }
-  .destaque-fotos li {
-    scroll-snap-align: start;
-    min-width: 0;
-  }
-  .destaque-fotos :global(.foto) {
-    box-shadow: var(--sombra);
-  }
-  @media (min-width: 900px) {
-    /* Foto grande à esquerda; à direita, título em cima, três fotos e o link embaixo */
-    .destaque {
-      display: grid;
-      grid-template-columns: 3fr 1fr 1fr 1fr;
-      grid-template-rows: 1fr auto auto;
-      column-gap: var(--gutter);
-      padding-inline: var(--margem);
-    }
-    .destaque > .wrap {
-      padding-inline: 0;
-    }
-    .destaque-topo {
-      grid-column: 2 / 5;
-      grid-row: 1;
-      align-self: end;
-      padding-left: var(--s4);
-    }
-    .destaque-fotos {
-      display: contents;
-    }
-    .destaque-fotos .grande {
-      grid-column: 1;
-      grid-row: 1 / 4;
-    }
-    .destaque-fotos li:not(.grande) {
-      grid-row: 2;
-      align-self: end;
-    }
-    .destaque-link {
-      grid-column: 2 / 5;
-      grid-row: 3;
-      padding-top: var(--s3);
-      padding-left: var(--s4);
-    }
-  }
-
-  .pausa {
-    margin-block: calc(var(--secao) / 2);
-  }
-  .pausa :global(.foto) {
-    border-radius: var(--raio-g);
-    box-shadow: var(--sombra);
-  }
-  .pausa :global(img) {
-    width: 100%;
-  }
-
-  /* Mais trabalhos: nomes em serifa grande, separados por costura; prévia da capa no hover */
-  .lista-grande {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .lista-grande li {
-    border-bottom: 2px dashed var(--costura-suave);
-  }
-  .lista-grande a {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--s1) var(--s3);
-    padding-block: var(--s3);
-    color: var(--texto);
-    text-decoration: none;
-  }
-  .nome {
-    font-size: clamp(32px, 5.4vw, 80px);
-    line-height: 1;
-    transition: color var(--t-estado);
-  }
-  .lista-grande a:hover .nome,
-  .lista-grande a:focus-visible .nome {
-    color: var(--link-hover);
-    font-style: italic;
-  }
-  .previa {
-    display: none;
-  }
-  @media (hover: hover) and (min-width: 900px) {
-    .previa {
-      display: block;
-      position: absolute;
-      right: 18%;
-      top: 50%;
-      width: 220px;
-      height: auto;
-      border-radius: var(--raio-m);
-      box-shadow: var(--sombra);
-      transform: translateY(-50%) rotate(0deg);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition:
-        opacity var(--t-estado),
-        visibility var(--t-estado);
-      z-index: 2;
-    }
-    .lista-grande a:hover .previa {
-      opacity: 1;
-      visibility: visible;
-    }
-  }
-  .mais-todos {
-    margin-top: var(--s4);
   }
 
   /* Como funciona: um painel de couro, passos separados por costura */
@@ -543,7 +430,7 @@ const jsonld = {
   .sobre-grade {
     display: grid;
     gap: var(--s5);
-    align-items: center;
+    align-items: start;
   }
   .sobre-grade > * {
     min-width: 0;
@@ -575,12 +462,8 @@ const jsonld = {
   .contato {
     display: grid;
     gap: var(--s4);
-    justify-items: center;
-    text-align: center;
+    justify-items: start;
     padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
-  }
-  .contato .acoes {
-    justify-content: center;
   }
   .contato-apoio {
     font-size: clamp(18px, 2vw, 22px);

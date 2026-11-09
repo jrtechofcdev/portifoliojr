@@ -1,10 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Foto from '../../components/Foto.astro';
+import Album from '../../components/Album.astro';
+import CapaAlbum from '../../components/CapaAlbum.astro';
 import Galeria from '../../components/Galeria.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import { ensaiosPublicaveis, fotosDoEnsaio, mesAno, dadosFoto, type Ensaio } from '../../lib/fotos';
-import { CATEGORIAS, linkWhatsApp } from '../../data/site';
+import { CATEGORIAS, linkWhatsApp, site } from '../../data/site';
 
 export async function getStaticPaths() {
   const ensaios = await ensaiosPublicaveis();
@@ -23,7 +25,6 @@ const { ensaio, proximo } = Astro.props;
 const d = ensaio.data;
 const fotos = fotosDoEnsaio(ensaio);
 const abertura = fotos.find((f) => f.arquivo === d.abertura.arquivo)!;
-const sequencia = fotos.filter((f) => f !== abertura);
 const evento = d.categoria === 'eventos';
 const ficha = [d.rotulo, d.cidade, mesAno(d.data)].filter(Boolean).join(' · ');
 const pergunta = evento ? 'Tem um evento chegando?' : 'Quer um ensaio assim?';
@@ -34,31 +35,56 @@ const lugar = d.cidade ? ` em ${d.cidade}` : '';
 const titulo = `${d.nome}, ${d.rotulo.toLowerCase()}${lugar} | Jr_Tech_OFC Fotografia`;
 const descricao = `${d.rotulo} de ${d.nome}${lugar}, ${mesAno(d.data)}. ${fotos.length} fotos de José Renato, Jr_Tech_OFC Fotografia.`;
 const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
+const vertical = (w: number, h: number) => w / h < 0.8;
+// Capa, página de abertura, fotos e contracapa; uma página branca deixa o total ímpar (última vista fecha à direita).
+const completar = (fotos.length + 3) % 2 === 0;
 ---
 
 <Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
   <article>
-    <header class="ensaio-abertura wrap">
-      <div class="ensaio-texto">
-        <p class="sobretitulo"><a href={`/trabalhos?c=${d.categoria}`}>{CATEGORIAS[d.categoria].titulo}</a></p>
-        <h1 class="ensaio-titulo display-xl">{d.nome}</h1>
-        <p class="legenda">{ficha}</p>
-      </div>
-      <div class="ensaio-foto couro moldura">
-        <Foto
-          slug={abertura.slug}
-          arquivo={abertura.arquivo}
-          alt={abertura.alt}
-          sizes="(min-width: 900px) 45vw, 100vw"
-          prioridade
-        />
-      </div>
-    </header>
+    <section class="wrap ensaio-album">
+      <Album rotulo={`Álbum: ${d.nome}`} abertura>
+        <div slot="fechado" class="ensaio-texto">
+          <p class="sobretitulo"><a href={`/trabalhos?c=${d.categoria}`}>{CATEGORIAS[d.categoria].titulo}</a></p>
+          <h1 class="ensaio-titulo serifa">{d.nome}</h1>
+          <p class="legenda">{ficha} · {fotos.length} fotos</p>
+          <div class="acoes">
+            <button type="button" class="botao" data-album-abrir>Abrir o álbum</button>
+            <a class="botao-sec" href="#todas">Ver todas em grade</a>
+          </div>
+        </div>
 
-    <h2 class="visualmente-oculto">Fotos do trabalho</h2>
-    <Galeria fotos={sequencia} nome={d.nome} />
+        <div class="pagina">
+          <CapaAlbum foto={abertura} titulo={d.nome} sobre={site.marca} rodape={[d.cidade, d.data.slice(0, 4)].filter(Boolean).join(' · ')} sizes="(min-width: 900px) 30vw, 70vw" prioridade />
+        </div>
+        <div class="pagina pagina-couro pagina-texto abre">
+          <p class="sobretitulo">{d.rotulo}</p>
+          <p class="titulo-pagina">{d.nome}</p>
+          <p class="legenda">{[d.cidade, mesAno(d.data)].filter(Boolean).join(' · ')}</p>
+          <p class="legenda">{fotos.length} fotos · José Renato</p>
+        </div>
+        {
+          fotos.map((f) => (
+            <div class:list={['pagina pagina-papel pagina-foto', { sangria: vertical(f.dados.width, f.dados.height) }]}>
+              <Foto slug={f.slug} arquivo={f.arquivo} alt={f.alt} sizes="(min-width: 900px) 34vw, 90vw" />
+            </div>
+          ))
+        }
+        {completar && <div class="pagina pagina-papel" />}
+        <div class="pagina pagina-couro pagina-texto contracapa">
+          <p class="contracapa-marca">{site.marca}</p>
+          <p class="legenda">{site.slogan}</p>
+        </div>
+      </Album>
+    </section>
+
+    <section class="secao todas" id="todas" aria-labelledby="todas-titulo">
+      <div class="wrap secao-topo">
+        <h2 class="h2" id="todas-titulo">Todas as <em>fotos</em></h2>
+      </div>
+      <Galeria fotos={fotos} nome={d.nome} />
+    </section>
   </article>
-
   {
     proximo && (
       <nav class="secao wrap proximo" aria-label="Próximo trabalho">
@@ -95,40 +121,48 @@ const capaProx = proximo ? dadosFoto(proximo.id, proximo.data.capa) : null;
 </Base>
 
 <style>
-  .ensaio-abertura > * {
-    min-width: 0;
-  }
-  .ensaio-abertura {
+  .ensaio-album {
+    min-height: calc(100svh - var(--cab));
     display: grid;
-    gap: var(--s4);
-    padding-block: var(--s5) var(--s6);
+    align-content: center;
+    padding-block: var(--s2);
   }
   .ensaio-texto {
     display: grid;
     gap: var(--s2);
-    align-content: end;
     justify-items: start;
+    margin-bottom: var(--s2);
   }
   .ensaio-titulo {
-    font-size: clamp(56px, 10vw, 170px);
-    line-height: 0.95;
+    font-size: clamp(44px, 5.6vw, 96px);
+    line-height: 0.98;
   }
   .sobretitulo a {
     color: inherit;
   }
-  .moldura {
-    padding: 16px;
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s2) var(--s4);
+    margin-top: var(--s1);
   }
-  .moldura::before {
-    inset: 6px;
-    border-radius: calc(var(--raio-g) - 6px);
+  .abre {
+    justify-items: center;
+    text-align: center;
   }
-  @media (min-width: 900px) {
-    .ensaio-abertura {
-      grid-template-columns: 55fr 45fr;
-      gap: var(--gutter);
-      align-items: end;
-    }
+  .contracapa {
+    justify-items: center;
+    text-align: center;
+  }
+  .contracapa-marca {
+    font-family: var(--serifa);
+    font-style: italic;
+    font-size: clamp(28px, 5vh, 54px);
+    background: linear-gradient(105deg, #00c98a, #8affd9 32%, #00fca8 50%, #1cdaff 78%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
   .proximo a {
     display: grid;
