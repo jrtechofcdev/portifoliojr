@@ -249,16 +249,18 @@ a:hover {
   content: '';
   position: absolute;
   inset: 9px;
-  border: 2px dashed var(--costura);
+  border: 1.5px dashed var(--costura);
   border-radius: calc(var(--raio-g) - 9px);
   pointer-events: none;
   z-index: -1;
+  /* sombra de 1 px embaixo de cada ponto: parece linha passando pelo couro */
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.45));
 }
 
 /* Linha de costura usada como divisória */
 .costura {
   border: 0;
-  border-top: 2px dashed var(--costura-suave);
+  border-top: 1.5px dashed var(--costura-suave);
 }
 
 /* Botões (§7): aba de couro verde com costura escura */
@@ -406,18 +408,26 @@ html.menu-aberto {
 .sobretitulo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 650;
-  letter-spacing: 0.14em;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 620;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--texto-2);
 }
 
 .sobretitulo::before {
   content: '';
-  width: 28px;
-  border-top: 2px dashed var(--costura);
+  width: 24px;
+  border-top: 1.5px dashed var(--costura);
+}
+
+/* Hot stamping: o degradê do símbolo (verde para ciano) em texto. Uso raro: só em destaques da marca. */
+.foil {
+  background: linear-gradient(100deg, #00fca8, #22d8ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 
@@ -506,6 +516,34 @@ body:has(.heroi) main {
   .entra {
     animation: entrar 900ms var(--curva) both;
     animation-delay: calc(var(--i, 0) * 120ms + 150ms);
+  }
+  /* Na home, os textos da abertura esperam a capa de couro abrir */
+  html:not(.ja-abriu):not(.capa-pulada) body:has([data-capa]) .heroi .entra {
+    animation-delay: calc(var(--i, 0) * 130ms + 2.3s);
+  }
+}
+
+/* Transição entre páginas (só CSS): ao tocar num álbum, a capa do cartão cresce até virar a
+   abertura do álbum (mesmo view-transition-name). Navegador sem suporte troca de página normal. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-group(*) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 320ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 

@@ -379,7 +379,7 @@ const dados = historias.map((h) => ({
   /* As barras são criadas pelo script: precisam de :global para receber o estilo. */
   .hist-barras > :global(span) {
     flex: 1;
-    height: 3px;
+    height: 2.5px;
     border-radius: 3px;
     background: rgb(255 255 255 / 0.32);
     overflow: hidden;
@@ -452,6 +452,9 @@ const dados = historias.map((h) => ({
   }
   .hist-zona:focus-visible {
     outline-offset: -6px;
+  }
+  .hist-link[hidden] {
+    display: none;
   }
   .hist-rodape {
     position: absolute;

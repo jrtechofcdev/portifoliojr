@@ -1,7 +1,7 @@
 # Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
 # Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
-nome: "Dália"
-titulo: "DÁLIA"
+nome: "Dalila"
+titulo: "DALILA"
 categoria: ensaios
 rotulo: "Ensaio externo"
 cidade: null
@@ -12,16 +12,16 @@ pasta: DAL
 abertura: { arquivo: "Dalila (10).jpg", foco: 50% 35% }
 capa: "Dalila (10).jpg"
 fotos:
-  - { arquivo: "Dalila (10).jpg", alt: "Dália, foto Dalila (10)" } # alt a revisar
+  - { arquivo: "Dalila (10).jpg", alt: "Dalila, foto Dalila (10)" } # alt a revisar
   - { arquivo: "Dalila (1).jpg", alt: "De costas, caminhando na estrada" }
-  - { arquivo: "Dalila (2).jpg", alt: "Dália, foto Dalila (2)" } # alt a revisar
+  - { arquivo: "Dalila (2).jpg", alt: "Dalila, foto Dalila (2)" } # alt a revisar
   - { arquivo: "Dalila (3).jpg", alt: "Na estrada, com um caminhão ao fundo" }
-  - { arquivo: "Dalila (8).jpg", alt: "Dália, foto Dalila (8)" } # alt a revisar
+  - { arquivo: "Dalila (8).jpg", alt: "Dalila, foto Dalila (8)" } # alt a revisar
   - { arquivo: "Dalila (9).jpg", alt: "De perfil, com a mão apoiada na cerca" }
   - { arquivo: "Dalila (11).jpg", alt: "De camiseta branca e jeans, de pé no meio da estrada" }
   - { arquivo: "Dalila (12).jpg", alt: "Ajoelhada na estrada, de costas, olhando para o lado" }
-  - { arquivo: "Dalila (13).jpg", alt: "Dália, foto Dalila (13)" } # alt a revisar
-  - { arquivo: "Dalila (15).jpg", alt: "Dália, foto Dalila (15)" } # alt a revisar
+  - { arquivo: "Dalila (13).jpg", alt: "Dalila, foto Dalila (13)" } # alt a revisar
+  - { arquivo: "Dalila (15).jpg", alt: "Dalila, foto Dalila (15)" } # alt a revisar
   - { arquivo: "Dalila (16).jpg", alt: "Em meio ao capim seco" }
-  - { arquivo: "Dalila (17).jpg", alt: "Dália, foto Dalila (17)" } # alt a revisar
-  - { arquivo: "Dalila (21).jpg", alt: "Dália, foto Dalila (21)" } # alt a revisar
+  - { arquivo: "Dalila (17).jpg", alt: "Dalila, foto Dalila (17)" } # alt a revisar
+  - { arquivo: "Dalila (21).jpg", alt: "Dalila, foto Dalila (21)" } # alt a revisar

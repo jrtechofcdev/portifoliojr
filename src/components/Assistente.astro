@@ -1,0 +1,412 @@
+---
+// Assistente de escolha (revisão de 13/11/2026). Uma conversa de duas perguntas, respondidas com
+// um toque cada: o que a pessoa quer registrar e para quando. Com a resposta:
+//  - as listas marcadas com [data-reordenar] põem primeiro os itens com o mesmo data-tipo
+//    (nada some, só muda a ordem; os que combinam ganham a classe .combina);
+//  - os links [data-wa-auto] passam a abrir o WhatsApp com a mensagem já escrita.
+// A escolha fica no localStorage do visitante (conveniência; sem ele tudo funciona igual).
+// Sem JavaScript o assistente não aparece e a lista fica na ordem normal.
+// Não se apresenta como IA: é um assistente de escolha, com texto escrito à mão.
+import Simbolo from './Simbolo.astro';
+import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, site } from '../data/site';
+
+interface Props {
+  /** "indice": começa recolhido numa linha (página de trabalhos). */
+  variante?: 'home' | 'indice';
+  /** Para onde rolar depois da resposta. */
+  alvo?: string;
+}
+const { variante = 'home', alvo = '#trabalhos' } = Astro.props;
+const config = {
+  tipos: TIPOS_ASSISTENTE,
+  prazos: PRAZOS_ASSISTENTE,
+  whatsapp: site.whatsapp,
+  alvo,
+};
+---
+
+<section class:list={['assist wrap', `assist-${variante}`]} id="assistente" aria-label="Assistente de escolha" hidden data-assistente>
+  <div class="assist-caixa couro">
+    <div class="assist-topo">
+      <span class="assist-avatar"><Simbolo tamanho={26} /></span>
+      <div class="assist-quem">
+        <p class="assist-nome">Assistente {site.marca}</p>
+        <p class="assist-sub">Duas perguntas rápidas</p>
+      </div>
+      <button type="button" class="assist-abrir" data-abrir hidden>Me ajude a escolher</button>
+    </div>
+    <ol class="assist-conversa" aria-live="polite" data-conversa></ol>
+    <div class="assist-opcoes" role="group" aria-label="Respostas" data-opcoes></div>
+  </div>
+</section>
+<script type="application/json" id="assistente-config" set:html={JSON.stringify(config)} />
+
+<script>
+  type Opcao = { id: string; resposta: string; frase: string; titulo?: string };
+  type Config = { tipos: Opcao[]; prazos: Opcao[]; whatsapp: string; alvo: string };
+  type Escolha = { tipo: string; prazo?: string };
+
+  const raiz = document.querySelector<HTMLElement>('[data-assistente]');
+  const fonte = document.getElementById('assistente-config');
+  if (raiz && fonte) {
+    const cfg: Config = JSON.parse(fonte.textContent || '{}');
+    const conversa = raiz.querySelector<HTMLElement>('[data-conversa]')!;
+    const opcoes = raiz.querySelector<HTMLElement>('[data-opcoes]')!;
+    const abrir = raiz.querySelector<HTMLButtonElement>('[data-abrir]')!;
+    const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const CHAVE = 'assistente-escolha';
+    const espera = (ms: number) => new Promise((r) => setTimeout(r, calmo ? 0 : ms));
+
+    const ler = (): Escolha | null => {
+      try {
+        const v = JSON.parse(localStorage.getItem(CHAVE) || 'null');
+        return v && cfg.tipos.some((t) => t.id === v.tipo) ? v : null;
+      } catch {
+        return null;
+      }
+    };
+    const gravar = (e: Escolha | null) => {
+      try {
+        e ? localStorage.setItem(CHAVE, JSON.stringify(e)) : localStorage.removeItem(CHAVE);
+      } catch {}
+    };
+    const tipoDe = (id?: string) => cfg.tipos.find((t) => t.id === id);
+    const prazoDe = (id?: string) => cfg.prazos.find((p) => p.id === id);
+
+    function mensagem(e: Escolha) {
+      const t = tipoDe(e.tipo);
+      const p = prazoDe(e.prazo);
+      if (!t) return '';
+      return `Olá, José Renato! Vi seu portfólio e quero ${t.frase}${p ? `, ${p.frase}` : ''}. Pode me contar como funciona?`;
+    }
+    const linkWa = (msg: string) => `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent(msg)}`;
+
+    // Reordena as listas: os que combinam primeiro, na ordem original; os outros depois.
+    function ordenar(tipo: string | null, animar: boolean) {
+      const aplicar = () => {
+        document.querySelectorAll<HTMLElement>('[data-reordenar]').forEach((lista) => {
+          const itens = [...lista.querySelectorAll<HTMLElement>(':scope > [data-tipo]')];
+          itens.forEach((li, i) => (li.dataset.ordem ??= String(i)));
+          itens.sort((a, b) => Number(a.dataset.ordem) - Number(b.dataset.ordem));
+          const sim = tipo ? itens.filter((li) => li.dataset.tipo === tipo) : [];
+          const nao = itens.filter((li) => !sim.includes(li));
+          itens.forEach((li) => li.classList.toggle('combina', sim.includes(li)));
+          const divisor = lista.querySelector<HTMLElement>(':scope > [data-divisor]');
+          const nova = [...sim, ...(divisor && sim.length && nao.length ? [divisor] : []), ...nao];
+          if (divisor) divisor.hidden = !(sim.length && nao.length);
+          lista.append(...nova);
+          // Fileira deslizante: o encaixe (scroll-snap) seguiria o item antigo; volta para o começo.
+          if (lista.classList.contains('trilho')) lista.scrollLeft = 0;
+        });
+        document.querySelectorAll<HTMLAnchorElement>('a[data-wa-auto]').forEach((a) => {
+          a.dataset.waOriginal ??= a.href;
+          const e = ler();
+          a.href = tipo && e ? linkWa(mensagem(e)) : a.dataset.waOriginal;
+        });
+      };
+      const vt = (document as Document & { startViewTransition?: (f: () => void) => unknown }).startViewTransition;
+      if (animar && !calmo && vt) vt.call(document, aplicar);
+      else aplicar();
+    }
+
+    function balao(texto: string, quem: 'eu' | 'voce' = 'eu') {
+      const li = document.createElement('li');
+      li.className = `assist-balao assist-${quem}`;
+      li.textContent = texto;
+      conversa.append(li);
+      return li;
+    }
+    async function digitar(texto: string) {
+      const li = document.createElement('li');
+      li.className = 'assist-balao assist-eu assist-digitando';
+      li.setAttribute('aria-hidden', 'true');
+      li.innerHTML = '<span></span><span></span><span></span>';
+      conversa.append(li);
+      await espera(650);
+      li.remove();
+      return balao(texto);
+    }
+    function botoes(lista: { rotulo: string; acao: () => void; classe?: string; href?: string }[]) {
+      opcoes.replaceChildren(
+        ...lista.map((o, i) => {
+          const el = document.createElement(o.href ? 'a' : 'button');
+          el.className = o.classe ?? 'chip assist-chip';
+          el.textContent = o.rotulo;
+          el.style.setProperty('--i', String(i));
+          if (o.href) (el as HTMLAnchorElement).href = o.href;
+          else (el as HTMLButtonElement).type = 'button';
+          el.addEventListener('click', o.acao);
+          return el;
+        }),
+      );
+    }
+    const limparBotoes = () => opcoes.replaceChildren();
+    const irParaLista = () => {
+      const destino = document.querySelector(cfg.alvo);
+      destino?.scrollIntoView({ behavior: calmo ? 'auto' : 'smooth', block: 'start' });
+    };
+
+    async function perguntarTipo() {
+      await digitar('O que você quer registrar?');
+      botoes([
+        ...cfg.tipos.map((t) => ({ rotulo: t.resposta, acao: () => escolherTipo(t) })),
+        { rotulo: 'Quero ver tudo', classe: 'chip assist-chip assist-chip-leve', acao: verTudo },
+      ]);
+    }
+    async function escolherTipo(t: Opcao) {
+      limparBotoes();
+      balao(t.resposta, 'voce');
+      await digitar('Ótimo. E para quando seria?');
+      botoes(cfg.prazos.map((p) => ({ rotulo: p.resposta, acao: () => escolherPrazo(t, p) })));
+    }
+    async function escolherPrazo(t: Opcao, p: Opcao) {
+      limparBotoes();
+      balao(p.resposta, 'voce');
+      const e = { tipo: t.id, prazo: p.id };
+      gravar(e);
+      ordenar(t.id, true);
+      await digitar(`Pronto. Coloquei ${t.titulo} na frente para você. Os outros trabalhos continuam logo depois.`);
+      final(e);
+    }
+    async function verTudo() {
+      limparBotoes();
+      balao('Quero ver tudo', 'voce');
+      gravar(null);
+      ordenar(null, true);
+      await digitar('Fique à vontade. Todos os álbuns estão logo abaixo, e eu respondo pelo WhatsApp quando quiser.');
+      botoes([
+        { rotulo: 'Ver os álbuns', classe: 'botao assist-acao', acao: irParaLista },
+        { rotulo: 'Recomeçar', classe: 'assist-refazer', acao: recomecar },
+      ]);
+    }
+    function final(e: Escolha) {
+      botoes([
+        { rotulo: 'Ver o que separei', classe: 'botao assist-acao', acao: irParaLista },
+        { rotulo: 'Falar sobre o meu ensaio', classe: 'botao-sec assist-wa', href: linkWa(mensagem(e)), acao: () => {} },
+        { rotulo: 'Refazer', classe: 'assist-refazer', acao: recomecar },
+      ]);
+    }
+    async function recomecar() {
+      gravar(null);
+      ordenar(null, true);
+      conversa.replaceChildren();
+      limparBotoes();
+      balao('Vamos de novo.');
+      await perguntarTipo();
+    }
+
+    async function iniciar() {
+      const salva = ler();
+      if (salva) {
+        ordenar(salva.tipo, false);
+        balao(`Da última vez você procurava ${tipoDe(salva.tipo)!.titulo}. Esses trabalhos já estão na frente.`);
+        final(salva);
+        return;
+      }
+      balao(`Oi! Em dois toques eu separo os trabalhos que mais combinam com o que você procura.`);
+      await perguntarTipo();
+    }
+
+    raiz.hidden = false;
+    if (raiz.classList.contains('assist-indice') && !ler()) {
+      // Página de trabalhos: começa recolhido, uma linha só.
+      abrir.hidden = false;
+      raiz.setAttribute('data-recolhido', '');
+      abrir.addEventListener('click', () => {
+        abrir.hidden = true;
+        raiz.removeAttribute('data-recolhido');
+        iniciar();
+      });
+    } else iniciar();
+
+    // Botões fora do assistente (ex.: "Me ajude a escolher" na abertura) levam até ele.
+    document.querySelectorAll<HTMLAnchorElement>('a[href="#assistente"]').forEach((a) =>
+      a.addEventListener('click', () => {
+        if (!abrir.hidden) abrir.click();
+      }),
+    );
+  }
+</script>
+
+<style>
+  .assist {
+    scroll-margin-top: calc(var(--cab) + 16px);
+  }
+  .assist-home {
+    padding-top: var(--s6);
+  }
+  .assist-indice {
+    margin-bottom: var(--s4);
+  }
+  .assist-caixa {
+    display: grid;
+    gap: var(--s2);
+    max-width: 640px;
+    margin-inline: auto;
+    padding: var(--s3) var(--s3) var(--s4);
+  }
+  .assist-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .assist-avatar {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex: none;
+    border-radius: 999px;
+    background: var(--couro-fundo);
+    box-shadow:
+      inset 0 0 0 1px rgb(0 252 168 / 0.35),
+      0 6px 16px -6px rgb(0 0 0 / 0.6);
+  }
+  .assist-quem {
+    flex: 1;
+    min-width: 0;
+  }
+  .assist-nome {
+    font-weight: 650;
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .assist-sub {
+    font-size: 13px;
+    color: var(--texto-2);
+  }
+  .assist-abrir {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--verde);
+    color: #0d1512;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .tema-claro .assist-abrir {
+    background: var(--verde-escuro);
+    color: var(--papel);
+  }
+  .assist[data-recolhido] .assist-caixa {
+    padding-block: var(--s2);
+  }
+  .assist[data-recolhido] .assist-sub {
+    display: none;
+  }
+
+  .assist-conversa {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .assist-conversa:empty {
+    display: none;
+  }
+  .assist-conversa :global(.assist-balao) {
+    max-width: 88%;
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+    line-height: 1.45;
+    animation: assist-entrar 380ms var(--curva) both;
+  }
+  .assist-conversa :global(.assist-eu) {
+    justify-self: start;
+    border-bottom-left-radius: 6px;
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  .tema-claro .assist-conversa :global(.assist-eu) {
+    background: rgb(255 255 255 / 0.55);
+    box-shadow: inset 0 0 0 1px rgb(70 48 20 / 0.08);
+  }
+  .assist-conversa :global(.assist-voce) {
+    justify-self: end;
+    border-bottom-right-radius: 6px;
+    background: var(--verde);
+    color: #0d1512;
+    font-weight: 600;
+  }
+  .tema-claro .assist-conversa :global(.assist-voce) {
+    background: var(--verde-escuro);
+    color: var(--papel);
+  }
+  .assist-conversa :global(.assist-digitando) {
+    display: flex;
+    gap: 5px;
+    padding: 16px 18px;
+  }
+  .assist-conversa :global(.assist-digitando span) {
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: currentColor;
+    opacity: 0.4;
+    animation: assist-ponto 900ms ease-in-out infinite;
+  }
+  .assist-conversa :global(.assist-digitando span:nth-child(2)) {
+    animation-delay: 150ms;
+  }
+  .assist-conversa :global(.assist-digitando span:nth-child(3)) {
+    animation-delay: 300ms;
+  }
+
+  .assist-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .assist-opcoes:empty {
+    display: none;
+  }
+  .assist-opcoes > :global(*) {
+    animation: assist-entrar 380ms var(--curva) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+  .assist-opcoes :global(.assist-chip) {
+    min-height: 48px;
+  }
+  .assist-opcoes :global(.assist-chip-leve) {
+    background: transparent;
+  }
+  .assist-opcoes :global(.assist-acao) {
+    flex: 1 1 auto;
+  }
+  .assist-opcoes :global(.assist-refazer) {
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--texto-2);
+    font: inherit;
+    font-size: 15px;
+    text-decoration: underline dashed;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+
+  @keyframes assist-entrar {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.97);
+    }
+  }
+  @keyframes assist-ponto {
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .assist-conversa :global(*),
+    .assist-opcoes > :global(*) {
+      animation: none !important;
+    }
+  }
+</style>

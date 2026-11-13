@@ -1,5 +1,6 @@
 ---
 import { linkWhatsApp, site } from '../data/site';
+import Simbolo from './Simbolo.astro';
 
 const atual = Astro.url.pathname;
 const links = [
@@ -13,7 +14,7 @@ const links = [
   <a class="pular botao" href="#conteudo">Pular para o conteúdo</a>
   <div class="barra couro">
     <a class="marca serifa" href="/" aria-label={`${site.marca}, voltar ao início`}>
-      {site.marca}<span class="marca-sub">Fotografia</span>
+      <Simbolo tamanho={26} class="marca-simbolo" />{site.marca}<span class="marca-sub">Fotografia</span>
     </a>
     <nav class="nav-desktop" aria-label="Principal">
       <ul>
@@ -33,7 +34,7 @@ const links = [
   </div>
   <div class="menu-movel" id="menu-movel" hidden>
     <div class="wrap menu-topo">
-      <span class="marca serifa" aria-hidden="true">{site.marca}</span>
+      <span class="marca serifa" aria-hidden="true"><Simbolo tamanho={26} class="marca-simbolo" />{site.marca}</span>
       <button class="menu-fechar" type="button">Fechar</button>
     </div>
     <nav class="wrap menu-lista" aria-label="Principal">
@@ -165,9 +166,12 @@ const links = [
     letter-spacing: -0.01em;
     display: inline-flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 10px;
     min-height: 44px;
     align-items: center;
+  }
+  .marca :global(.marca-simbolo) {
+    filter: drop-shadow(0 1px 4px rgb(0 0 0 / 0.35));
   }
   .marca:hover {
     color: var(--texto);
@@ -247,7 +251,7 @@ const links = [
     line-height: 1.05;
     text-decoration: none;
     color: var(--texto);
-    border-bottom: 2px dashed var(--costura-suave);
+    border-bottom: 1.5px dashed var(--costura-suave);
   }
   .menu-lista ul a:hover {
     color: var(--link-hover);

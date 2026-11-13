@@ -1,13 +1,17 @@
 ---
 import { linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+import Simbolo from './Simbolo.astro';
 const ano = new Date().getFullYear();
 ---
 
 <footer class="rodape closing" data-rodape>
   <div class="wrap grade">
-    <div>
-      <p class="marca serifa">{site.marca}</p>
-      <p class="legenda">{site.slogan}</p>
+    <div class="assinatura">
+      <Simbolo tamanho={44} />
+      <div>
+        <p class="marca serifa">{site.marca}</p>
+        <p class="slogan">{site.slogan}</p>
+      </div>
     </div>
     <ul class="contatos">
       <li><a href={linkWhatsApp()}>WhatsApp {site.whatsappExibicao}</a></li>
@@ -45,7 +49,7 @@ const ano = new Date().getFullYear();
     left: 9px;
     right: 9px;
     height: 40px;
-    border: 2px dashed rgb(0 252 168 / 0.5);
+    border: 1.5px dashed rgb(0 252 168 / 0.5);
     border-bottom: 0;
     border-radius: calc(var(--raio-g) - 9px) calc(var(--raio-g) - 9px) 0 0;
     pointer-events: none;
@@ -53,6 +57,18 @@ const ano = new Date().getFullYear();
   .grade {
     display: grid;
     gap: var(--s4);
+  }
+  .assinatura {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .slogan {
+    font-size: 12px;
+    font-weight: 620;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--cinza);
   }
   .marca {
     font-weight: 560;

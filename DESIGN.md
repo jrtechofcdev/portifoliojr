@@ -8,6 +8,18 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0c. Revisão de 13/11/2026 (tarde): refinada de luxo, capa que abre e assistente (vale sobre §0b e o resto)
+
+Pedido do responsável: "uma abertura bem elegante e bem marcante", linguagem "mais refinada", mais luxo mantendo o couro ("remete a álbum book premium de luxo"), e "uma espécie de assistente" com um questionário bem pequeno que leva o cliente à categoria certa sem esconder as outras. Manter os Stories e o "leve shot" ao passar a foto.
+
+- **Símbolo da marca** (`Simbolo.astro`): as quatro peças inclinadas em SVG, degradê #00FCA8 → #22D8FF, redesenhadas da referência enviada. Usado no cabeçalho, no rodapé (com o slogan), no assistente, na capa e no favicon.
+- **Capa de couro que abre** (`Abertura.astro`, só na home): couro acolchoado, costura que se desenha em volta, símbolo que se monta peça por peça em hot stamping, nome com brilho de folha metálica e slogan; a capa gira na dobradiça da esquerda (cerca de 2,7 s) e revela a foto em tela cheia. Só CSS; uma vez por visita (`sessionStorage`, classe `html.ja-abriu`); toque ou tecla pula; com `prefers-reduced-motion` só some suave. Os textos da abertura esperam a capa.
+- **Assistente de escolha** (`Assistente.astro`, home e /trabalhos): conversa com duas perguntas de um toque ("O que você quer registrar?" e "Para quando?"). A resposta reordena as listas `[data-reordenar]` pelo `data-tipo` (`tipoDoEnsaio` em `src/data/site.ts`), marca os cartões com o selo "Combina com você", separa "Mais trabalhos" e escreve a mensagem do WhatsApp (`[data-wa-auto]`). Nada some. Fica no `localStorage` do visitante. Não se apresenta como IA.
+- **Costura mais fina** (1,5 px) com sombra de 1 px por ponto; moldura de costura por dentro dos cartões de álbum; sobretítulos menores e mais espaçados; botão de assistir pequeno, de vidro escuro, sem pulsar.
+- **Transição entre páginas** só com CSS (`@view-transition`): a capa do cartão cresce até virar a abertura do álbum (`view-transition-name: capa-<slug>`).
+- **Texto:** saem as instruções de interface ("Toque para...", "Deslize..."); títulos mais autorais ("Fotos que parecem com você", "Do primeiro contato à entrega", "Vamos criar o seu álbum?").
+- O degradê verde-ciano aparece só no símbolo, no nome da capa e no selo do assistente.
+
 ## 0b. Revisão de 13/11/2026: fotos em tela cheia, celular Android primeiro (vale sobre §0 e o resto)
 
 Pedido do responsável: o site estava "muito sem vida"; tem que ser "voltado para celular Android, que é onde o cliente vai acessar", "bem otimizado", "com mais vida" e "uma experiência melhorada". Escolhas dele: **fotos em tela cheia**, **bastante movimento**.

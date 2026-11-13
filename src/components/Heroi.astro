@@ -7,14 +7,16 @@ import type { FotoEnsaio } from '../lib/fotos';
 interface Props {
   foto: FotoEnsaio | null;
   foco?: string;
+  /** Nome de view-transition: a capa do cartão do álbum cresce até virar esta foto. */
+  transicao?: string;
 }
-const { foto, foco = '50% 35%' } = Astro.props;
+const { foto, foco = '50% 35%', transicao } = Astro.props;
 ---
 
 <section class="heroi">
   {
     foto && (
-      <div class="heroi-foto" aria-hidden="true">
+      <div class="heroi-foto" aria-hidden="true" style={transicao ? `view-transition-name: ${transicao}` : undefined}>
         <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="(min-width: 900px) 100vw, 100vw" prioridade recorte={foco} />
       </div>
     )
@@ -68,7 +70,7 @@ const { foto, foco = '50% 35%' } = Astro.props;
     z-index: -1;
     background:
       linear-gradient(180deg, rgb(8 12 11 / 0.55) 0%, rgb(8 12 11 / 0) 18%),
-      linear-gradient(0deg, rgb(8 12 11 / 0.92) 0%, rgb(8 12 11 / 0.6) 30%, rgb(8 12 11 / 0) 58%);
+      linear-gradient(0deg, rgb(8 12 11 / 0.9) 0%, rgb(8 12 11 / 0.55) 28%, rgb(8 12 11 / 0.12) 50%, rgb(8 12 11 / 0) 62%);
   }
   .heroi-conteudo {
     display: grid;

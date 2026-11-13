@@ -1,0 +1,254 @@
+---
+// Abertura da home (revisão de 13/11/2026): a capa de couro de um álbum book.
+// A costura se desenha, o símbolo se monta peça por peça em hot stamping verde-ciano, o nome e o
+// slogan aparecem, e a capa gira na dobradiça da esquerda revelando a foto em tela cheia.
+// Tudo em CSS: sem JavaScript a capa abre e some sozinha. Aparece uma vez por visita
+// (html.ja-abriu, posto pelo script do <head> em Base.astro). Um toque ou tecla pula.
+// É decorativa (aria-hidden): o título real da página está na abertura (Heroi).
+import Simbolo from './Simbolo.astro';
+import { site } from '../data/site';
+---
+
+<div class="capa" aria-hidden="true" data-capa>
+  <div class="capa-folha">
+    <div class="capa-frente">
+      <span class="capa-costura"></span>
+      <div class="capa-miolo">
+        <span class="capa-gravacao">
+          <Simbolo tamanho={112} class="capa-simbolo" />
+        </span>
+        <p class="capa-nome">{site.marca}</p>
+        <p class="capa-slogan">Nossa Arte, Seu Sucesso</p>
+      </div>
+    </div>
+    <div class="capa-verso"></div>
+  </div>
+</div>
+
+<script>
+  // Pular: um toque, clique ou tecla acelera a abertura.
+  const capa = document.querySelector<HTMLElement>('[data-capa]');
+  if (capa && !document.documentElement.classList.contains('ja-abriu')) {
+    const pular = () => {
+      capa.classList.add('capa-pulando');
+      document.documentElement.classList.add('capa-pulada');
+      removeEventListener('keydown', pular);
+    };
+    capa.addEventListener('pointerdown', pular, { once: true });
+    addEventListener('keydown', pular, { once: true });
+    capa.addEventListener('animationend', (ev) => {
+      if (ev.animationName.includes('capa-sumir')) capa.remove();
+    });
+  }
+</script>
+
+<style>
+  @property --volta {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  .capa {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    perspective: 1800px;
+    perspective-origin: 0% 50%;
+    pointer-events: auto;
+    animation: capa-sumir 1ms linear 2.75s forwards;
+  }
+  :global(html.ja-abriu) .capa {
+    display: none;
+  }
+  .capa-folha {
+    position: absolute;
+    inset: 0;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
+    animation: capa-abrir 1s cubic-bezier(0.62, 0, 0.32, 1) 1.75s forwards;
+  }
+  .capa-frente,
+  .capa-verso {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Frente: couro acolchoado, mais escuro nas bordas, com brilho suave no centro */
+  .capa-frente {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 80% at 50% 42%, rgb(255 255 255 / 0.07), rgb(0 0 0 / 0) 55%),
+      radial-gradient(140% 110% at 50% 50%, rgb(0 0 0 / 0) 45%, rgb(0 0 0 / 0.55) 100%),
+      var(--couro) var(--textura);
+    background-blend-mode: normal, normal, overlay;
+    color: var(--papel);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.04);
+  }
+  /* Sombra que cresce enquanto a capa gira */
+  .capa-frente::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(0 0 0 / 0), rgb(0 0 0 / 0.6));
+    opacity: 0;
+    animation: capa-sombra 1s cubic-bezier(0.62, 0, 0.32, 1) 1.75s forwards;
+  }
+  .capa-verso {
+    transform: rotateY(180deg);
+    background: var(--couro-fundo) var(--textura);
+    background-blend-mode: overlay;
+    box-shadow: inset -30px 0 60px rgb(0 0 0 / 0.6);
+  }
+
+  /* Costura que se desenha em volta, como uma agulha dando a volta na capa */
+  .capa-costura {
+    position: absolute;
+    inset: clamp(14px, 3.4vw, 28px);
+    border: 1.5px dashed rgb(0 252 168 / 0.6);
+    border-radius: clamp(18px, 3vw, 30px);
+    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.6));
+    -webkit-mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
+    mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
+    --volta: 360deg;
+    animation: capa-costurar 1.1s cubic-bezier(0.5, 0, 0.3, 1) 0.1s both;
+  }
+
+  .capa-miolo {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    padding: var(--s3);
+    text-align: center;
+    translate: 0 -2vh;
+  }
+  /* Hot stamping: o símbolo levemente afundado no couro */
+  .capa-gravacao {
+    display: block;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 -1px 0 rgb(0 0 0 / 0.7)) drop-shadow(0 10px 22px rgb(0 252 168 / 0.18));
+  }
+  .capa-miolo :global(.capa-simbolo) {
+    width: clamp(88px, 24vw, 128px);
+    height: auto;
+  }
+  .capa-miolo :global(.capa-simbolo path) {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: capa-peca 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .capa-miolo :global(.capa-simbolo .p1) {
+    animation-delay: 0.3s;
+    --de: -26px, -18px;
+  }
+  .capa-miolo :global(.capa-simbolo .p2) {
+    animation-delay: 0.42s;
+    --de: 24px, -20px;
+  }
+  .capa-miolo :global(.capa-simbolo .p3) {
+    animation-delay: 0.54s;
+    --de: -24px, 20px;
+  }
+  .capa-miolo :global(.capa-simbolo .p4) {
+    animation-delay: 0.66s;
+    --de: 26px, 18px;
+  }
+  .capa-nome {
+    font-family: var(--serifa);
+    font-variation-settings: 'SOFT' 100, 'WONK' 0;
+    font-weight: 500;
+    font-size: clamp(30px, 8.4vw, 54px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    background: linear-gradient(100deg, #00fca8 0%, #22d8ff 40%, #e9fff7 50%, #22d8ff 60%, #00fca8 100%);
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation:
+      capa-nome 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 0.95s both,
+      capa-brilho 1.4s ease-in-out 1.2s both;
+  }
+  .capa-slogan {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #c9c4ba;
+    animation: capa-slogan 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 1.25s both;
+  }
+
+  @keyframes capa-costurar {
+    from {
+      --volta: 0deg;
+    }
+  }
+  @keyframes capa-peca {
+    from {
+      opacity: 0;
+      transform: translate(var(--de)) scale(0.7);
+    }
+  }
+  @keyframes capa-nome {
+    from {
+      opacity: 0;
+      letter-spacing: 0.4em;
+      filter: blur(8px);
+    }
+  }
+  @keyframes capa-brilho {
+    to {
+      background-position: 0% 0;
+    }
+  }
+  @keyframes capa-slogan {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  @keyframes capa-abrir {
+    to {
+      transform: rotateY(-108deg);
+    }
+  }
+  @keyframes capa-sombra {
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes capa-sumir {
+    to {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  /* Pulada: some num instante, sem esperar a sequência */
+  @keyframes capa-desvanecer {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+  .capa.capa-pulando {
+    animation: capa-desvanecer 320ms ease-out forwards;
+  }
+
+  /* Movimento reduzido: só a capa parada por um instante, que some suave */
+  @media (prefers-reduced-motion: reduce) {
+    .capa,
+    .capa *,
+    .capa :global(*) {
+      animation: none !important;
+    }
+    .capa {
+      animation: capa-desvanecer 400ms ease-out 0.9s forwards !important;
+    }
+  }
+</style>

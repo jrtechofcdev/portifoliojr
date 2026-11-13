@@ -4,7 +4,7 @@
 // Sem JS o filtro fica escondido e todos os álbuns aparecem.
 import Foto from './Foto.astro';
 import { capaDe, fotosDoEnsaio, type Ensaio } from '../lib/fotos';
-import { CATEGORIAS, type Categoria } from '../data/site';
+import { CATEGORIAS, tipoDoEnsaio, type Categoria } from '../data/site';
 
 interface Props {
   ensaios: Ensaio[];
@@ -32,16 +32,19 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     )
   }
 
-  <ul class="cartoes wrap">
+  <ul class="cartoes wrap" data-reordenar>
+    <li class="cartoes-divisor" data-divisor hidden>
+      <span class="sobretitulo">Mais trabalhos</span>
+    </li>
     {
       ensaios.map((e, i) => {
         const capa = capaDe(e);
         const total = fotosDoEnsaio(e).length;
         return (
-          <li class="cartao surge" data-categoria={e.data.categoria}>
+          <li class="cartao surge" data-categoria={e.data.categoria} data-tipo={tipoDoEnsaio(e.data.categoria, e.data.rotulo)}>
             <a class="cartao-link" href={`/trabalhos/${e.id}`}>
               {capa && (
-                <span class="cartao-foto">
+                <span class="cartao-foto" style={`view-transition-name: capa-${e.id}`}>
                   <Foto
                     slug={capa.slug}
                     arquivo={capa.arquivo}
@@ -53,6 +56,7 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
                 </span>
               )}
               <span class="cartao-texto">
+                <span class="cartao-selo">Combina com você</span>
                 <span class="cartao-rotulo">{e.data.rotulo}</span>
                 <span class="cartao-nome serifa">{e.data.nome}</span>
                 <span class="cartao-ficha">
@@ -61,7 +65,7 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
               </span>
             </a>
             <button type="button" class="cartao-play" data-historia={i} aria-label={`Assistir as fotos de ${e.data.nome} em tela cheia`}>
-              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
             </button>
           </li>
         );
@@ -152,88 +156,121 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
   .cartao-link:hover .cartao-foto :global(img) {
     transform: scale(1.06);
   }
+  /* Escurece só embaixo, onde fica o nome */
   .cartao-link::after {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(0deg, rgb(8 12 11 / 0.88) 0%, rgb(8 12 11 / 0.35) 32%, rgb(8 12 11 / 0) 55%);
+    background: linear-gradient(0deg, rgb(8 12 11 / 0.86) 0%, rgb(8 12 11 / 0.3) 30%, rgb(8 12 11 / 0) 52%);
+  }
+  /* Moldura de álbum: costura fina por dentro da borda do cartão */
+  .cartao-link::before {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    z-index: 1;
+    border: 1.5px dashed rgb(242 238 230 / 0.32);
+    border-radius: calc(var(--raio-g) - 10px);
+    pointer-events: none;
+    transition: border-color 400ms;
+  }
+  .cartao-link:hover::before,
+  .combina .cartao-link::before {
+    border-color: rgb(0 252 168 / 0.7);
   }
   .cartao-texto {
     position: absolute;
     inset: auto 0 0;
     display: grid;
-    gap: 6px;
-    padding: var(--s3);
+    gap: 8px;
+    padding: var(--s4) var(--s4) calc(var(--s4) + 4px);
   }
   .cartao-rotulo {
-    justify-self: start;
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: var(--verde);
-    color: #0d1512;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
+    color: #dcd7cd;
+  }
+  .cartao-rotulo::before {
+    content: '';
+    width: 22px;
+    border-top: 1.5px dashed var(--verde);
   }
   .cartao-nome {
-    font-size: clamp(34px, 9vw, 52px);
-    line-height: 1;
-    text-shadow: 0 2px 16px rgb(0 0 0 / 0.45);
+    font-size: clamp(34px, 9.4vw, 54px);
+    line-height: 0.98;
+    text-shadow: 0 2px 18px rgb(0 0 0 / 0.5);
   }
   .cartao-ficha {
     font-size: 14px;
     font-weight: 500;
-    color: #ddd8ce;
+    color: #d6d1c7;
+  }
+  /* Selo do assistente: hot stamping nas cores do símbolo */
+  .cartao-selo {
+    display: none;
+    justify-self: start;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: linear-gradient(100deg, #00fca8, #22d8ff);
+    color: #0d1512;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .combina .cartao-selo {
+    display: inline-block;
   }
   .cartao-link:focus-visible {
     outline-offset: 4px;
   }
-  /* Botão de assistir: pílula no canto, com costura, fora do link (não aninhado) */
+  /* Botão de assistir: pequeno, de vidro escuro, fora do link (não aninhado) */
   .cartao-play {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 22px;
+    right: 22px;
+    z-index: 2;
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
-    border: 2px dashed rgb(0 252 168 / 0.8);
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgb(242 238 230 / 0.35);
     border-radius: 999px;
-    background: rgb(8 12 11 / 0.6);
+    background: rgb(8 12 11 / 0.42);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     color: #f2eee6;
     cursor: pointer;
     transition:
       transform 200ms var(--curva),
-      background-color 200ms;
+      background-color 200ms,
+      color 200ms;
+  }
+  .cartao-play svg {
+    translate: 1px 0;
   }
   .cartao-play:hover {
     background: var(--verde);
+    border-color: transparent;
     color: #0d1512;
   }
   .cartao-play:active {
     transform: scale(0.9);
   }
-  @media (prefers-reduced-motion: no-preference) {
-    .cartao-play svg {
-      animation: pulsar 2.4s ease-in-out infinite;
-    }
-  }
-  @keyframes pulsar {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.18);
-    }
+  .cartoes-divisor {
+    grid-column: 1 / -1;
+    padding-top: var(--s3);
   }
   @media (min-width: 700px) {
     .cartoes {
       grid-template-columns: repeat(2, 1fr);
     }
-    .cartao:nth-child(even) {
+    .cartao:nth-child(even of .cartao:not([hidden])) {
       margin-top: var(--s6);
     }
   }
@@ -241,10 +278,10 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     .cartoes {
       grid-template-columns: repeat(3, 1fr);
     }
-    .cartao:nth-child(even) {
+    .cartao:nth-child(even of .cartao:not([hidden])) {
       margin-top: 0;
     }
-    .cartao:nth-child(3n + 2) {
+    .cartao:nth-child(3n + 2 of .cartao:not([hidden])) {
       margin-top: var(--s6);
     }
   }

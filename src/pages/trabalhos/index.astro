@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import ListaAlbuns from '../../components/ListaAlbuns.astro';
 import Historias, { type Historia } from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
+import Assistente from '../../components/Assistente.astro';
 import { ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
 import { linkWhatsApp } from '../../data/site';
 
@@ -25,9 +26,13 @@ const historias: Historia[] = ensaios.map((e) => {
 >
   <section class="indice">
     <div class="wrap indice-topo">
-      <h1 class="display-l entra" style="--i:0">Os <em>álbuns</em></h1>
-      <p class="texto apoio entra" style="--i:1">Toque num álbum para ver todas as fotos, ou no botão de assistir para passar uma a uma.</p>
+      <p class="sobretitulo entra" style="--i:0">Portfólio</p>
+      <h1 class="display-l entra" style="--i:1">Todos os <em>álbuns</em></h1>
+      <p class="texto apoio entra" style="--i:2">Ensaios, casais, gestantes, 15 anos e celebrações em Imperatriz e Bacabal.</p>
     </div>
+
+    <Assistente variante="indice" alvo="#lista" />
+    <span id="lista"></span>
 
     {ensaios.length === 0 && <p class="wrap texto">Os trabalhos entram aqui assim que forem escolhidos na curadoria.</p>}
     <ListaAlbuns ensaios={ensaios} prioridade />
@@ -35,14 +40,15 @@ const historias: Historia[] = ensaios.map((e) => {
 
   <section class="secao wrap" data-contato-ensaio aria-labelledby="cta-titulo">
     <div class="contato couro surge">
-      <h2 class="h2" id="cta-titulo">Quer um álbum <em>assim?</em></h2>
-      <p class="texto">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
-      <a class="botao botao-grande" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+      <p class="sobretitulo">Contato</p>
+      <h2 class="h2" id="cta-titulo">Vamos criar o seu <em>álbum?</em></h2>
+      <p class="texto">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
+      <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>Conversar no WhatsApp</a>
     </div>
   </section>
 
   <Historias historias={historias} slot="depois" />
-  <BarraWhatsApp slot="depois" />
+  <BarraWhatsApp slot="depois" auto />
 </Base>
 
 <style>
@@ -52,7 +58,12 @@ const historias: Historia[] = ensaios.map((e) => {
   .indice-topo {
     display: grid;
     gap: var(--s2);
-    margin-bottom: var(--s3);
+    justify-items: start;
+    margin-bottom: var(--s4);
+  }
+  #lista {
+    display: block;
+    scroll-margin-top: calc(var(--cab) + 8px);
   }
   .apoio {
     color: var(--texto-2);

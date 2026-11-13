@@ -1,0 +1,44 @@
+---
+// Símbolo da marca Jr_Tech_OFC: quatro peças inclinadas no degradê verde-ciano do logo
+// (#00FCA8 → #22D8FF), redesenhado em SVG a partir da referência enviada pelo responsável.
+// Cada peça tem a própria classe (p1 a p4) para a montagem animada na abertura.
+interface Props {
+  class?: string;
+  tamanho?: number;
+  /** Rótulo para leitor de tela; sem ele o símbolo é decorativo. */
+  rotulo?: string;
+}
+const { class: classe, tamanho = 32, rotulo } = Astro.props;
+const id = `simbolo-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class:list={['simbolo', classe]}
+  viewBox="44 34 412 432"
+  width={tamanho}
+  height={tamanho}
+  role={rotulo ? 'img' : undefined}
+  aria-label={rotulo}
+  aria-hidden={rotulo ? undefined : 'true'}
+>
+  <defs>
+    <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="120" y1="40" x2="380" y2="470">
+      <stop offset="0" stop-color="#00FCA8"></stop>
+      <stop offset="1" stop-color="#22D8FF"></stop>
+    </linearGradient>
+  </defs>
+  <g fill={`url(#${id})`}>
+    <path class="p1" d="M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z"></path>
+    <path class="p2" d="M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z"></path>
+    <path class="p3" d="M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z"></path>
+    <path class="p4" d="M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z"></path>
+  </g>
+</svg>
+
+<style>
+  .simbolo {
+    display: block;
+    flex: none;
+    overflow: visible;
+  }
+</style>
