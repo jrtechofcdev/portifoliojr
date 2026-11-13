@@ -1,10 +1,9 @@
 ---
-// Lista de álbuns em cartões grandes de foto (um por tela no celular), com filtro por categoria
-// e um botão que abre o álbum no modo Stories (componente Historias, índice = posição na lista).
-// Sem JS o filtro fica escondido e todos os álbuns aparecem.
-import Foto from './Foto.astro';
-import { capaDe, fotosDoEnsaio, type Ensaio } from '../lib/fotos';
-import { CATEGORIAS, tipoDoEnsaio, type Categoria } from '../data/site';
+// Lista completa de álbuns em cartões grandes de foto (um por tela no celular), com filtro por
+// categoria. Usada na página de trabalhos. Sem JS o filtro fica escondido e todos os álbuns aparecem.
+import CartaoAlbum from './CartaoAlbum.astro';
+import type { Ensaio } from '../lib/fotos';
+import { CATEGORIAS, type Categoria } from '../data/site';
 
 interface Props {
   ensaios: Ensaio[];
@@ -36,41 +35,7 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     <li class="cartoes-divisor" data-divisor hidden>
       <span class="sobretitulo">Mais trabalhos</span>
     </li>
-    {
-      ensaios.map((e, i) => {
-        const capa = capaDe(e);
-        const total = fotosDoEnsaio(e).length;
-        return (
-          <li class="cartao surge" data-categoria={e.data.categoria} data-tipo={tipoDoEnsaio(e.data.categoria, e.data.rotulo)}>
-            <a class="cartao-link" href={`/trabalhos/${e.id}`}>
-              {capa && (
-                <span class="cartao-foto" style={`view-transition-name: capa-${e.id}`}>
-                  <Foto
-                    slug={capa.slug}
-                    arquivo={capa.arquivo}
-                    alt=""
-                    sizes="(min-width: 1100px) 31vw, (min-width: 700px) 46vw, 92vw"
-                    recorte={e.data.capa === e.data.abertura.arquivo ? e.data.abertura.foco : '50% 30%'}
-                    prioridade={prioridade && i === 0}
-                  />
-                </span>
-              )}
-              <span class="cartao-texto">
-                <span class="cartao-selo">Combina com você</span>
-                <span class="cartao-rotulo">{e.data.rotulo}</span>
-                <span class="cartao-nome serifa">{e.data.nome}</span>
-                <span class="cartao-ficha">
-                  {[e.data.cidade, e.data.data.slice(0, 4), `${total} fotos`].filter(Boolean).join(' · ')}
-                </span>
-              </span>
-            </a>
-            <button type="button" class="cartao-play" data-historia={i} aria-label={`Assistir as fotos de ${e.data.nome} em tela cheia`}>
-              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
-            </button>
-          </li>
-        );
-      })
-    }
+    {ensaios.map((e, i) => <CartaoAlbum ensaio={e} historia={i} prioridade={prioridade && i === 0} class="surge" />)}
   </ul>
   <p class="wrap texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
 </div>
@@ -118,150 +83,6 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     display: grid;
     gap: var(--s3);
   }
-  .cartao {
-    position: relative;
-    min-width: 0;
-  }
-  .cartao-link {
-    position: relative;
-    display: block;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--raio-g);
-    overflow: hidden;
-    isolation: isolate;
-    color: #f2eee6;
-    text-decoration: none;
-    background: #0b110f;
-    box-shadow: var(--sombra);
-    transition: transform 250ms var(--curva);
-  }
-  .cartao-link:active {
-    transform: scale(0.98);
-  }
-  .cartao-link:hover {
-    color: #f2eee6;
-  }
-  .cartao-foto {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-  }
-  .cartao-foto :global(.foto) {
-    height: 100%;
-    border-radius: 0;
-  }
-  .cartao-foto :global(img) {
-    transition: transform 900ms var(--curva);
-  }
-  .cartao-link:hover .cartao-foto :global(img) {
-    transform: scale(1.06);
-  }
-  /* Escurece só embaixo, onde fica o nome */
-  .cartao-link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(0deg, rgb(8 12 11 / 0.86) 0%, rgb(8 12 11 / 0.3) 30%, rgb(8 12 11 / 0) 52%);
-  }
-  /* Moldura de álbum: costura fina por dentro da borda do cartão */
-  .cartao-link::before {
-    content: '';
-    position: absolute;
-    inset: 10px;
-    z-index: 1;
-    border: 1.5px dashed rgb(242 238 230 / 0.32);
-    border-radius: calc(var(--raio-g) - 10px);
-    pointer-events: none;
-    transition: border-color 400ms;
-  }
-  .cartao-link:hover::before,
-  .combina .cartao-link::before {
-    border-color: rgb(0 252 168 / 0.7);
-  }
-  .cartao-texto {
-    position: absolute;
-    inset: auto 0 0;
-    display: grid;
-    gap: 8px;
-    padding: var(--s4) var(--s4) calc(var(--s4) + 4px);
-  }
-  .cartao-rotulo {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 11.5px;
-    font-weight: 650;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: #dcd7cd;
-  }
-  .cartao-rotulo::before {
-    content: '';
-    width: 22px;
-    border-top: 1.5px dashed var(--verde);
-  }
-  .cartao-nome {
-    font-size: clamp(34px, 9.4vw, 54px);
-    line-height: 0.98;
-    text-shadow: 0 2px 18px rgb(0 0 0 / 0.5);
-  }
-  .cartao-ficha {
-    font-size: 14px;
-    font-weight: 500;
-    color: #d6d1c7;
-  }
-  /* Selo do assistente: hot stamping nas cores do símbolo */
-  .cartao-selo {
-    display: none;
-    justify-self: start;
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: linear-gradient(100deg, #00fca8, #22d8ff);
-    color: #0d1512;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-  .combina .cartao-selo {
-    display: inline-block;
-  }
-  .cartao-link:focus-visible {
-    outline-offset: 4px;
-  }
-  /* Botão de assistir: pequeno, de vidro escuro, fora do link (não aninhado) */
-  .cartao-play {
-    position: absolute;
-    top: 22px;
-    right: 22px;
-    z-index: 2;
-    display: grid;
-    place-items: center;
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgb(242 238 230 / 0.35);
-    border-radius: 999px;
-    background: rgb(8 12 11 / 0.42);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    color: #f2eee6;
-    cursor: pointer;
-    transition:
-      transform 200ms var(--curva),
-      background-color 200ms,
-      color 200ms;
-  }
-  .cartao-play svg {
-    translate: 1px 0;
-  }
-  .cartao-play:hover {
-    background: var(--verde);
-    border-color: transparent;
-    color: #0d1512;
-  }
-  .cartao-play:active {
-    transform: scale(0.9);
-  }
   .cartoes-divisor {
     grid-column: 1 / -1;
     padding-top: var(--s3);
@@ -270,7 +91,7 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     .cartoes {
       grid-template-columns: repeat(2, 1fr);
     }
-    .cartao:nth-child(even of .cartao:not([hidden])) {
+    .cartoes > :global(.cartao:nth-child(even of .cartao:not([hidden]))) {
       margin-top: var(--s6);
     }
   }
@@ -278,10 +99,10 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     .cartoes {
       grid-template-columns: repeat(3, 1fr);
     }
-    .cartao:nth-child(even of .cartao:not([hidden])) {
+    .cartoes > :global(.cartao:nth-child(even of .cartao:not([hidden]))) {
       margin-top: 0;
     }
-    .cartao:nth-child(3n + 2 of .cartao:not([hidden])) {
+    .cartoes > :global(.cartao:nth-child(3n + 2 of .cartao:not([hidden]))) {
       margin-top: var(--s6);
     }
   }

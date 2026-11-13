@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
 import Heroi from '../components/Heroi.astro';
-import ListaAlbuns from '../components/ListaAlbuns.astro';
+import Capitulos from '../components/Capitulos.astro';
 import Historias, { type Historia } from '../components/Historias.astro';
 import BarraWhatsApp from '../components/BarraWhatsApp.astro';
 import Assistente from '../components/Assistente.astro';
@@ -10,13 +10,15 @@ import { capaDe, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, type FotoEnsaio } fr
 import { linkEmail, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
 
 // Home pensada para o celular (revisão de 13/11/2026): abertura em tela cheia, destaques no estilo
-// dos Stories, álbuns em cartões grandes, uma foto de pausa, como funciona, sobre e contato.
+// dos Stories, assistente, álbuns em capítulos por tipo de trabalho, uma foto de pausa, as páginas
+// de papel creme (como funciona e sobre) e o contato.
 // Tudo vem da seleção feita na página /curadoria.
 const ensaios = await ensaiosPublicaveis();
 const abertura = (await fotoDe('sara-e-yasmin', 'IMG_1081.jpg')) ?? (ensaios[0] ? capaDe(ensaios[0]) : null);
 const focoAbertura = abertura?.slug === 'sara-e-yasmin' ? '50% 22%' : '50% 30%';
 
 // Cada álbum vira uma história: a capa e as primeiras fotos escolhidas.
+const totalFotos = ensaios.reduce((n, e) => n + fotosDoEnsaio(e).length, 0);
 const tipos = ensaios.map((e) => tipoDoEnsaio(e.data.categoria, e.data.rotulo));
 const historias: Historia[] = ensaios.map((e) => {
   const fotos = fotosDoEnsaio(e);
@@ -119,10 +121,13 @@ const jsonld = {
   <section class="secao trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
     <div class="wrap secao-topo surge">
       <p class="sobretitulo">Portfólio</p>
-      <h2 class="h2" id="trabalhos-titulo">Álbuns <em>completos</em></h2>
-      <p class="texto apoio">Cada álbum reúne as fotos escolhidas de um ensaio ou de uma celebração.</p>
+      <h2 class="h2" id="trabalhos-titulo">O portfólio em <em>capítulos</em></h2>
+      <p class="texto apoio">{ensaios.length} álbuns e {totalFotos} fotos, organizados por tipo de trabalho.</p>
     </div>
-    <ListaAlbuns ensaios={ensaios} />
+    <Capitulos ensaios={ensaios} />
+    <p class="wrap todos surge">
+      <a class="botao-sec" href="/trabalhos">Ver todos os álbuns em uma página</a>
+    </p>
   </section>
 
   {
@@ -135,45 +140,49 @@ const jsonld = {
     )
   }
 
-  <section class="secao como" id="como-funciona" aria-labelledby="como-titulo">
-    <div class="wrap secao-topo surge">
-      <p class="sobretitulo">Como funciona</p>
-      <h2 class="h2" id="como-titulo">Do primeiro contato à <em>entrega</em></h2>
-    </div>
-    <ol class="trilho passos">
-      {
-        passos.map(([titulo, texto], i) => (
-          <li class="passo couro surge-lado">
-            <span class="passo-num serifa" aria-hidden="true">{i + 1}</span>
-            <h3 class="titulo">{titulo}</h3>
-            <p>{texto}</p>
-          </li>
-        ))
-      }
-    </ol>
-  </section>
-
-  <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
-    <div class="wrap sobre-grade">
-      {
-        sobreFoto && (
-          <div class="sobre-foto revela">
-            <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 40vw, 92vw" />
-          </div>
-        )
-      }
-      <div class="sobre-texto surge">
-        <p class="sobretitulo">Sobre</p>
-        <h2 class="h2" id="sobre-titulo">José <em>Renato</em></h2>
-        <p class="texto">
-          Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
-          ao ar livre, e também cubro cultos, confraternizações, aniversários e festas de família. Gosto de foto que parece com
-          quem está nela: natural, sem pose dura.
-        </p>
-        <a class="botao-sec" href={linkInstagram}>Mais no Instagram @{site.instagram}</a>
+  <div class="papel tema-claro">
+    <section class="secao como" id="como-funciona" aria-labelledby="como-titulo">
+      <div class="wrap secao-topo surge">
+        <p class="sobretitulo">Como funciona</p>
+        <h2 class="h2" id="como-titulo">Do primeiro contato à <em>entrega</em></h2>
       </div>
-    </div>
-  </section>
+      <ol class="wrap passos">
+        {
+          passos.map(([titulo, texto], i) => (
+            <li class="passo surge">
+              <span class="passo-num serifa" aria-hidden="true">{i + 1}</span>
+              <div class="passo-texto">
+                <h3 class="titulo">{titulo}</h3>
+                <p>{texto}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
+      <div class="wrap sobre-grade">
+        {
+          sobreFoto && (
+            <div class="sobre-foto revela">
+              <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 40vw, 92vw" />
+            </div>
+          )
+        }
+        <div class="sobre-texto surge">
+          <p class="sobretitulo">Sobre</p>
+          <h2 class="h2" id="sobre-titulo">José <em>Renato</em></h2>
+          <p class="texto">
+            Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
+            ao ar livre, e também cubro cultos, confraternizações, aniversários e festas de família. Gosto de foto que parece com
+            quem está nela: natural, sem pose dura.
+          </p>
+          <a class="botao-sec" href={linkInstagram}>Mais no Instagram @{site.instagram}</a>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <section class="secao" id="contato" aria-labelledby="contato-titulo" data-contato-ensaio>
     <div class="wrap">
@@ -294,36 +303,75 @@ const jsonld = {
     border-radius: 0;
   }
 
-  /* Como funciona: cartões de couro que se deslizam */
+  .todos {
+    margin-top: var(--s4);
+  }
+
+  /* Páginas de papel: respiro entre a foto de pausa e o contato */
+  .papel {
+    margin-block: var(--s4) 0;
+  }
+
+  /* Como funciona: linha do tempo costurada (no computador, cinco colunas) */
   .passos {
     list-style: none;
     margin: 0;
-    padding-bottom: var(--s2);
+    display: grid;
+    gap: var(--s4);
   }
   .passo {
-    width: min(78vw, 320px);
+    position: relative;
     display: grid;
-    align-content: start;
-    gap: var(--s1);
-    padding: var(--s4) var(--s3);
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: var(--s2);
+    align-items: start;
   }
   .passo-num {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    font-size: 56px;
+    font-size: 48px;
     font-style: italic;
     font-weight: 380;
     line-height: 0.9;
+    text-align: center;
     color: var(--destaque);
   }
-  .passo-num::after {
+  .passo:not(:last-child)::before {
     content: '';
-    flex: 1;
-    border-top: 1.5px dashed var(--costura-suave);
+    position: absolute;
+    left: 23px;
+    top: 54px;
+    bottom: calc(var(--s4) * -1 + 8px);
+    border-left: 1.5px dashed var(--costura-suave);
+  }
+  .passo-texto {
+    display: grid;
+    gap: 6px;
+    padding-top: 6px;
   }
   .passo p {
     color: var(--texto-2);
+  }
+  @media (min-width: 1000px) {
+    .passos {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .passo {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .passo::before {
+      display: none;
+    }
+    .passo-num {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 56px;
+      text-align: left;
+    }
+    .passo-num::after {
+      content: '';
+      flex: 1;
+      border-top: 1.5px dashed var(--costura-suave);
+    }
   }
 
   /* Sobre */
@@ -373,10 +421,5 @@ const jsonld = {
     min-height: 56px;
     padding-inline: 36px;
     font-size: 18px;
-  }
-  @media (min-width: 900px) {
-    .passos {
-      padding-inline: var(--margem);
-    }
   }
 </style>

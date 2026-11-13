@@ -51,3 +51,12 @@ export function tipoDoEnsaio(categoria: Categoria, rotulo: string): TipoAssisten
   if (categoria === 'ensaios') return 'ensaio';
   return /15 anos|anivers/i.test(rotulo) ? 'festa' : 'evento';
 }
+
+// Capítulos da home (revisão de 13/11/2026, noite): os álbuns agrupados pelo mesmo tipo que o
+// assistente usa. O título tem uma palavra em itálico; o apoio é uma linha só.
+export const CAPITULOS: Record<TipoAssistente, { titulo: [string, string]; apoio: string }> = {
+  ensaio: { titulo: ['Ensaios', 'externos'], apoio: 'Retratos ao ar livre, a sós ou em boa companhia.' },
+  casal: { titulo: ['Casais e', 'gestantes'], apoio: 'A história a dois e a espera do bebê.' },
+  festa: { titulo: ['15 anos e', 'aniversários'], apoio: 'A festa inteira, do primeiro retrato ao parabéns.' },
+  evento: { titulo: ['Eventos e', 'celebrações'], apoio: 'Cultos, confraternizações e festas de família.' },
+};

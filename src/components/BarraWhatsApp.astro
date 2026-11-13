@@ -1,6 +1,8 @@
 ---
 // Botão flutuante de WhatsApp no celular (DESIGN.md §7). Aparece depois da abertura em tela cheia
 // e some quando o contato ou o rodapé real estão na tela, para não cobrir os contatos.
+// Enquanto a pessoa rola para baixo vendo as fotos, encolhe para só o ícone; ao rolar para cima,
+// volta a mostrar o texto.
 import { linkWhatsApp } from '../data/site';
 interface Props {
   mensagem?: string;
@@ -37,6 +39,17 @@ const { mensagem, auto = false } = Astro.props;
     );
     alvos.forEach((el) => io.observe(el));
     if (!alvos.length) atualizar();
+
+    let ultimo = scrollY;
+    addEventListener(
+      'scroll',
+      () => {
+        if (Math.abs(scrollY - ultimo) < 16) return;
+        barra.toggleAttribute('data-compacta', scrollY > ultimo);
+        ultimo = scrollY;
+      },
+      { passive: true },
+    );
   }
 </script>
 
@@ -69,7 +82,27 @@ const { mensagem, auto = false } = Astro.props;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.45),
       0 16px 32px -10px rgb(0 0 0 / 0.65);
-    transition: transform 200ms var(--curva);
+    transition:
+      transform 200ms var(--curva),
+      padding 320ms var(--curva),
+      gap 320ms var(--curva);
+  }
+  .wa span {
+    max-width: 220px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition:
+      max-width 320ms var(--curva),
+      opacity 200ms;
+  }
+  /* Compacta: só o ícone, para não cobrir as fotos (o texto continua no botão para leitor de tela) */
+  .barra-wa[data-compacta] .wa {
+    gap: 0;
+    padding: 0 16px;
+  }
+  .barra-wa[data-compacta] .wa span {
+    max-width: 0;
+    opacity: 0;
   }
   .wa:hover {
     color: #0d1512;

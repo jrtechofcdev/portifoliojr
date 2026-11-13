@@ -1,0 +1,174 @@
+---
+// Capítulos da home (revisão de 13/11/2026, noite): os álbuns agrupados por tipo de trabalho,
+// como os capítulos de um álbum book. No celular cada capítulo é uma fileira que se desliza; no
+// computador, o título fica à esquerda e os cartões em grade à direita.
+// O assistente de escolha move para cima o capítulo que combina com a resposta ([data-reordenar]
+// e data-tipo). O número romano vem de um contador CSS, então acompanha a nova ordem.
+// `historia` de cada cartão é a posição do álbum na lista de Stories da página.
+import CartaoAlbum from './CartaoAlbum.astro';
+import type { Ensaio } from '../lib/fotos';
+import { CAPITULOS, TIPOS_ASSISTENTE, tipoDoEnsaio } from '../data/site';
+
+interface Props {
+  ensaios: Ensaio[];
+}
+const { ensaios } = Astro.props;
+const capitulos = TIPOS_ASSISTENTE.map((t) => ({
+  id: t.id,
+  ...CAPITULOS[t.id],
+  albuns: ensaios.map((e, i) => ({ e, i })).filter(({ e }) => tipoDoEnsaio(e.data.categoria, e.data.rotulo) === t.id),
+})).filter((c) => c.albuns.length > 0);
+---
+
+<div class="capitulos" data-reordenar>
+  {
+    capitulos.map((c) => (
+      <section class="capitulo" data-tipo={c.id} aria-labelledby={`capitulo-${c.id}`}>
+        <header class="cap-topo wrap surge">
+          <p class="cap-linha">
+            <span class="cap-num serifa" aria-hidden="true" />
+            <span class="cap-fio" aria-hidden="true" />
+            <span class="cap-conta">{c.albuns.length === 1 ? '1 álbum' : `${c.albuns.length} álbuns`}</span>
+          </p>
+          <span class="cap-selo">Combina com você</span>
+          <h3 class="cap-titulo serifa" id={`capitulo-${c.id}`}>
+            {c.titulo[0]} <em>{c.titulo[1]}</em>
+          </h3>
+          <p class="cap-apoio">{c.apoio}</p>
+        </header>
+        <ul class="trilho cap-lista">
+          {c.albuns.map(({ e, i }) => (
+            <CartaoAlbum ensaio={e} historia={i} variante="trilho" class="surge-lado" />
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .capitulos {
+    display: grid;
+    gap: var(--s6);
+    counter-reset: capitulo;
+  }
+  .capitulo {
+    counter-increment: capitulo;
+    min-width: 0;
+    scroll-margin-top: calc(var(--cab) + 8px);
+  }
+  .cap-topo {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+    margin-bottom: var(--s3);
+  }
+  .cap-linha {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+  }
+  .cap-num {
+    font-size: 44px;
+    font-style: italic;
+    font-weight: 380;
+    line-height: 0.9;
+    color: var(--destaque);
+  }
+  .cap-num::before {
+    content: counter(capitulo, upper-roman);
+  }
+  .cap-fio {
+    flex: 1;
+    border-top: 1.5px dashed var(--costura-suave);
+  }
+  .cap-conta {
+    font-size: 12px;
+    font-weight: 620;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--texto-2);
+  }
+  .cap-titulo {
+    font-size: clamp(32px, 8.6vw, 52px);
+    line-height: 1;
+  }
+  .cap-apoio {
+    color: var(--texto-2);
+  }
+  /* Selo do assistente: só no capítulo que combina com a resposta */
+  .cap-selo {
+    display: none;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: linear-gradient(100deg, #00fca8, #22d8ff);
+    color: #0d1512;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .combina .cap-selo {
+    display: inline-block;
+  }
+  .cap-lista {
+    list-style: none;
+    margin: 0;
+    padding-block: 4px var(--s3);
+  }
+
+  @media (min-width: 900px) {
+    .capitulos {
+      gap: var(--secao);
+    }
+    .capitulo {
+      display: grid;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: var(--s5);
+      align-items: start;
+      padding-inline: var(--margem);
+    }
+    .cap-topo {
+      position: sticky;
+      top: calc(var(--cab) + var(--s3));
+      padding-inline: 0;
+      margin-bottom: 0;
+    }
+    .cap-num {
+      font-size: 64px;
+    }
+    /* No computador a fileira vira grade: nada fica escondido fora da tela.
+       Seis trilhas: três cartões por linha; quando sobraria um cartão sozinho, os primeiros
+       ficam maiores (dois por linha) para a grade fechar sem buraco. */
+    .cap-lista {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: var(--s3);
+      overflow: visible;
+      padding: 0;
+    }
+    .cap-lista > :global(.cartao) {
+      width: auto;
+      grid-column: span 2;
+    }
+    .cap-lista > :global(.cartao:only-child),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 2)),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 2) + .cartao),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 4)),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 4) + .cartao),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 4) + .cartao + .cartao),
+    .cap-lista > :global(.cartao:first-child:nth-last-child(3n + 4) + .cartao + .cartao + .cartao) {
+      grid-column: span 3;
+    }
+  }
+  @supports (animation-timeline: view()) {
+    @media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+      /* Em grade, os cartões entram ao rolar a página (não mais ao deslizar a fileira) */
+      .cap-lista > :global(.surge-lado) {
+        animation-name: surgir;
+        animation-timeline: view();
+        animation-range: entry 0% cover 28%;
+      }
+    }
+  }
+</style>

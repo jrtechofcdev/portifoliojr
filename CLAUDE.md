@@ -11,6 +11,8 @@ Revisão de 13/11/2026: curadoria final feita pelo fotógrafo (14 álbuns). Novo
 
 Revisão de 13/11/2026 (tarde): site publicado no GitHub e na Vercel. Refinada de luxo (DESIGN.md §0c): capa de couro que abre na home, símbolo da marca em SVG, assistente de escolha de duas perguntas, costura mais fina, transição entre páginas. Álbum "Dália" corrigido para "Dalila" (`/trabalhos/dalila`, redirect do endereço antigo no `vercel.json`).
 
+Revisão de 13/11/2026 (noite): repaginada da home (DESIGN.md §0d): álbuns em capítulos por tipo de trabalho, assistente com fotos nas respostas, "Como funciona" e "Sobre" em páginas de papel creme, botão de WhatsApp que encolhe ao rolar.
+
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.

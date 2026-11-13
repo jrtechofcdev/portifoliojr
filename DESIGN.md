@@ -8,6 +8,20 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0d. Revisão de 13/11/2026 (noite): repaginada em capítulos e páginas de papel (vale sobre §0c e o resto)
+
+Pedido do responsável: "uma repaginada inteligente". O problema da versão anterior era a home: 14 cartões iguais empilhados (cerca de 8 telas de celular) antes de chegar em como funciona, sobre e contato, e tudo no mesmo couro escuro.
+
+- **Capítulos** (`Capitulos.astro`, só na home): os álbuns agrupados pelos mesmos quatro tipos do assistente (`CAPITULOS` em `src/data/site.ts`): ensaios externos, casais e gestantes, 15 anos e aniversários, eventos e celebrações. Cada capítulo tem número romano em itálico (contador CSS, acompanha a ordem), fio de costura, contagem de álbuns, título com uma palavra em itálico e uma linha de apoio. No celular, os cartões ficam numa fileira que se desliza, com o próximo aparecendo na beirada; no computador, título fixo à esquerda e grade à direita (seis trilhas: três por linha, e os primeiros crescem quando sobraria um cartão sozinho).
+- **O assistente move o capítulo inteiro** para o primeiro lugar e mostra nele o selo "Combina com você". Os outros capítulos continuam logo abaixo. Na página de trabalhos ele continua reordenando os cartões.
+- **Primeira pergunta do assistente com fotos:** cada resposta é um botão com a capa do álbum mais recente daquele tipo e moldura de costura. "Quero ver tudo" continua em pílula.
+- **Cartão de álbum** virou componente próprio (`CartaoAlbum.astro`), usado nos capítulos (variante `trilho`) e na lista completa. O tamanho do nome acompanha a largura do cartão (`cqi`).
+- **Páginas de papel** (`.papel` com `.tema-claro`, em `global.css`): "Como funciona" e "Sobre" ficam num bloco creme pousado sobre o couro, com costura por dentro. É o miolo do álbum (§0: "páginas internas em papel creme") e quebra o escuro contínuo. O contato e o rodapé voltam ao couro.
+- **Como funciona** deixou de ser fileira deslizante (os passos 3 a 5 ficavam escondidos): agora é uma linha do tempo costurada, com os cinco passos à vista; no computador, cinco colunas.
+- **Botão flutuante de WhatsApp:** encolhe para só o ícone enquanto a pessoa rola para baixo (não cobre mais os nomes dos álbuns) e volta a mostrar o texto ao rolar para cima.
+- A lista completa com filtro por categoria fica só em `/trabalhos` ("Ver todos os álbuns em uma página").
+- Deixa de valer: §0b "álbuns em cartões grandes 4:5" na home e "Como funciona em cartões que se deslizam".
+
 ## 0c. Revisão de 13/11/2026 (tarde): refinada de luxo, capa que abre e assistente (vale sobre §0b e o resto)
 
 Pedido do responsável: "uma abertura bem elegante e bem marcante", linguagem "mais refinada", mais luxo mantendo o couro ("remete a álbum book premium de luxo"), e "uma espécie de assistente" com um questionário bem pequeno que leva o cliente à categoria certa sem esconder as outras. Manter os Stories e o "leve shot" ao passar a foto.

@@ -7,8 +7,12 @@
 // A escolha fica no localStorage do visitante (conveniência; sem ele tudo funciona igual).
 // Sem JavaScript o assistente não aparece e a lista fica na ordem normal.
 // Não se apresenta como IA: é um assistente de escolha, com texto escrito à mão.
+// A primeira pergunta se responde tocando numa foto: cada opção mostra a capa do álbum mais
+// recente daquele tipo (as miniaturas ficam guardadas no HTML e o script as copia para os botões).
 import Simbolo from './Simbolo.astro';
-import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, site } from '../data/site';
+import Foto from './Foto.astro';
+import { capaDe, ensaiosPublicaveis } from '../lib/fotos';
+import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, site, tipoDoEnsaio } from '../data/site';
 
 interface Props {
   /** "indice": começa recolhido numa linha (página de trabalhos). */
@@ -17,6 +21,12 @@ interface Props {
   alvo?: string;
 }
 const { variante = 'home', alvo = '#trabalhos' } = Astro.props;
+const ensaios = await ensaiosPublicaveis();
+const miniaturas = TIPOS_ASSISTENTE.flatMap((t) => {
+  const ensaio = ensaios.find((e) => tipoDoEnsaio(e.data.categoria, e.data.rotulo) === t.id);
+  const capa = ensaio ? capaDe(ensaio) : null;
+  return capa ? [{ tipo: t.id, capa }] : [];
+});
 const config = {
   tipos: TIPOS_ASSISTENTE,
   prazos: PRAZOS_ASSISTENTE,
@@ -30,13 +40,22 @@ const config = {
     <div class="assist-topo">
       <span class="assist-avatar"><Simbolo tamanho={26} /></span>
       <div class="assist-quem">
-        <p class="assist-nome">Assistente {site.marca}</p>
+        <p class="assist-nome">Assistente <span class="assist-marca">{site.marca}</span></p>
         <p class="assist-sub">Duas perguntas rápidas</p>
       </div>
       <button type="button" class="assist-abrir" data-abrir hidden>Me ajude a escolher</button>
     </div>
     <ol class="assist-conversa" aria-live="polite" data-conversa></ol>
     <div class="assist-opcoes" role="group" aria-label="Respostas" data-opcoes></div>
+    <div hidden data-miniaturas>
+      {
+        miniaturas.map((m) => (
+          <span class="assist-mini" data-mini={m.tipo}>
+            <Foto slug={m.capa.slug} arquivo={m.capa.arquivo} alt="" sizes="(min-width: 700px) 150px, 44vw" recorte="50% 28%" />
+          </span>
+        ))
+      }
+    </div>
   </div>
 </section>
 <script type="application/json" id="assistente-config" set:html={JSON.stringify(config)} />
@@ -126,12 +145,20 @@ const config = {
       li.remove();
       return balao(texto);
     }
-    function botoes(lista: { rotulo: string; acao: () => void; classe?: string; href?: string }[]) {
+    function botoes(lista: { rotulo: string; acao: () => void; classe?: string; href?: string; mini?: string }[]) {
       opcoes.replaceChildren(
         ...lista.map((o, i) => {
           const el = document.createElement(o.href ? 'a' : 'button');
           el.className = o.classe ?? 'chip assist-chip';
-          el.textContent = o.rotulo;
+          const mini = o.mini ? raiz!.querySelector(`[data-mini="${o.mini}"]`) : null;
+          if (mini) {
+            // Opção com foto: a capa de um álbum daquele tipo, com o texto por cima.
+            const rotulo = document.createElement('span');
+            rotulo.className = 'assist-foto-rotulo';
+            rotulo.textContent = o.rotulo;
+            el.className = 'assist-foto';
+            el.append(mini.cloneNode(true), rotulo);
+          } else el.textContent = o.rotulo;
           el.style.setProperty('--i', String(i));
           if (o.href) (el as HTMLAnchorElement).href = o.href;
           else (el as HTMLButtonElement).type = 'button';
@@ -149,7 +176,7 @@ const config = {
     async function perguntarTipo() {
       await digitar('O que você quer registrar?');
       botoes([
-        ...cfg.tipos.map((t) => ({ rotulo: t.resposta, acao: () => escolherTipo(t) })),
+        ...cfg.tipos.map((t) => ({ rotulo: t.resposta, mini: t.id, acao: () => escolherTipo(t) })),
         { rotulo: 'Quero ver tudo', classe: 'chip assist-chip assist-chip-leve', acao: verTudo },
       ]);
     }
@@ -294,8 +321,13 @@ const config = {
   .assist[data-recolhido] .assist-caixa {
     padding-block: var(--s2);
   }
-  .assist[data-recolhido] .assist-sub {
+  .assist[data-recolhido] .assist-sub,
+  .assist[data-recolhido] .assist-marca {
     display: none;
+  }
+  .assist-abrir {
+    flex: none;
+    white-space: nowrap;
   }
 
   .assist-conversa {
@@ -374,6 +406,71 @@ const config = {
   }
   .assist-opcoes :global(.assist-chip-leve) {
     background: transparent;
+  }
+  /* Opção com foto: a capa de um álbum daquele tipo, com moldura de costura */
+  .assist-opcoes :global(.assist-foto) {
+    position: relative;
+    flex: 1 1 calc(50% - 5px);
+    min-width: 0;
+    aspect-ratio: 4 / 3;
+    padding: 0;
+    border: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    isolation: isolate;
+    background: #0b110f;
+    color: #f2eee6;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 12px 22px -14px rgb(0 0 0 / 0.8);
+    transition: transform var(--t-estado) var(--curva);
+  }
+  .assist-opcoes :global(.assist-foto:active) {
+    transform: scale(0.96);
+  }
+  .assist-opcoes :global(.assist-foto .assist-mini) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .assist-opcoes :global(.assist-foto .foto) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .assist-opcoes :global(.assist-foto::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(0deg, rgb(8 12 11 / 0.88) 0%, rgb(8 12 11 / 0.35) 45%, rgb(8 12 11 / 0) 75%);
+  }
+  .assist-opcoes :global(.assist-foto::before) {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1.5px dashed rgb(242 238 230 / 0.34);
+    border-radius: 12px;
+    pointer-events: none;
+    transition: border-color 300ms;
+  }
+  .assist-opcoes :global(.assist-foto:hover::before),
+  .assist-opcoes :global(.assist-foto:focus-visible::before) {
+    border-color: rgb(0 252 168 / 0.8);
+  }
+  .assist-opcoes :global(.assist-foto-rotulo) {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 0 14px 14px;
+    font-size: 14.5px;
+    font-weight: 650;
+    line-height: 1.2;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+  }
+  @media (min-width: 700px) {
+    .assist-opcoes :global(.assist-foto) {
+      flex-basis: calc(25% - 8px);
+    }
   }
   .assist-opcoes :global(.assist-acao) {
     flex: 1 1 auto;

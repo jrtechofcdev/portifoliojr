@@ -586,3 +586,27 @@ button {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+
+/* Página de papel (revisão de 13/11/2026, noite): o miolo do álbum. Um bloco creme pousado sobre
+   o couro, com a costura por dentro. Usar junto com .tema-claro, que troca as cores do conteúdo. */
+.papel {
+  position: relative;
+  margin-inline: clamp(8px, 1.6vw, 24px);
+  border-radius: var(--raio-g);
+  background: var(--fundo) var(--textura);
+  background-blend-mode: overlay;
+  color: var(--texto);
+  box-shadow: var(--brilho), var(--sombra);
+}
+.papel::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border: 1.5px dashed var(--costura-suave);
+  border-radius: calc(var(--raio-g) - 9px);
+  pointer-events: none;
+}
+
+.papel .wrap {
+  padding-inline: calc(var(--margem) + 6px);
+}
