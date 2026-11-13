@@ -12,7 +12,7 @@
 import Simbolo from './Simbolo.astro';
 import Foto from './Foto.astro';
 import { capaDe, ensaiosPublicaveis } from '../lib/fotos';
-import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, site, tipoDoEnsaio } from '../data/site';
+import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
 
 interface Props {
   /** "indice": começa recolhido numa linha (página de trabalhos). */
@@ -31,6 +31,8 @@ const config = {
   tipos: TIPOS_ASSISTENTE,
   prazos: PRAZOS_ASSISTENTE,
   whatsapp: site.whatsapp,
+  // Mesma mensagem de orçamento do resto do site; o script troca {pedido} pela resposta.
+  modelo: mensagemOrcamento('{pedido}', 'Cidade'),
   alvo,
 };
 ---
@@ -41,7 +43,7 @@ const config = {
       <span class="assist-avatar"><Simbolo tamanho={26} /></span>
       <div class="assist-quem">
         <p class="assist-nome">Assistente <span class="assist-marca">{site.marca}</span></p>
-        <p class="assist-sub">Duas perguntas rápidas</p>
+        <p class="assist-sub">Duas perguntas, dois toques</p>
       </div>
       <button type="button" class="assist-abrir" data-abrir hidden>Me ajude a escolher</button>
     </div>
@@ -62,7 +64,7 @@ const config = {
 
 <script>
   type Opcao = { id: string; resposta: string; frase: string; titulo?: string };
-  type Config = { tipos: Opcao[]; prazos: Opcao[]; whatsapp: string; alvo: string };
+  type Config = { tipos: Opcao[]; prazos: Opcao[]; whatsapp: string; modelo: string; alvo: string };
   type Escolha = { tipo: string; prazo?: string };
 
   const raiz = document.querySelector<HTMLElement>('[data-assistente]');
@@ -96,7 +98,7 @@ const config = {
       const t = tipoDe(e.tipo);
       const p = prazoDe(e.prazo);
       if (!t) return '';
-      return `Olá, José Renato! Vi seu portfólio e quero ${t.frase}${p ? `, ${p.frase}` : ''}. Pode me contar como funciona?`;
+      return cfg.modelo.replace('{pedido}', `${t.frase}${p ? `, ${p.frase}` : ''}`);
     }
     const linkWa = (msg: string) => `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent(msg)}`;
 
@@ -174,7 +176,7 @@ const config = {
     };
 
     async function perguntarTipo() {
-      await digitar('O que você quer registrar?');
+      await digitar('O que você gostaria de registrar?');
       botoes([
         ...cfg.tipos.map((t) => ({ rotulo: t.resposta, mini: t.id, acao: () => escolherTipo(t) })),
         { rotulo: 'Quero ver tudo', classe: 'chip assist-chip assist-chip-leve', acao: verTudo },
@@ -183,7 +185,7 @@ const config = {
     async function escolherTipo(t: Opcao) {
       limparBotoes();
       balao(t.resposta, 'voce');
-      await digitar('Ótimo. E para quando seria?');
+      await digitar('Que ótimo. E para quando você imagina?');
       botoes(cfg.prazos.map((p) => ({ rotulo: p.resposta, acao: () => escolherPrazo(t, p) })));
     }
     async function escolherPrazo(t: Opcao, p: Opcao) {
@@ -192,7 +194,7 @@ const config = {
       const e = { tipo: t.id, prazo: p.id };
       gravar(e);
       ordenar(t.id, true);
-      await digitar(`Pronto. Coloquei ${t.titulo} na frente para você. Os outros trabalhos continuam logo depois.`);
+      await digitar(`Pronto. Deixei ${t.titulo} em primeiro lugar. O restante do portfólio continua logo abaixo.`);
       final(e);
     }
     async function verTudo() {
@@ -200,7 +202,7 @@ const config = {
       balao('Quero ver tudo', 'voce');
       gravar(null);
       ordenar(null, true);
-      await digitar('Fique à vontade. Todos os álbuns estão logo abaixo, e eu respondo pelo WhatsApp quando quiser.');
+      await digitar('Fique à vontade. O portfólio inteiro está logo abaixo, e eu respondo pelo WhatsApp quando você quiser.');
       botoes([
         { rotulo: 'Ver os álbuns', classe: 'botao assist-acao', acao: irParaLista },
         { rotulo: 'Recomeçar', classe: 'assist-refazer', acao: recomecar },
@@ -209,8 +211,8 @@ const config = {
     function final(e: Escolha) {
       botoes([
         { rotulo: 'Ver o que separei', classe: 'botao assist-acao', acao: irParaLista },
-        { rotulo: 'Falar sobre o meu ensaio', classe: 'botao-sec assist-wa', href: linkWa(mensagem(e)), acao: () => {} },
-        { rotulo: 'Refazer', classe: 'assist-refazer', acao: recomecar },
+        { rotulo: 'Pedir orçamento', classe: 'botao-sec assist-wa', href: linkWa(mensagem(e)), acao: () => {} },
+        { rotulo: 'Recomeçar', classe: 'assist-refazer', acao: recomecar },
       ]);
     }
     async function recomecar() {
@@ -226,11 +228,14 @@ const config = {
       const salva = ler();
       if (salva) {
         ordenar(salva.tipo, false);
-        balao(`Da última vez você procurava ${tipoDe(salva.tipo)!.titulo}. Esses trabalhos já estão na frente.`);
+        balao(`Que bom ver você de novo. Da última vez você procurava ${tipoDe(salva.tipo)!.titulo}, e esses álbuns já estão em primeiro lugar.`);
         final(salva);
         return;
       }
-      balao(`Oi! Em dois toques eu separo os trabalhos que mais combinam com o que você procura.`);
+      // Cumprimento pela hora do dia de quem visita.
+      const hora = new Date().getHours();
+      const saudacao = hora < 5 ? 'Boa noite' : hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+      balao(`${saudacao}! Que bom ter você por aqui. Em dois toques, eu separo os álbuns que mais combinam com o que você procura.`);
       await perguntarTipo();
     }
 

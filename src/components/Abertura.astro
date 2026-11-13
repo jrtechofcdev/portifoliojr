@@ -1,27 +1,57 @@
 ---
-// Abertura da home (revisão de 13/11/2026): a capa de couro de um álbum book.
-// A costura se desenha, o símbolo se monta peça por peça em hot stamping verde-ciano, o nome e o
-// slogan aparecem, e a capa gira na dobradiça da esquerda revelando a foto em tela cheia.
+// Abertura da home (edição de luxo, 13/11/2026): o álbum book como objeto.
+// Sobre um fundo escuro aparece o álbum de couro, com lombada, friso em baixo-relevo, cantoneiras
+// de platina e fita de cetim. A costura se desenha, o símbolo é estampado peça por peça, o nome
+// entra letra por letra em folha metálica, um reflexo cruza a capa. Então a câmera se aproxima, a
+// capa gira na lombada e a primeira página vira a foto em tela cheia.
 // Tudo em CSS: sem JavaScript a capa abre e some sozinha. Aparece uma vez por visita
 // (html.ja-abriu, posto pelo script do <head> em Base.astro). Um toque ou tecla pula.
 // É decorativa (aria-hidden): o título real da página está na abertura (Heroi).
 import Simbolo from './Simbolo.astro';
 import { site } from '../data/site';
+
+// Cada letra recebe a própria cor ao longo do degradê do símbolo (verde para ciano).
+const letras = [...site.marca];
+const DE = [0, 252, 168];
+const ATE = [34, 216, 255];
+const corDa = (i: number) => {
+  const t = letras.length > 1 ? i / (letras.length - 1) : 0;
+  return `rgb(${DE.map((v, k) => Math.round(v + (ATE[k] - v) * t)).join(' ')})`;
+};
+
+// Forro da capa (a guarda do álbum): papel creme com o símbolo repetido, como um monograma.
+const monograma = encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500"><g fill="#007a55" fill-opacity=".17" transform="translate(250 250) scale(.42) translate(-250 -250)"><path d="M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z"/><path d="M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z"/><path d="M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z"/><path d="M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z"/></g></svg>`,
+);
 ---
 
-<div class="capa" aria-hidden="true" data-capa>
-  <div class="capa-folha">
-    <div class="capa-frente">
-      <span class="capa-costura"></span>
-      <div class="capa-miolo">
-        <span class="capa-gravacao">
-          <Simbolo tamanho={112} class="capa-simbolo" />
-        </span>
-        <p class="capa-nome">{site.marca}</p>
-        <p class="capa-slogan">Nossa Arte, Seu Sucesso</p>
-      </div>
+<div class="capa" aria-hidden="true" data-capa style={`--monograma:url("data:image/svg+xml,${monograma}")`}>
+  <div class="capa-fundo"></div>
+  <div class="capa-livro">
+    <span class="capa-contracapa"></span>
+    <span class="capa-fita"></span>
+    <div class="capa-bloco">
+      <span class="capa-pagina"><Simbolo tamanho={64} class="capa-marca-dagua" /></span>
     </div>
-    <div class="capa-verso"></div>
+    <div class="capa-folha">
+      <div class="capa-frente">
+        <span class="capa-lombada"></span>
+        <span class="capa-costura"></span>
+        <span class="capa-friso"></span>
+        <span class="capa-canto capa-canto-alto"></span>
+        <span class="capa-canto capa-canto-baixo"></span>
+        <p class="capa-rotulo capa-rotulo-alto">Portfólio</p>
+        <div class="capa-miolo">
+          <span class="capa-gravacao"><Simbolo tamanho={112} class="capa-simbolo" /></span>
+          <p class="capa-nome">{letras.map((l, i) => <span style={`--i:${i};--cor:${corDa(i)}`}>{l}</span>)}</p>
+          <span class="capa-ornamento"><i></i></span>
+          <p class="capa-slogan">Nossa Arte, Seu Sucesso</p>
+        </div>
+        <p class="capa-rotulo capa-rotulo-baixo">Imperatriz · Bacabal</p>
+        <span class="capa-reflexo"></span>
+      </div>
+      <div class="capa-verso"></div>
+    </div>
   </div>
 </div>
 
@@ -37,7 +67,7 @@ import { site } from '../data/site';
     capa.addEventListener('pointerdown', pular, { once: true });
     addEventListener('keydown', pular, { once: true });
     capa.addEventListener('animationend', (ev) => {
-      if (ev.animationName.includes('capa-sumir')) capa.remove();
+      if (ev.target === capa && /capa-(sumir|desvanecer)/.test(ev.animationName)) capa.remove();
     });
   }
 </script>
@@ -50,175 +80,471 @@ import { site } from '../data/site';
   }
 
   .capa {
+    /* largura do álbum e a unidade (1% dela) que dimensiona tudo o que está na capa */
+    --larg: min(84vw, 60svh);
+    --u: calc(var(--larg) / 100);
+    --abre: 2.25s; /* quando a capa começa a abrir */
+    --giro: 0.95s; /* quanto dura a abertura */
+    --zoom: 2.15;
     position: fixed;
     inset: 0;
     z-index: 100;
-    perspective: 1800px;
-    perspective-origin: 0% 50%;
+    display: grid;
+    place-items: center;
+    overflow: clip;
+    perspective: 1500px;
     pointer-events: auto;
-    animation: capa-sumir 1ms linear 2.75s forwards;
+    animation: capa-sumir 1ms linear calc(var(--abre) + var(--giro)) forwards;
   }
   :global(html.ja-abriu) .capa {
     display: none;
   }
+  @media (orientation: landscape) {
+    .capa {
+      --larg: min(56vw, 50svh);
+      --zoom: 2.7;
+    }
+  }
+
+  /* Fundo: mesa escura com uma luz suave caindo de cima */
+  .capa-fundo {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(80% 46% at 50% 34%, rgb(0 252 168 / 0.07), rgb(0 252 168 / 0) 70%),
+      radial-gradient(110% 70% at 50% 40%, #17241f 0%, #0a100e 58%, #040706 100%);
+    animation: capa-fundo-sair 600ms ease-out calc(var(--abre) + 0.24s) forwards;
+  }
+
+  .capa-livro {
+    position: relative;
+    width: var(--larg);
+    aspect-ratio: 2 / 3;
+    transform-style: preserve-3d;
+    animation:
+      capa-chegar 760ms cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both,
+      capa-mergulhar var(--giro) cubic-bezier(0.62, 0, 0.3, 1) var(--abre) forwards;
+  }
+
+  /* Contracapa: aparece como uma beirada escura embaixo e à direita, e faz a sombra na mesa */
+  .capa-contracapa {
+    position: absolute;
+    inset: 0;
+    border-radius: calc(var(--u) * 1.8) calc(var(--u) * 4.6) calc(var(--u) * 4.6) calc(var(--u) * 1.8);
+    background: #070b0a;
+    transform: translate(calc(var(--u) * 1.9), calc(var(--u) * 2.1));
+    box-shadow:
+      0 calc(var(--u) * 12) calc(var(--u) * 20) calc(var(--u) * -6) rgb(0 0 0 / 0.9),
+      0 calc(var(--u) * 5) calc(var(--u) * 9) calc(var(--u) * -3) rgb(0 0 0 / 0.7);
+    animation: capa-apagar 420ms ease-out calc(var(--abre) + 0.2s) forwards;
+  }
+
+  /* Fita de cetim que marca a página, saindo por baixo do álbum */
+  .capa-fita {
+    position: absolute;
+    left: 66%;
+    top: calc(100% - var(--u) * 2);
+    width: calc(var(--u) * 3.8);
+    height: calc(var(--u) * 16);
+    background: linear-gradient(90deg, #009e6c 0%, #00fca8 38%, #9dffdf 56%, #00d893 78%, #008a5f 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+    transform-origin: 50% 0;
+    animation:
+      capa-fita-cair 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s both,
+      capa-fita-balancar 2.6s ease-in-out 1.2s infinite alternate,
+      capa-apagar 300ms ease-out calc(var(--abre) + 0.1s) forwards;
+  }
+
+  /* Miolo: as páginas, que aparecem como um fio claro na borda direita */
+  .capa-bloco {
+    position: absolute;
+    inset: calc(var(--u) * 1.6) 0 calc(var(--u) * 1.6) calc(var(--u) * 1.2);
+    transform: translate(calc(var(--u) * 1.1), 0);
+    border-radius: calc(var(--u) * 1) calc(var(--u) * 3) calc(var(--u) * 3) calc(var(--u) * 1);
+    background: repeating-linear-gradient(90deg, #f3ebdc 0 1px, #cbbfa8 1px 2px);
+    overflow: hidden;
+    animation: capa-apagar 560ms ease-out calc(var(--abre) + 0.36s) forwards;
+  }
+  /* A primeira página, que se vê quando a capa abre */
+  .capa-pagina {
+    position: absolute;
+    inset: 0 calc(var(--u) * 1.1) 0 0;
+    display: grid;
+    place-items: center;
+    background:
+      linear-gradient(90deg, rgb(70 48 20 / 0.34), rgb(70 48 20 / 0) 14%),
+      #efe6d6 var(--textura);
+    background-blend-mode: normal, overlay;
+  }
+  .capa-pagina::before {
+    content: '';
+    position: absolute;
+    inset: calc(var(--u) * 6);
+    border: 1px solid rgb(0 122 85 / 0.3);
+    border-radius: calc(var(--u) * 2);
+  }
+  .capa-pagina :global(.capa-marca-dagua) {
+    width: calc(var(--u) * 20);
+    height: auto;
+  }
+  .capa-pagina :global(.capa-marca-dagua g) {
+    fill: rgb(0 122 85 / 0.26);
+  }
+
   .capa-folha {
     position: absolute;
     inset: 0;
     transform-origin: 0% 50%;
     transform-style: preserve-3d;
-    animation: capa-abrir 1s cubic-bezier(0.62, 0, 0.32, 1) 1.75s forwards;
+    animation: capa-abrir var(--giro) cubic-bezier(0.62, 0, 0.3, 1) var(--abre) forwards;
   }
   .capa-frente,
   .capa-verso {
     position: absolute;
     inset: 0;
+    border-radius: calc(var(--u) * 1.8) calc(var(--u) * 4.6) calc(var(--u) * 4.6) calc(var(--u) * 1.8);
+    overflow: hidden;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
 
-  /* Frente: couro acolchoado, mais escuro nas bordas, com brilho suave no centro */
+  /* Frente: couro acolchoado, com a luz vindo do alto à esquerda */
   .capa-frente {
-    display: grid;
-    place-items: center;
     background:
-      radial-gradient(120% 80% at 50% 42%, rgb(255 255 255 / 0.07), rgb(0 0 0 / 0) 55%),
-      radial-gradient(140% 110% at 50% 50%, rgb(0 0 0 / 0) 45%, rgb(0 0 0 / 0.55) 100%),
-      var(--couro) var(--textura);
+      radial-gradient(120% 64% at 28% 14%, rgb(190 255 232 / 0.13), rgb(190 255 232 / 0) 62%),
+      radial-gradient(140% 120% at 50% 50%, rgb(0 0 0 / 0) 46%, rgb(0 0 0 / 0.5) 100%),
+      #14261f var(--textura);
     background-blend-mode: normal, normal, overlay;
     color: var(--papel);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.04);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.05),
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 calc(var(--u) * -1) calc(var(--u) * 3) rgb(0 0 0 / 0.5);
   }
   /* Sombra que cresce enquanto a capa gira */
   .capa-frente::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgb(0 0 0 / 0), rgb(0 0 0 / 0.6));
+    background: linear-gradient(90deg, rgb(0 0 0 / 0), rgb(0 0 0 / 0.62));
     opacity: 0;
-    animation: capa-sombra 1s cubic-bezier(0.62, 0, 0.32, 1) 1.75s forwards;
+    animation: capa-acender var(--giro) cubic-bezier(0.62, 0, 0.3, 1) var(--abre) forwards;
   }
+  /* Forro: papel creme com o símbolo repetido */
   .capa-verso {
     transform: rotateY(180deg);
-    background: var(--couro-fundo) var(--textura);
-    background-blend-mode: overlay;
-    box-shadow: inset -30px 0 60px rgb(0 0 0 / 0.6);
+    background:
+      linear-gradient(270deg, rgb(70 48 20 / 0.4), rgb(70 48 20 / 0) 22%),
+      var(--monograma) 0 0 / calc(var(--u) * 14) calc(var(--u) * 14),
+      #e9dfcc;
+  }
+
+  /* Lombada: a dobra do couro à esquerda */
+  .capa-lombada {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 8.5%;
+    background: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.5) 0%,
+      rgb(0 0 0 / 0.1) 46%,
+      rgb(255 255 255 / 0.07) 74%,
+      rgb(0 0 0 / 0.42) 100%
+    );
+    border-right: 1px solid rgb(0 0 0 / 0.4);
   }
 
   /* Costura que se desenha em volta, como uma agulha dando a volta na capa */
   .capa-costura {
     position: absolute;
-    inset: clamp(14px, 3.4vw, 28px);
-    border: 1.5px dashed rgb(0 252 168 / 0.6);
-    border-radius: clamp(18px, 3vw, 30px);
+    inset: calc(var(--u) * 4.4) calc(var(--u) * 4.4) calc(var(--u) * 4.4) calc(var(--u) * 12.4);
+    border: 1.5px dashed rgb(0 252 168 / 0.62);
+    border-radius: calc(var(--u) * 1.6) calc(var(--u) * 2.6) calc(var(--u) * 2.6) calc(var(--u) * 1.6);
     filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.6));
     -webkit-mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
     mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
     --volta: 360deg;
-    animation: capa-costurar 1.1s cubic-bezier(0.5, 0, 0.3, 1) 0.1s both;
+    animation: capa-costurar 1s cubic-bezier(0.5, 0, 0.3, 1) 0.28s both;
+  }
+  /* Friso em baixo-relevo: uma moldura prensada no couro, sem tinta */
+  .capa-friso {
+    position: absolute;
+    inset: calc(var(--u) * 8.4) calc(var(--u) * 8.4) calc(var(--u) * 8.4) calc(var(--u) * 16.4);
+    border-radius: calc(var(--u) * 1.4);
+    box-shadow:
+      inset 0 1px 1px rgb(0 0 0 / 0.6),
+      inset 0 0 0 1px rgb(0 0 0 / 0.3),
+      0 1px 0 rgb(255 255 255 / 0.08);
+    animation: capa-surgir 700ms ease-out 0.4s both;
+  }
+
+  /* Cantoneiras de platina nos dois cantos de fora */
+  .capa-canto {
+    position: absolute;
+    right: 0;
+    width: calc(var(--u) * 15.5);
+    aspect-ratio: 1;
+    animation: capa-canto 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .capa-canto-alto {
+    top: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    background:
+      radial-gradient(circle at 72% 28%, #f2fffb 0 3.2%, rgb(30 80 66 / 0.9) 3.6% 5.4%, rgb(30 80 66 / 0) 6%),
+      linear-gradient(225deg, #f3fffb 0%, #b4e4d7 24%, #5fa996 46%, #cff8ec 58%, #86c8b6 74%, #356f60 100%);
+    animation-delay: 0.52s;
+  }
+  .capa-canto-baixo {
+    bottom: 0;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    background:
+      radial-gradient(circle at 72% 72%, #f2fffb 0 3.2%, rgb(30 80 66 / 0.9) 3.6% 5.4%, rgb(30 80 66 / 0) 6%),
+      linear-gradient(315deg, #d9fff3 0%, #9fd6c7 24%, #4f9886 46%, #b9eede 58%, #74b9a6 74%, #2c6254 100%);
+    animation-delay: 0.62s;
+  }
+
+  .capa-rotulo {
+    position: absolute;
+    left: 8.5%;
+    right: 0;
+    text-align: center;
+    font-size: clamp(9.5px, calc(var(--u) * 3), 15px);
+    font-weight: 600;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+    text-transform: uppercase;
+    color: rgb(242 238 230 / 0.62);
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.6);
+    animation: capa-surgir 800ms ease-out 1.42s both;
+  }
+  .capa-rotulo-alto {
+    top: calc(var(--u) * 14);
+  }
+  .capa-rotulo-baixo {
+    bottom: calc(var(--u) * 14);
   }
 
   .capa-miolo {
+    position: absolute;
+    inset: 0 0 0 8.5%;
     display: grid;
+    place-content: center;
     justify-items: center;
-    gap: 14px;
-    padding: var(--s3);
+    gap: calc(var(--u) * 3.4);
     text-align: center;
-    translate: 0 -2vh;
+    translate: 0 -1.5%;
   }
   /* Hot stamping: o símbolo levemente afundado no couro */
   .capa-gravacao {
     display: block;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.12)) drop-shadow(0 -1px 0 rgb(0 0 0 / 0.7)) drop-shadow(0 10px 22px rgb(0 252 168 / 0.18));
+    margin-bottom: calc(var(--u) * 2.2);
+    filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.14)) drop-shadow(0 -1px 0 rgb(0 0 0 / 0.7))
+      drop-shadow(0 calc(var(--u) * 3) calc(var(--u) * 6) rgb(0 252 168 / 0.2));
   }
   .capa-miolo :global(.capa-simbolo) {
-    width: clamp(88px, 24vw, 128px);
+    width: calc(var(--u) * 31);
     height: auto;
+    animation: capa-lampejo-simbolo 640ms ease-out 1.02s both;
   }
   .capa-miolo :global(.capa-simbolo path) {
     transform-box: fill-box;
     transform-origin: 50% 50%;
-    animation: capa-peca 620ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: capa-peca 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
   .capa-miolo :global(.capa-simbolo .p1) {
-    animation-delay: 0.3s;
-    --de: -26px, -18px;
+    animation-delay: 0.56s;
+    --de: -30%, -22%;
   }
   .capa-miolo :global(.capa-simbolo .p2) {
-    animation-delay: 0.42s;
-    --de: 24px, -20px;
+    animation-delay: 0.66s;
+    --de: 34%, -26%;
   }
   .capa-miolo :global(.capa-simbolo .p3) {
-    animation-delay: 0.54s;
-    --de: -24px, 20px;
+    animation-delay: 0.76s;
+    --de: -34%, 26%;
   }
   .capa-miolo :global(.capa-simbolo .p4) {
-    animation-delay: 0.66s;
-    --de: 26px, 18px;
-  }
-  .capa-nome {
-    font-family: var(--serifa);
-    font-variation-settings: 'SOFT' 100, 'WONK' 0;
-    font-weight: 500;
-    font-size: clamp(30px, 8.4vw, 54px);
-    line-height: 1;
-    letter-spacing: 0.02em;
-    background: linear-gradient(100deg, #00fca8 0%, #22d8ff 40%, #e9fff7 50%, #22d8ff 60%, #00fca8 100%);
-    background-size: 250% 100%;
-    background-position: 100% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation:
-      capa-nome 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 0.95s both,
-      capa-brilho 1.4s ease-in-out 1.2s both;
-  }
-  .capa-slogan {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: #c9c4ba;
-    animation: capa-slogan 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 1.25s both;
+    animation-delay: 0.86s;
+    --de: 30%, 22%;
   }
 
+  /* Nome em folha metálica: cada letra tem a sua cor do degradê e entra na sua vez */
+  .capa-nome {
+    font-family: var(--serifa);
+    font-optical-sizing: auto;
+    font-weight: 480;
+    font-size: calc(var(--u) * 11.4);
+    line-height: 1;
+    letter-spacing: 0.012em;
+    white-space: nowrap;
+  }
+  .capa-nome span {
+    display: inline-block;
+    color: var(--cor, var(--verde));
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.65);
+    animation:
+      capa-letra 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both,
+      capa-lampejo 760ms ease-in-out both;
+    animation-delay:
+      calc(0.92s + var(--i) * 44ms),
+      calc(1.62s + var(--i) * 40ms);
+  }
+  .capa-ornamento {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 2.4);
+    width: calc(var(--u) * 34);
+    animation: capa-abrir-fio 700ms cubic-bezier(0.2, 0.8, 0.2, 1) 1.34s both;
+  }
+  .capa-ornamento::before,
+  .capa-ornamento::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgb(242 238 230 / 0), rgb(242 238 230 / 0.55));
+  }
+  .capa-ornamento::after {
+    scale: -1 1;
+  }
+  .capa-ornamento i {
+    width: calc(var(--u) * 1.7);
+    height: calc(var(--u) * 1.7);
+    rotate: 45deg;
+    background: linear-gradient(135deg, #00fca8, #22d8ff);
+  }
+  .capa-slogan {
+    font-size: clamp(9.5px, calc(var(--u) * 3), 15px);
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    text-transform: uppercase;
+    color: #cdc8be;
+    text-shadow: 0 1px 0 rgb(0 0 0 / 0.6);
+    animation: capa-subir 760ms cubic-bezier(0.2, 0.8, 0.2, 1) 1.44s both;
+  }
+
+  /* Reflexo: uma faixa de luz que cruza a capa antes de ela abrir */
+  .capa-reflexo {
+    position: absolute;
+    inset: -20% auto -20% 0;
+    width: 52%;
+    background: linear-gradient(
+      100deg,
+      rgb(255 255 255 / 0) 12%,
+      rgb(255 255 255 / 0.05) 36%,
+      rgb(255 255 255 / 0.17) 50%,
+      rgb(255 255 255 / 0.05) 64%,
+      rgb(255 255 255 / 0) 88%
+    );
+    transform: translateX(-150%) skewX(-14deg);
+    animation: capa-refletir 880ms cubic-bezier(0.4, 0, 0.3, 1) 1.5s forwards;
+  }
+
+  @keyframes capa-chegar {
+    from {
+      opacity: 0;
+      transform: translateY(calc(var(--u) * 7)) scale(0.95);
+    }
+  }
+  @keyframes capa-mergulhar {
+    to {
+      transform: scale(var(--zoom));
+    }
+  }
+  @keyframes capa-fundo-sair {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes capa-apagar {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes capa-acender {
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes capa-surgir {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes capa-subir {
+    from {
+      opacity: 0;
+      transform: translateY(calc(var(--u) * 2.4));
+    }
+  }
+  @keyframes capa-abrir-fio {
+    from {
+      opacity: 0;
+      scale: 0.2 1;
+    }
+  }
+  @keyframes capa-fita-cair {
+    from {
+      scale: 1 0;
+    }
+  }
+  @keyframes capa-fita-balancar {
+    from {
+      rotate: -2.2deg;
+    }
+    to {
+      rotate: 2.2deg;
+    }
+  }
   @keyframes capa-costurar {
     from {
       --volta: 0deg;
     }
   }
+  @keyframes capa-canto {
+    from {
+      opacity: 0;
+      filter: brightness(2.2);
+    }
+  }
   @keyframes capa-peca {
-    from {
+    0% {
       opacity: 0;
-      transform: translate(var(--de)) scale(0.7);
+      transform: translate(var(--de)) scale(1.3);
+    }
+    64% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0.96);
     }
   }
-  @keyframes capa-nome {
-    from {
-      opacity: 0;
-      letter-spacing: 0.4em;
-      filter: blur(8px);
+  @keyframes capa-lampejo-simbolo {
+    34% {
+      filter: brightness(1.7) saturate(0.75);
     }
   }
-  @keyframes capa-brilho {
+  @keyframes capa-letra {
+    from {
+      opacity: 0;
+      transform: translateY(0.36em) scale(0.9);
+      filter: blur(5px);
+    }
+  }
+  @keyframes capa-lampejo {
+    45% {
+      color: #f4fffb;
+      text-shadow:
+        0 1px 0 rgb(0 0 0 / 0.65),
+        0 0 calc(var(--u) * 4) rgb(170 255 232 / 0.6);
+    }
+  }
+  @keyframes capa-refletir {
     to {
-      background-position: 0% 0;
-    }
-  }
-  @keyframes capa-slogan {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
+      transform: translateX(330%) skewX(-14deg);
     }
   }
   @keyframes capa-abrir {
     to {
-      transform: rotateY(-108deg);
-    }
-  }
-  @keyframes capa-sombra {
-    to {
-      opacity: 1;
+      transform: rotateY(-128deg);
     }
   }
   @keyframes capa-sumir {
@@ -240,15 +566,16 @@ import { site } from '../data/site';
     animation: capa-desvanecer 320ms ease-out forwards;
   }
 
-  /* Movimento reduzido: só a capa parada por um instante, que some suave */
+  /* Movimento reduzido: o álbum parado por um instante, que some suave */
   @media (prefers-reduced-motion: reduce) {
-    .capa,
     .capa *,
+    .capa *::before,
+    .capa *::after,
     .capa :global(*) {
       animation: none !important;
     }
     .capa {
-      animation: capa-desvanecer 400ms ease-out 0.9s forwards !important;
+      animation: capa-desvanecer 400ms ease-out 1s forwards !important;
     }
   }
 </style>

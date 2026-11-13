@@ -1,6 +1,6 @@
 FOTOS ESCOLHIDAS NA PÁGINA /curadoria
 Gerado automaticamente a cada clique. Não edite à mão: use a página /curadoria (npm run dev).
-Atualizado em 13/11/2026, 03:03:53
+Atualizado em 13/11/2026, 16:52:45
 Cada amostra entra no site com 1 capa (casinha) e pelo menos 4 estrelas.
 
 == AD: 🎊🎁🎂🎊 Adrian_s 18th Birthday - 05_01_2025
@@ -30,7 +30,7 @@ Cada amostra entra no site com 1 capa (casinha) e pelo menos 4 estrelas.
      ★ 1736126665677.jpg
 
 == BO: 💍💛💐📖 Bodas de Ouro - Nelson e Dalvina - 19_10_2024
-   ENTRA NO SITE · 60 com estrela · capa: Wedding Anniversary (20).jpg
+   ENTRA NO SITE · 60 com estrela · capa: Wedding Anniversary (157).jpg
      ★ Breakfast & Lunch (13).jpg
      ★ Breakfast & Lunch (18).jpg
      ★ Wedding Anniversary (1).jpg
@@ -40,7 +40,7 @@ Cada amostra entra no site com 1 capa (casinha) e pelo menos 4 estrelas.
      ★ Wedding Anniversary (6).jpg
      ★ Wedding Anniversary (10).jpg
      ★ Wedding Anniversary (13).jpg
-   ⌂ ★ Wedding Anniversary (20).jpg
+     ★ Wedding Anniversary (20).jpg
      ★ Wedding Anniversary (21).jpg
      ★ Wedding Anniversary (23).jpg
      ★ Wedding Anniversary (24).jpg
@@ -81,7 +81,7 @@ Cada amostra entra no site com 1 capa (casinha) e pelo menos 4 estrelas.
      ★ Wedding Anniversary (116).jpg
      ★ Wedding Anniversary (120).jpg
      ★ Wedding Anniversary (149).jpg
-     ★ Wedding Anniversary (157).jpg
+   ⌂ ★ Wedding Anniversary (157).jpg
      ★ Wedding Anniversary (167).jpg
      ★ Wedding Anniversary (168).jpg
      ★ Wedding Anniversary (182).jpg

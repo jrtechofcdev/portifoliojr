@@ -14,6 +14,7 @@
     "build:previa": "node scripts/fotos.mjs && astro check && astro build",
     "build:vercel": "node scripts/verificar-fotos-prontas.mjs && astro build",
     "fotos:publicar": "node scripts/fotos.mjs --producao",
+    "icones": "node scripts/icones.mjs",
     "capa": "node scripts/capa-compartilhamento.mjs"
   },
   "dependencies": {

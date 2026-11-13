@@ -4,18 +4,19 @@ import ListaAlbuns from '../../components/ListaAlbuns.astro';
 import Historias, { type Historia } from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import Assistente from '../../components/Assistente.astro';
-import { ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
+import { capasDe, ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
 import { CAPA_SOCIAL, linkWhatsApp } from '../../data/site';
+import Icone from '../../components/Icone.astro';
 
 const ensaios = await ensaiosPublicaveis();
 const historias: Historia[] = ensaios.map((e) => {
-  const fotos = fotosDoEnsaio(e);
-  const capa = fotos.find((f) => f.arquivo === e.data.capa);
+  const capas = capasDe(e);
+  const resto = fotosDoEnsaio(e).filter((f) => !capas.includes(f));
   return {
     nome: e.data.nome,
     legenda: [e.data.rotulo, e.data.data.slice(0, 4)].join(' · '),
     href: `/trabalhos/${e.id}`,
-    fotos: [...(capa ? [capa] : []), ...fotos.filter((f) => f !== capa).slice(0, 7)],
+    fotos: [...capas, ...resto.slice(0, 8 - capas.length)],
   };
 });
 ---
@@ -30,7 +31,7 @@ const historias: Historia[] = ensaios.map((e) => {
     <div class="wrap indice-topo">
       <p class="sobretitulo entra" style="--i:0">Portfólio</p>
       <h1 class="display-l entra" style="--i:1">Todos os <em>álbuns</em></h1>
-      <p class="texto apoio entra" style="--i:2">Ensaios, casais, gestantes, 15 anos e celebrações em Imperatriz e Bacabal.</p>
+      <p class="lead entra" style="--i:2">Ensaios, casais, gestantes, 15 anos e celebrações em Imperatriz e Bacabal.</p>
     </div>
 
     <Assistente variante="indice" alvo="#lista" />
@@ -44,8 +45,11 @@ const historias: Historia[] = ensaios.map((e) => {
     <div class="contato couro surge">
       <p class="sobretitulo">Contato</p>
       <h2 class="h2" id="cta-titulo">Vamos criar o seu <em>álbum?</em></h2>
-      <p class="texto">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
-      <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>Conversar no WhatsApp</a>
+      <p class="lead">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
+      <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>
+        <Icone nome="whatsapp" tamanho={22} />
+        Pedir orçamento
+      </a>
     </div>
   </section>
 
@@ -79,7 +83,10 @@ const historias: Historia[] = ensaios.map((e) => {
   }
   .botao-grande {
     min-height: 56px;
-    padding-inline: 36px;
+    padding-inline: 32px;
     font-size: 18px;
+  }
+  .contato .lead {
+    max-width: 30ch;
   }
 </style>

@@ -1,5 +1,6 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import gerado from '../generated/fotos.json';
+import { DESTAQUES } from '../data/site';
 
 export type DadosFoto = {
   width: number;
@@ -49,12 +50,33 @@ export function capaDe(e: Ensaio): FotoEnsaio | null {
   return fotosDoEnsaio(e).find((f) => f.arquivo === e.data.capa) ?? null;
 }
 
-/** Ensaios com a capa e a abertura publicáveis, do mais recente ao mais antigo. */
+/** As capas de um ensaio: a principal e, quando o manifesto tem `capaAlternativa`, a segunda,
+ *  que se alterna com a primeira nos cartões (componente Capa). */
+export function capasDe(e: Ensaio): FotoEnsaio[] {
+  const fotos = fotosDoEnsaio(e);
+  const nomes = [e.data.capa, e.data.capaAlternativa].filter((a): a is string => !!a);
+  return nomes.flatMap((a) => fotos.find((f) => f.arquivo === a) ?? []);
+}
+
+/** Posição do álbum na lista de destaques (src/data/site.ts), ou -1 se não está nela. */
+const posicaoDestaque = (e: Ensaio) => (DESTAQUES as readonly string[]).indexOf(e.id);
+
+/** O álbum está entre os destaques escolhidos pelo fotógrafo? */
+export const emDestaque = (e: Ensaio) => posicaoDestaque(e) >= 0;
+
+/** O álbum com a data mais recente (recebe a etiqueta "Novo"). */
+export function maisRecente(ensaios: Ensaio[]): Ensaio | undefined {
+  return [...ensaios].sort((a, b) => b.data.data.localeCompare(a.data.data))[0];
+}
+
+/** Ensaios com a capa e a abertura publicáveis: primeiro os destaques, na ordem escolhida pelo
+ *  fotógrafo; depois os outros, do mais recente ao mais antigo. */
 export async function ensaiosPublicaveis(): Promise<Ensaio[]> {
   const todos = await getCollection('ensaios');
+  const ordem = (e: Ensaio) => (emDestaque(e) ? posicaoDestaque(e) : DESTAQUES.length);
   return todos
     .filter((e) => dadosFoto(e.id, e.data.capa) && dadosFoto(e.id, e.data.abertura.arquivo) && fotosDoEnsaio(e).length >= 4)
-    .sort((a, b) => b.data.data.localeCompare(a.data.data));
+    .sort((a, b) => ordem(a) - ordem(b) || b.data.data.localeCompare(a.data.data));
 }
 
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];

@@ -2,7 +2,7 @@
 // Lista completa de álbuns em cartões grandes de foto (um por tela no celular), com filtro por
 // categoria. Usada na página de trabalhos. Sem JS o filtro fica escondido e todos os álbuns aparecem.
 import CartaoAlbum from './CartaoAlbum.astro';
-import type { Ensaio } from '../lib/fotos';
+import { maisRecente, type Ensaio } from '../lib/fotos';
 import { CATEGORIAS, type Categoria } from '../data/site';
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
   prioridade?: boolean;
 }
 const { ensaios, prioridade = false } = Astro.props;
+const novo = maisRecente(ensaios);
 const usadas = new Set(ensaios.map((e) => e.data.categoria));
 const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.has(c));
 ---
@@ -35,7 +36,7 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     <li class="cartoes-divisor" data-divisor hidden>
       <span class="sobretitulo">Mais trabalhos</span>
     </li>
-    {ensaios.map((e, i) => <CartaoAlbum ensaio={e} historia={i} prioridade={prioridade && i === 0} class="surge" />)}
+    {ensaios.map((e, i) => <CartaoAlbum ensaio={e} historia={i} prioridade={prioridade && i === 0} recente={e.id === novo?.id} class="surge" />)}
   </ul>
   <p class="wrap texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
 </div>

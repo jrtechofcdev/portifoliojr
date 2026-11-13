@@ -48,6 +48,9 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
     {PREVIA && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content={tema === 'claro' ? '#EFE6D6' : '#121B18'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={site.nome} />

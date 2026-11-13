@@ -28,14 +28,19 @@ const ensaios = defineCollection({
       pasta: z.enum(Object.keys(pastas) as [string, ...string[]]),
       abertura: z.object({ arquivo: z.string(), foco: z.string().default('50% 50%') }),
       capa: z.string(),
+      // Segunda capa, opcional: nos cartões ela se alterna com a primeira (pedido do fotógrafo).
+      capaAlternativa: z.string().optional(),
       fotos: z.array(foto).min(4),
     })
     .superRefine((e, ctx) => {
       const nomes = new Set(e.fotos.map((f) => f.arquivo));
       if (nomes.size !== e.fotos.length) ctx.addIssue({ code: 'custom', message: 'foto repetida em fotos[]' });
-      for (const [campo, arquivo] of [['abertura', e.abertura.arquivo], ['capa', e.capa]] as const) {
+      const conferir: [string, string][] = [['abertura', e.abertura.arquivo], ['capa', e.capa]];
+      if (e.capaAlternativa) conferir.push(['capaAlternativa', e.capaAlternativa]);
+      for (const [campo, arquivo] of conferir) {
         if (!nomes.has(arquivo)) ctx.addIssue({ code: 'custom', path: [campo], message: `"${arquivo}" precisa estar em fotos[]` });
       }
+      if (e.capaAlternativa === e.capa) ctx.addIssue({ code: 'custom', path: ['capaAlternativa'], message: 'precisa ser diferente da capa' });
     }),
 });
 

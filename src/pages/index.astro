@@ -1,36 +1,72 @@
 ---
 import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
-import Heroi from '../components/Heroi.astro';
+import Heroi, { type Quadro } from '../components/Heroi.astro';
 import Capitulos from '../components/Capitulos.astro';
 import Historias, { type Historia } from '../components/Historias.astro';
 import BarraWhatsApp from '../components/BarraWhatsApp.astro';
 import Assistente from '../components/Assistente.astro';
-import { capaDe, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, type FotoEnsaio } from '../lib/fotos';
-import { CAPA_SOCIAL, linkEmail, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
+import Icone, { type NomeIcone } from '../components/Icone.astro';
+import Selo from '../components/Selo.astro';
+import Capa from '../components/Capa.astro';
+import { capaDe, capasDe, emDestaque, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, maisRecente, type FotoEnsaio } from '../lib/fotos';
+import { CAPA_SOCIAL, SERVICOS, linkEmail, linkInstagram, linkWhatsApp, mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
 
-// Home pensada para o celular (revisão de 13/11/2026): abertura em tela cheia, destaques no estilo
-// dos Stories, assistente, álbuns em capítulos por tipo de trabalho, uma foto de pausa, as páginas
-// de papel creme (como funciona e sobre) e o contato.
-// Tudo vem da seleção feita na página /curadoria.
+// Home pensada para o celular: abertura em tela cheia com o botão de orçamento, destaques no
+// estilo dos Stories, assistente, álbuns em capítulos por tipo de trabalho, uma foto de pausa, as
+// páginas de papel creme (serviços, como funciona e sobre) e o contato.
+// As fotos vêm da seleção feita na página /curadoria; a ordem dos álbuns, de DESTAQUES (site.ts).
 const ensaios = await ensaiosPublicaveis();
-const abertura = (await fotoDe('sara-e-yasmin', 'IMG_1081.jpg')) ?? (ensaios[0] ? capaDe(ensaios[0]) : null);
-const focoAbertura = abertura?.slug === 'sara-e-yasmin' ? '50% 22%' : '50% 30%';
 
-// Cada álbum vira uma história: a capa e as primeiras fotos escolhidas.
+// Abertura: as fotos dos quatro primeiros álbuns em destaque se alternam. Em geral é a foto de
+// abertura do álbum, com o ponto focal do manifesto. O título fica sobre a metade de baixo da
+// foto: quando a abertura do álbum tem texto nessa área (o livro na capa da Sabrina), a home usa
+// outra foto do mesmo álbum, indicada aqui.
+const FOTO_NA_HOME: Record<string, { arquivo: string; foco: string }> = {
+  sabrina: { arquivo: 'sabrina-05.png', foco: '50% 20%' },
+};
+const rolo: Quadro[] = ensaios.slice(0, 4).flatMap((e, i) => {
+  const fotos = fotosDoEnsaio(e);
+  const daHome = FOTO_NA_HOME[e.id] && fotos.find((f) => f.arquivo === FOTO_NA_HOME[e.id].arquivo);
+  const foto = daHome || fotos.find((f) => f.arquivo === e.data.abertura.arquivo) || capaDe(e);
+  if (!foto) return [];
+  return [
+    {
+      foto,
+      foco: daHome ? FOTO_NA_HOME[e.id].foco : e.data.abertura.foco,
+      nome: e.data.nome,
+      legenda: `${e.data.rotulo} · ${e.data.data.slice(0, 4)}`,
+      href: `/trabalhos/${e.id}`,
+      historia: i,
+    },
+  ];
+});
+// Título da abertura: três frases, uma por linha, palavra por palavra (cada uma sobe por trás de
+// uma máscara).
+const titulo: [string, boolean?][][] = [
+  [['Seu'], ['ensaio.']],
+  [['Seu'], ['evento.']],
+  [['Seu'], ['álbum.', true]],
+];
+
+// Cada álbum vira uma história: a capa (ou as duas, quando se alternam) e as primeiras fotos.
 const totalFotos = ensaios.reduce((n, e) => n + fotosDoEnsaio(e).length, 0);
 const tipos = ensaios.map((e) => tipoDoEnsaio(e.data.categoria, e.data.rotulo));
 const historias: Historia[] = ensaios.map((e) => {
-  const fotos = fotosDoEnsaio(e);
-  const capa = fotos.find((f) => f.arquivo === e.data.capa);
-  const resto = fotos.filter((f) => f !== capa);
+  const capas = capasDe(e);
+  const resto = fotosDoEnsaio(e).filter((f) => !capas.includes(f));
   return {
     nome: e.data.nome,
     legenda: [e.data.rotulo, e.data.data.slice(0, 4)].join(' · '),
     href: `/trabalhos/${e.id}`,
-    fotos: [...(capa ? [capa] : []), ...resto.slice(0, 7)],
+    fotos: [...capas, ...resto.slice(0, 8 - capas.length)],
   };
 });
+// Fileira "Em destaque": só os álbuns escolhidos pelo fotógrafo, na ordem dele. `i` é a posição
+// do álbum na lista de Stories.
+const escolhidos = ensaios.map((e, i) => ({ e, i })).filter(({ e }) => emDestaque(e));
+const destaques = escolhidos.length ? escolhidos : ensaios.map((e, i) => ({ e, i }));
+const novo = maisRecente(ensaios);
 
 // Foto de pausa: a primeira horizontal da lista sugerida no DESIGN.md §12 que estiver na seleção.
 const candidatasPausa: [string, string][] = [
@@ -48,19 +84,19 @@ if (!pausa) {
 }
 const sobreFoto = (await fotoDe('marlieth-e-paulo', 'Foto (6).jpg')) ?? (await fotoDe('marlieth-e-paulo', 'Foto (9).jpg'));
 
-const passos = [
-  ['Conversa', 'Pelo WhatsApp você me conta a ideia, a data e a cidade.'],
-  ['Planejamento', 'Definimos juntos o lugar, o horário de luz mais bonito, as roupas e o que será entregue.'],
-  ['Ensaio', 'Eu conduzo as poses com calma e deixo espaço para o que acontece de verdade.'],
-  ['Seleção e edição', 'Escolho as melhores fotos e trato cada uma com cuidado.'],
-  ['Entrega', 'Suas fotos editadas chegam no formato combinado.'],
+const passos: [NomeIcone, string, string][] = [
+  ['conversa', 'A conversa', 'Você me conta pelo WhatsApp a ideia, a data e a cidade.'],
+  ['calendario', 'O planejamento', 'Escolhemos juntos o lugar, a luz mais bonita do dia, as roupas e o que você vai receber.'],
+  ['camera', 'O dia das fotos', 'Eu conduzo as poses com calma e deixo espaço para o que acontece de verdade.'],
+  ['edicao', 'Seleção e edição', 'Separo as melhores fotos e trato cada uma com cuidado.'],
+  ['album', 'A entrega', 'As fotos editadas chegam até você no formato combinado.'],
 ];
 
 const jsonld = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: site.nome,
-  description: 'Fotografia de ensaios externos, casais, gestantes e eventos.',
+  description: 'Fotografia profissional de ensaios, casais, gestantes, aniversários, 15 anos e eventos.',
   url: Astro.site?.href,
   founder: { '@type': 'Person', name: site.fotografo },
   areaServed: [
@@ -70,28 +106,47 @@ const jsonld = {
   telephone: `+${site.whatsapp}`,
   email: site.email,
   sameAs: [linkInstagram],
-  ...(abertura?.dados.og ? { image: new URL(abertura.dados.og, Astro.site).href } : {}),
+  ...(rolo[0]?.foto.dados.og ? { image: new URL(rolo[0].foto.dados.og, Astro.site).href } : {}),
 };
 ---
 
 <Base
-  titulo="Portfólio de José Renato | Jr_Tech_OFC Fotografia, Imperatriz e Bacabal"
-  descricao="Veja o portfólio de José Renato: ensaios externos, casais, gestantes, 15 anos e eventos em Imperatriz e Bacabal, MA. Chame no WhatsApp."
+  titulo="Jr_Tech_OFC Fotografia | Ensaios e eventos em Imperatriz e Bacabal"
+  descricao="Fotografia profissional de ensaios individuais, casais, gestantes, aniversários, 15 anos e eventos em Imperatriz e Bacabal, MA. Peça seu orçamento pelo WhatsApp."
   imagem={CAPA_SOCIAL.imagem}
   social={CAPA_SOCIAL}
   jsonld={jsonld}
   abertura
 >
-  <Heroi foto={abertura} foco={focoAbertura}>
-    <p class="sobretitulo entra" style="--i:0">{site.marca} Fotografia</p>
-    <h1 class="heroi-titulo serifa entra" style="--i:1">Fotos que <em>parecem</em> com você.</h1>
-    <p class="heroi-apoio entra" style="--i:2">Ensaios, casais, gestantes, 15 anos e celebrações em {site.cidades}.</p>
-    <div class="acoes entra" style="--i:3">
-      <button type="button" class="botao" data-historia="0">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
+  <Heroi foto={rolo[0]?.foto ?? null} foco={rolo[0]?.foco} rolo={rolo}>
+    <p class="sobretitulo entra" style="--i:0">Fotografia profissional</p>
+    <h1 class="heroi-titulo serifa palavras">
+      {
+        titulo.map((linha, l) => (
+          <span class="heroi-linha">
+            {linha.map(([palavra, italico], p) => (
+              <Fragment>
+                <span class="p">
+                  <span style={`--j:${l * 2 + p}`}>{italico ? <em>{palavra}</em> : palavra}</span>
+                </span>{' '}
+              </Fragment>
+            ))}
+          </span>
+        ))
+      }
+    </h1>
+    <p class="heroi-apoio entra" style="--i:5">
+      Ensaios individuais, de casal e gestante, aniversários, 15 anos e cobertura de eventos em Imperatriz e Bacabal.
+    </p>
+    <div class="acoes entra" style="--i:6">
+      <a class="botao" href={linkWhatsApp()} data-wa-auto>
+        <Icone nome="whatsapp" tamanho={20} />
+        Pedir orçamento
+      </a>
+      <button type="button" class="botao-fantasma" data-historia="0">
+        <Icone nome="play" tamanho={16} />
         Ver as fotos
       </button>
-      <a class="botao-sec" href="#assistente">Me ajude a escolher</a>
     </div>
   </Heroi>
 
@@ -100,15 +155,14 @@ const jsonld = {
       <section class="destaques" aria-labelledby="destaques-titulo">
         <h2 class="wrap sobretitulo destaques-titulo" id="destaques-titulo">Em destaque</h2>
         <ul class="trilho destaques-lista" data-reordenar>
-          {historias.map((h, i) => (
+          {destaques.map(({ e, i }, n) => (
             <li class="surge-lado" data-tipo={tipos[i]}>
               <button type="button" class="destaque" data-historia={i}>
                 <span class="destaque-anel">
-                  {h.fotos[0] && (
-                    <Foto slug={h.fotos[0].slug} arquivo={h.fotos[0].arquivo} alt="" sizes="96px" recorte="50% 30%" prioridade={i < 4} />
-                  )}
+                  <Capa ensaio={e} sizes="96px" prioridade={n < 4} />
+                  {e.id === novo?.id && <span class="destaque-novo">Novo</span>}
                 </span>
-                <span class="destaque-nome">{h.nome}</span>
+                <span class="destaque-nome">{e.data.nome}</span>
               </button>
             </li>
           ))}
@@ -123,11 +177,16 @@ const jsonld = {
     <div class="wrap secao-topo surge">
       <p class="sobretitulo">Portfólio</p>
       <h2 class="h2" id="trabalhos-titulo">O portfólio em <em>capítulos</em></h2>
-      <p class="texto apoio">{ensaios.length} álbuns e {totalFotos} fotos, organizados por tipo de trabalho.</p>
+      <p class="lead">
+        {ensaios.length} álbuns e {totalFotos} fotografias, reunidos pelo tipo de história que contam.
+      </p>
     </div>
     <Capitulos ensaios={ensaios} />
     <p class="wrap todos surge">
-      <a class="botao-sec" href="/trabalhos">Ver todos os álbuns em uma página</a>
+      <a class="botao-fantasma" href="/trabalhos">
+        <Icone nome="grade" tamanho={20} />
+        Ver todos os álbuns
+      </a>
     </p>
   </section>
 
@@ -142,19 +201,58 @@ const jsonld = {
   }
 
   <div class="papel tema-claro">
+    <section class="secao servicos" id="servicos" aria-labelledby="servicos-titulo">
+      <div class="wrap secao-topo surge">
+        <p class="sobretitulo">Serviços</p>
+        <h2 class="h2" id="servicos-titulo">O que eu <em>fotografo</em></h2>
+        <p class="lead">Escolha o serviço e peça o orçamento. A mensagem do WhatsApp já sai pronta.</p>
+      </div>
+      <ul class="wrap servicos-lista">
+        {
+          SERVICOS.map((s) => (
+            <li class="servico surge">
+              <span class="medalha">
+                <Icone nome={s.icone} tamanho={22} />
+              </span>
+              <div class="servico-texto">
+                <h3 class="titulo">{s.nome}</h3>
+                <p class="servico-descricao">{s.texto}</p>
+                <p class="servico-acoes">
+                  <a class="botao-fantasma servico-pedir" href={linkWhatsApp(mensagemOrcamento(s.pedido, s.completar))}>
+                    <Icone nome="whatsapp" tamanho={18} />
+                    Pedir orçamento
+                  </a>
+                  <a class="servico-ver" href={`#capitulo-${s.capitulo}`} aria-label={`Ver álbuns de ${s.nome.toLowerCase()}`}>
+                    Ver álbuns
+                  </a>
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
     <section class="secao como" id="como-funciona" aria-labelledby="como-titulo">
       <div class="wrap secao-topo surge">
         <p class="sobretitulo">Como funciona</p>
         <h2 class="h2" id="como-titulo">Do primeiro contato à <em>entrega</em></h2>
+        <p class="lead">Cinco passos, sem pressa.</p>
       </div>
       <ol class="wrap passos">
         {
-          passos.map(([titulo, texto], i) => (
+          passos.map(([icone, nome, texto], i) => (
             <li class="passo surge">
-              <span class="passo-num serifa" aria-hidden="true">{i + 1}</span>
+              <span class="passo-topo">
+                <span class="medalha">
+                  <Icone nome={icone} tamanho={22} />
+                </span>
+                <span class="passo-fio" aria-hidden="true" />
+              </span>
               <div class="passo-texto">
-                <h3 class="titulo">{titulo}</h3>
-                <p>{texto}</p>
+                <p class="passo-num">Passo {i + 1}</p>
+                <h3 class="titulo">{nome}</h3>
+                <p class="passo-descricao">{texto}</p>
               </div>
             </li>
           ))
@@ -166,20 +264,26 @@ const jsonld = {
       <div class="wrap sobre-grade">
         {
           sobreFoto && (
-            <div class="sobre-foto revela">
-              <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 40vw, 92vw" />
+            <div class="sobre-retrato">
+              <div class="sobre-foto revela">
+                <Foto slug={sobreFoto.slug} arquivo={sobreFoto.arquivo} alt={sobreFoto.alt} sizes="(min-width: 900px) 40vw, 92vw" />
+              </div>
+              <Selo class="sobre-selo" />
             </div>
           )
         }
         <div class="sobre-texto surge">
           <p class="sobretitulo">Sobre</p>
           <h2 class="h2" id="sobre-titulo">José <em>Renato</em></h2>
-          <p class="texto">
-            Sou José Renato Alves da Silva, fotógrafo da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal, quase sempre
-            ao ar livre, e também cubro cultos, confraternizações, aniversários e festas de família. Gosto de foto que parece com
-            quem está nela: natural, sem pose dura.
+          <p class="texto capitular">
+            Sou José Renato Alves da Silva, o fotógrafo por trás da {site.marca}. Fotografo pessoas em Imperatriz e Bacabal,
+            quase sempre ao ar livre, e também registro cultos, confraternizações, aniversários e festas de família.
           </p>
-          <a class="botao-sec" href={linkInstagram}>Mais no Instagram @{site.instagram}</a>
+          <blockquote class="citacao serifa">“Gosto de foto que parece com quem está nela: natural, sem pose dura.”</blockquote>
+          <a class="botao-fantasma" href={linkInstagram}>
+            <Icone nome="instagram" tamanho={20} />
+            Acompanhe no Instagram
+          </a>
         </div>
       </div>
     </section>
@@ -190,13 +294,25 @@ const jsonld = {
       <div class="contato couro surge">
         <p class="sobretitulo">Contato</p>
         <h2 class="h2" id="contato-titulo">Vamos criar o seu <em>álbum?</em></h2>
-        <p class="texto contato-apoio">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
-        <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>Conversar no WhatsApp</a>
+        <p class="lead contato-apoio">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
+        <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>
+          <Icone nome="whatsapp" tamanho={22} />
+          Pedir orçamento
+        </a>
         <div class="contato-outros">
-          <a class="botao-sec" href={linkEmail}>Mandar e-mail</a>
-          <a class="botao-sec" href={linkInstagram}>Instagram</a>
+          <a class="botao-fantasma" href={linkEmail}>
+            <Icone nome="email" tamanho={20} />
+            E-mail
+          </a>
+          <a class="botao-fantasma" href={linkInstagram}>
+            <Icone nome="instagram" tamanho={20} />
+            Instagram
+          </a>
         </div>
-        <p class="legenda">Atendo em {site.cidades}. Outras cidades, sob consulta.</p>
+        <p class="legenda contato-local">
+          <Icone nome="local" tamanho={16} />
+          Atendo em {site.cidades}. Outras cidades, sob consulta.
+        </p>
       </div>
     </div>
   </section>
@@ -207,24 +323,42 @@ const jsonld = {
 
 <style>
   .heroi-titulo {
-    font-size: clamp(46px, 13vw, 112px);
+    font-size: clamp(50px, 13.6vw, 104px);
+    font-weight: 380;
     line-height: 0.95;
+    letter-spacing: -0.034em;
     text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
   }
+  .heroi-linha {
+    display: block;
+  }
   .heroi-apoio {
-    max-width: 34ch;
+    max-width: 36ch;
     font-size: clamp(17px, 4.4vw, 21px);
+    line-height: 1.5;
     color: #e6e1d7;
   }
   .acoes {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--s2) var(--s3);
+    gap: 12px;
     margin-top: var(--s1);
   }
-  .apoio {
-    color: var(--texto-2);
+  /* Os dois botões cabem lado a lado na maioria dos celulares */
+  .acoes .botao {
+    padding-inline: 18px 20px;
+    gap: 8px;
+    font-size: 16px;
+  }
+  /* Sobre a foto, o botão discreto ganha um fundo de vidro escuro para o texto não se perder */
+  .acoes .botao-fantasma {
+    padding-inline: 14px 16px;
+    gap: 8px;
+    font-size: 16px;
+    background: rgb(8 12 11 / 0.38);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
   }
 
   /* Destaques: círculos com costura verde, como os destaques do Instagram */
@@ -238,7 +372,7 @@ const jsonld = {
     list-style: none;
     margin: 0;
     gap: 14px;
-    padding-bottom: var(--s1);
+    padding-block: 6px var(--s1);
   }
   .destaque {
     display: grid;
@@ -253,6 +387,7 @@ const jsonld = {
     cursor: pointer;
   }
   .destaque-anel {
+    position: relative;
     display: block;
     width: 84px;
     height: 84px;
@@ -271,6 +406,21 @@ const jsonld = {
     width: 100%;
     height: 100%;
     border-radius: 999px;
+  }
+  /* O álbum mais recente */
+  .destaque-novo {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--folha);
+    color: #06241b;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px -4px rgb(0 0 0 / 0.7);
   }
   .destaque-nome {
     width: 100%;
@@ -294,6 +444,9 @@ const jsonld = {
   .secao-topo {
     justify-items: start;
   }
+  .todos {
+    margin-top: var(--s4);
+  }
 
   /* Pausa: uma foto horizontal de ponta a ponta, que se abre ao entrar na tela */
   .pausa {
@@ -304,16 +457,76 @@ const jsonld = {
     border-radius: 0;
   }
 
-  .todos {
-    margin-top: var(--s4);
-  }
-
   /* Páginas de papel: respiro entre a foto de pausa e o contato */
   .papel {
     margin-block: var(--s4) 0;
   }
 
-  /* Como funciona: linha do tempo costurada (no computador, cinco colunas) */
+  /* Serviços: lista com ícone, descrição curta e o botão de orçamento de cada um */
+  .servicos-lista {
+    list-style: none;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+  }
+  .servico {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: var(--s2);
+    align-items: start;
+    padding-bottom: 20px;
+    border-bottom: 1.5px dashed var(--costura-suave);
+  }
+  .servico:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .servico-texto {
+    display: grid;
+    gap: 4px;
+    padding-top: 6px;
+  }
+  .servico-descricao {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--texto-2);
+  }
+  .servico-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 18px;
+    margin-top: 8px;
+  }
+  .servico-pedir {
+    min-height: 44px;
+    padding-inline: 16px 18px;
+    font-size: 15px;
+  }
+  .servico-ver {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 550;
+    color: var(--texto);
+    text-decoration-style: dashed;
+    text-decoration-color: var(--costura);
+    text-underline-offset: 0.32em;
+  }
+  @media (min-width: 900px) {
+    .servicos-lista {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s4) var(--s6);
+    }
+    .servico:nth-last-child(-n + 2):nth-child(odd),
+    .servico:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+
+  /* Como funciona: linha do tempo costurada, com um ícone por passo (no computador, cinco colunas) */
   .passos {
     list-style: none;
     margin: 0;
@@ -326,29 +539,38 @@ const jsonld = {
     grid-template-columns: 48px minmax(0, 1fr);
     gap: var(--s2);
     align-items: start;
+    align-content: start;
   }
-  .passo-num {
-    font-size: 48px;
-    font-style: italic;
-    font-weight: 380;
-    line-height: 0.9;
-    text-align: center;
-    color: var(--destaque);
+  .passo-topo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .passo-fio {
+    display: none;
   }
   .passo:not(:last-child)::before {
     content: '';
     position: absolute;
     left: 23px;
-    top: 54px;
+    top: 56px;
     bottom: calc(var(--s4) * -1 + 8px);
     border-left: 1.5px dashed var(--costura-suave);
   }
   .passo-texto {
     display: grid;
-    gap: 6px;
-    padding-top: 6px;
+    gap: 4px;
+    padding-top: 2px;
   }
-  .passo p {
+  .passo-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--destaque);
+  }
+  .passo-descricao {
+    margin-top: 2px;
     color: var(--texto-2);
   }
   @media (min-width: 1000px) {
@@ -361,28 +583,32 @@ const jsonld = {
     .passo::before {
       display: none;
     }
-    .passo-num {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-size: 56px;
-      text-align: left;
-    }
-    .passo-num::after {
-      content: '';
+    .passo-fio {
+      display: block;
       flex: 1;
       border-top: 1.5px dashed var(--costura-suave);
+    }
+    .passo:last-child .passo-fio {
+      display: none;
     }
   }
 
   /* Sobre */
   .sobre-grade {
     display: grid;
-    gap: var(--s4);
+    gap: var(--s5);
     align-items: center;
   }
   .sobre-grade > * {
     min-width: 0;
+  }
+  .sobre-retrato {
+    position: relative;
+  }
+  .sobre-retrato :global(.sobre-selo) {
+    position: absolute;
+    right: -4px;
+    bottom: -30px;
   }
   .sobre-texto {
     display: grid;
@@ -392,6 +618,28 @@ const jsonld = {
   .sobre-foto :global(.foto) {
     border-radius: var(--raio-g);
     box-shadow: var(--sombra);
+  }
+  /* Letra capitular: a primeira letra do texto, grande e em itálico */
+  .capitular::first-letter {
+    float: left;
+    margin: 0.06em 0.1em 0 0;
+    font-family: var(--serifa);
+    font-size: 3.5em;
+    font-style: italic;
+    font-weight: 360;
+    line-height: 0.82;
+    color: var(--destaque);
+  }
+  .citacao {
+    margin-block: var(--s1);
+    padding-left: 20px;
+    border-left: 1.5px dashed var(--costura);
+    font-size: clamp(23px, 5.8vw, 32px);
+    font-style: italic;
+    font-weight: 360;
+    line-height: 1.22;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
   }
   @media (min-width: 900px) {
     .sobre-grade {
@@ -409,18 +657,23 @@ const jsonld = {
     padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
   }
   .contato-apoio {
-    font-size: clamp(18px, 2vw, 22px);
-    color: var(--texto-2);
+    max-width: 30ch;
   }
   .contato-outros {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: var(--s1) var(--s4);
+    gap: var(--s2);
+  }
+  .contato-local {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
   }
   .botao-grande {
     min-height: 56px;
-    padding-inline: 36px;
+    padding-inline: 32px;
     font-size: 18px;
   }
 </style>

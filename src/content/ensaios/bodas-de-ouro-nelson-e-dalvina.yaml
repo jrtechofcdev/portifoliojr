@@ -9,10 +9,11 @@ data: "2024-10-19"
 tema: escuro
 autorizacao: sim
 pasta: BO
-abertura: { arquivo: "Wedding Anniversary (20).jpg", foco: 50% 50% }
-capa: "Wedding Anniversary (20).jpg"
+abertura: { arquivo: "Wedding Anniversary (157).jpg", foco: 50% 35% }
+capa: "Wedding Anniversary (157).jpg"
+capaAlternativa: "Wedding Anniversary (182).jpg"
 fotos:
-  - { arquivo: "Wedding Anniversary (20).jpg", alt: "Nelson e Dalvina caminhando de mãos dadas" }
+  - { arquivo: "Wedding Anniversary (157).jpg", alt: "Dalvina beija o rosto de Nelson, os dois abraçados ao lado do bolo das bodas" }
   - { arquivo: "Breakfast & Lunch (13).jpg", alt: "Almoço comunitário da celebração" }
   - { arquivo: "Breakfast & Lunch (18).jpg", alt: "Sorriso ao servir o almoço" }
   - { arquivo: "Wedding Anniversary (1).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (1)" } # alt a revisar
@@ -22,6 +23,7 @@ fotos:
   - { arquivo: "Wedding Anniversary (6).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (6)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (10).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (10)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (13).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (13)" } # alt a revisar
+  - { arquivo: "Wedding Anniversary (20).jpg", alt: "Nelson e Dalvina caminhando de mãos dadas" }
   - { arquivo: "Wedding Anniversary (21).jpg", alt: "Pastor durante o culto de bodas" }
   - { arquivo: "Wedding Anniversary (23).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (23)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (24).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (24)" } # alt a revisar
@@ -62,10 +64,9 @@ fotos:
   - { arquivo: "Wedding Anniversary (116).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (116)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (120).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (120)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (149).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (149)" } # alt a revisar
-  - { arquivo: "Wedding Anniversary (157).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (157)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (167).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (167)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (168).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (168)" } # alt a revisar
-  - { arquivo: "Wedding Anniversary (182).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (182)" } # alt a revisar
+  - { arquivo: "Wedding Anniversary (182).jpg", alt: "Nelson e Dalvina seguram juntos o número 50 iluminado, atrás da mesa do bolo" }
   - { arquivo: "Wedding Anniversary (196).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (196)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (197).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (197)" } # alt a revisar
   - { arquivo: "Wedding Anniversary (209).jpg", alt: "Bodas de Ouro de Nelson e Dalvina, foto Wedding Anniversary (209)" } # alt a revisar

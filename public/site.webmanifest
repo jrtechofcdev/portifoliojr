@@ -1,0 +1,30 @@
+{
+  "name": "Jr_Tech_OFC Fotografia",
+  "short_name": "Jr_Tech_OFC",
+  "description": "Portfólio de fotografia de José Renato: ensaios, casais, gestantes, 15 anos e celebrações em Imperatriz e Bacabal, MA.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#121B18",
+  "theme_color": "#121B18",
+  "icons": [
+    {
+      "src": "/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icone-adaptavel-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+---
+// Capa de um álbum. Quando o manifesto tem `capaAlternativa`, as duas fotos ficam uma sobre a
+// outra e se alternam devagar (pedido do fotógrafo para as Bodas de Ouro: "hora uma, hora outra").
+// Com movimento reduzido fica só a primeira. A capa é decorativa: o nome do álbum vem ao lado.
+import Foto from './Foto.astro';
+import { capasDe, type Ensaio } from '../lib/fotos';
+
+interface Props {
+  ensaio: Ensaio;
+  sizes: string;
+  recorte?: string;
+  prioridade?: boolean;
+}
+const { ensaio, sizes, recorte = '50% 30%', prioridade = false } = Astro.props;
+const [capa, outra] = capasDe(ensaio);
+---
+
+{capa && !outra && <Foto slug={capa.slug} arquivo={capa.arquivo} alt="" sizes={sizes} recorte={recorte} prioridade={prioridade} />}
+{
+  capa && outra && (
+    <span class="capas">
+      <Foto slug={capa.slug} arquivo={capa.arquivo} alt="" sizes={sizes} recorte={recorte} prioridade={prioridade} />
+      <Foto slug={outra.slug} arquivo={outra.arquivo} alt="" sizes={sizes} recorte={recorte} class="capa-outra" />
+    </span>
+  )
+}
+
+<style>
+  .capas {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+  .capas :global(.foto) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .capas :global(.capa-outra) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+  /* Cada capa fica uns quatro segundos e a troca é uma fusão suave */
+  @keyframes capa-alternar {
+    0%,
+    42% {
+      opacity: 0;
+    }
+    50%,
+    92% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .capas :global(.capa-outra) {
+      animation: capa-alternar 9s ease-in-out infinite;
+    }
+  }
+</style>

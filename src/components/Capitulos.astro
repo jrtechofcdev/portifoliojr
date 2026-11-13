@@ -6,13 +6,14 @@
 // e data-tipo). O número romano vem de um contador CSS, então acompanha a nova ordem.
 // `historia` de cada cartão é a posição do álbum na lista de Stories da página.
 import CartaoAlbum from './CartaoAlbum.astro';
-import type { Ensaio } from '../lib/fotos';
+import { maisRecente, type Ensaio } from '../lib/fotos';
 import { CAPITULOS, TIPOS_ASSISTENTE, tipoDoEnsaio } from '../data/site';
 
 interface Props {
   ensaios: Ensaio[];
 }
 const { ensaios } = Astro.props;
+const novo = maisRecente(ensaios);
 const capitulos = TIPOS_ASSISTENTE.map((t) => ({
   id: t.id,
   ...CAPITULOS[t.id],
@@ -38,7 +39,7 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
         </header>
         <ul class="trilho cap-lista">
           {c.albuns.map(({ e, i }) => (
-            <CartaoAlbum ensaio={e} historia={i} variante="trilho" class="surge-lado" />
+            <CartaoAlbum ensaio={e} historia={i} variante="trilho" recente={e.id === novo?.id} class="foco-fileira" />
           ))}
         </ul>
       </section>
@@ -70,9 +71,9 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
     width: 100%;
   }
   .cap-num {
-    font-size: 44px;
+    font-size: 52px;
     font-style: italic;
-    font-weight: 380;
+    font-weight: 320;
     line-height: 0.9;
     color: var(--destaque);
   }
@@ -84,9 +85,9 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
     border-top: 1.5px dashed var(--costura-suave);
   }
   .cap-conta {
-    font-size: 12px;
-    font-weight: 620;
-    letter-spacing: 0.24em;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--texto-2);
   }
@@ -95,6 +96,12 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
     line-height: 1;
   }
   .cap-apoio {
+    max-width: 32ch;
+    font-family: var(--serifa);
+    font-optical-sizing: auto;
+    font-size: 19px;
+    font-weight: 360;
+    line-height: 1.4;
     color: var(--texto-2);
   }
   /* Selo do assistente: só no capítulo que combina com a resposta */
@@ -135,7 +142,7 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
       margin-bottom: 0;
     }
     .cap-num {
-      font-size: 64px;
+      font-size: 76px;
     }
     /* No computador a fileira vira grade: nada fica escondido fora da tela.
        Seis trilhas: três cartões por linha; quando sobraria um cartão sozinho, os primeiros
@@ -164,7 +171,7 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
   @supports (animation-timeline: view()) {
     @media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
       /* Em grade, os cartões entram ao rolar a página (não mais ao deslizar a fileira) */
-      .cap-lista > :global(.surge-lado) {
+      .cap-lista > :global(.foco-fileira) {
         animation-name: surgir;
         animation-timeline: view();
         animation-range: entry 0% cover 28%;

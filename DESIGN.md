@@ -8,6 +8,21 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0f. Revisão de 13/11/2026 (noite): edição de luxo e plano comercial (vale sobre §0d e o resto)
+
+Pedidos do responsável: ícones melhores, abertura "Premium de luxo", tipografia, linguagem e rodapé mais ricos, "mais vida"; depois, o plano de expansão comercial (orçamento fácil, serviços claros), os oito álbuns em destaque numa ordem escolhida por ele e duas capas que se alternam nas Bodas de Ouro.
+
+- **Ícones:** um conjunto só (`Icone.astro`, grade de 24 px, traço fino de ponta redonda, `currentColor`). Ícones do site (aba, tela inicial do celular, manifesto) gerados do símbolo por `scripts/icones.mjs` (`npm run icones`).
+- **Abertura:** o álbum como objeto (lombada, friso, cantoneiras de platina, fita), costura que se desenha, símbolo estampado peça por peça, nome letra por letra em folha metálica, reflexo; a capa gira e a câmera mergulha na foto. Cerca de 3,2 s, uma vez por visita, toque pula.
+- **Abertura em tela cheia (home):** as fotos dos quatro primeiros álbuns em destaque se alternam (6,5 s cada), com o nome do álbum, marcas de progresso e botão de pausa. Título "Seu ensaio. Seu evento. Seu álbum.", botão principal "Pedir orçamento".
+- **Tipografia:** Fraunces com tamanho óptico (traço mais fino nos títulos grandes), peso leve; o "&" dos nomes usa o desenho do itálico; classe `.lead` para a linha de abertura das seções; letra capitular e citação no Sobre.
+- **Acabamento:** botões em folha metálica com reflexo, `.botao-fantasma`, `.medalha` (ícone em círculo costurado), `.ornamento`, selo de couro no Sobre, etiquetas "Novo" e "Mais recente" (pela data).
+- **Destaques:** `DESTAQUES` em `src/data/site.ts`, na ordem do fotógrafo; a mesma ordem vale em todo o site, os outros álbuns vêm depois, do mais recente ao mais antigo.
+- **Capa alternada:** `capaAlternativa` no manifesto (componente `Capa.astro`); as duas capas se alternam devagar nos cartões, destaques e miniaturas. Hoje só nas Bodas de Ouro.
+- **Comercial:** seção Serviços (`SERVICOS`) com um botão de orçamento por serviço; todas as mensagens do WhatsApp partem de `mensagemOrcamento()` e terminam com o campo para a pessoa completar (data, cidade). Sem preços nem nomes de pacote.
+- **Rodapé:** a contracapa: assinatura, contatos em fichas com ícone, onde atendo, o portfólio por categoria, miniaturas dos álbuns (fora da home), voltar ao topo e o nome gravado em contorno.
+- **Movimento novo** (exceção pedida: "mais vida"): troca de fotos na abertura (com pausa), capa alternada, reflexo que cruza os cartões e selo que gira ao rolar (só CSS). Com `prefers-reduced-motion` nada disso roda.
+
 ## 0e. Revisão de 13/11/2026 (noite): prévia de compartilhamento
 
 Pedido do responsável: que o link do portfólio, ao ser enviado no WhatsApp, Instagram ou Telegram, apareça como "a capa de couro do próprio portfólio", um álbum fotográfico físico de alto padrão, e não uma foto qualquer. Escopo só da prévia: a abertura e o resto do site não mudam.

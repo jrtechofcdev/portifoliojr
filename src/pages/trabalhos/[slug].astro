@@ -1,12 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Foto from '../../components/Foto.astro';
+import Capa from '../../components/Capa.astro';
 import Heroi from '../../components/Heroi.astro';
 import Galeria from '../../components/Galeria.astro';
 import Historias from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
+import Icone from '../../components/Icone.astro';
 import { capaDe, ensaiosPublicaveis, fotosDoEnsaio, mesAno, type Ensaio } from '../../lib/fotos';
-import { CATEGORIAS, linkWhatsApp } from '../../data/site';
+import { CATEGORIAS, linkWhatsApp, mensagemOrcamento } from '../../data/site';
 
 export async function getStaticPaths() {
   const ensaios = await ensaiosPublicaveis();
@@ -27,13 +28,14 @@ const abertura = fotos.find((f) => f.arquivo === d.abertura.arquivo)!;
 const evento = d.categoria === 'eventos';
 const ficha = [d.cidade, mesAno(d.data), `${fotos.length} fotos`].filter(Boolean).join(' · ');
 const pergunta = evento ? 'Tem uma data especial chegando?' : 'Quer um ensaio assim?';
+// A mensagem de orçamento leva o nome do álbum: o fotógrafo sabe de onde veio o pedido.
 const mensagem = evento
-  ? `Olá, José Renato! Vi o álbum "${d.nome}" no seu portfólio e quero conversar sobre um evento.`
-  : `Olá, José Renato! Vi o álbum "${d.nome}" no seu portfólio e quero um ensaio assim. Pode me contar como funciona?`;
+  ? mensagemOrcamento(`a cobertura de um evento como o do álbum "${d.nome}"`, 'Tipo de evento, data e local')
+  : mensagemOrcamento(`um ensaio como o do álbum "${d.nome}"`, 'Data e cidade');
 const lugar = d.cidade ? ` em ${d.cidade}` : '';
 const titulo = `${d.nome}, ${d.rotulo.toLowerCase()}${lugar} | Jr_Tech_OFC Fotografia`;
 const descricao = `${d.rotulo} de ${d.nome}${lugar}, ${mesAno(d.data)}. ${fotos.length} fotos de José Renato, Jr_Tech_OFC Fotografia.`;
-const capaProx = proximo ? capaDe(proximo) : null;
+const temCapaProx = proximo ? !!capaDe(proximo) : false;
 ---
 
 <Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
@@ -44,8 +46,8 @@ const capaProx = proximo ? capaDe(proximo) : null;
       <p class="ensaio-ficha entra" style="--i:2"><span class="ensaio-rotulo">{d.rotulo}</span>{ficha}</p>
       <div class="acoes entra" style="--i:3">
         <button type="button" class="botao" data-historia="0">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
-          Assistir
+          <Icone nome="play" tamanho={18} />
+          Assistir ao álbum
         </button>
         <a class="botao-sec" href="#fotos">Ver todas as fotos</a>
       </div>
@@ -54,7 +56,7 @@ const capaProx = proximo ? capaDe(proximo) : null;
     <section class="secao fotos" id="fotos" aria-labelledby="fotos-titulo">
       <div class="wrap secao-topo surge">
         <p class="sobretitulo">O álbum</p>
-        <h2 class="h2" id="fotos-titulo">{fotos.length} <em>fotos</em></h2>
+        <h2 class="h2" id="fotos-titulo">{fotos.length} <em>fotografias</em></h2>
       </div>
       <Galeria fotos={fotos} nome={d.nome} />
     </section>
@@ -64,20 +66,20 @@ const capaProx = proximo ? capaDe(proximo) : null;
     proximo && (
       <nav class="secao wrap proximo" aria-label="Próximo álbum">
         <a class="proximo-link surge" href={`/trabalhos/${proximo.id}`}>
-          {capaProx && (
+          {temCapaProx && (
             <span class="proximo-foto" style={`view-transition-name: capa-${proximo.id}`}>
-              <Foto slug={capaProx.slug} arquivo={capaProx.arquivo} alt="" sizes="(min-width: 900px) 60vw, 92vw" recorte="50% 30%" />
+              <Capa ensaio={proximo} sizes="(min-width: 900px) 60vw, 92vw" />
             </span>
           )}
           <span class="proximo-texto">
-            <span class="proximo-rotulo">Próximo álbum</span>
+            <span class="proximo-rotulo">A seguir</span>
             <span class="proximo-nome serifa">{proximo.data.nome}</span>
             <span class="proximo-ficha">
               {proximo.data.rotulo} · {proximo.data.data.slice(0, 4)}
             </span>
           </span>
           <span class="proximo-seta" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="26" height="26"><path d="M5 12h14m0 0-6-6m6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <Icone nome="seta-direita" tamanho={24} />
           </span>
         </a>
       </nav>
@@ -87,8 +89,11 @@ const capaProx = proximo ? capaDe(proximo) : null;
   <section class="secao wrap" data-contato-ensaio aria-labelledby="contato-ensaio">
     <div class="contato couro surge">
       <h2 class="h2" id="contato-ensaio">{pergunta}</h2>
-      <p class="texto">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
-      <a class="botao botao-grande" href={linkWhatsApp(mensagem)}>Conversar no WhatsApp</a>
+      <p class="lead">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
+      <a class="botao botao-grande" href={linkWhatsApp(mensagem)}>
+        <Icone nome="whatsapp" tamanho={22} />
+        Pedir orçamento
+      </a>
     </div>
   </section>
 
@@ -99,7 +104,9 @@ const capaProx = proximo ? capaDe(proximo) : null;
 <style>
   .ensaio-titulo {
     font-size: clamp(52px, 15vw, 128px);
-    line-height: 0.95;
+    font-weight: 380;
+    line-height: 0.93;
+    letter-spacing: -0.034em;
     text-shadow: 0 2px 24px rgb(0 0 0 / 0.35);
   }
   .ensaio-ficha {
@@ -228,7 +235,10 @@ const capaProx = proximo ? capaDe(proximo) : null;
   }
   .botao-grande {
     min-height: 56px;
-    padding-inline: 36px;
+    padding-inline: 32px;
     font-size: 18px;
+  }
+  .contato .lead {
+    max-width: 30ch;
   }
 </style>

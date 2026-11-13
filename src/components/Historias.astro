@@ -4,6 +4,7 @@
 // Abre por qualquer elemento com data-historia="<indice>" (e data-foto="<n>" opcional).
 // Avanço automático com botão de pausa (WCAG 2.2.2); Esc fecha (dialog nativo).
 import type { FotoEnsaio } from '../lib/fotos';
+import Icone from './Icone.astro';
 
 export type Historia = { nome: string; legenda: string; href?: string; fotos: FotoEnsaio[] };
 
@@ -45,12 +46,12 @@ const dados = historias.map((h) => ({
         </div>
         <button type="button" class="hist-botao" data-acao="pausa" aria-pressed="false">
           <span class="visualmente-oculto">Pausar</span>
-          <svg class="ic-pausa" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
-          <svg class="ic-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor" /></svg>
+          <Icone nome="pausa" tamanho={22} class="ic-pausa" />
+          <Icone nome="play" tamanho={22} class="ic-play" />
         </button>
         <button type="button" class="hist-botao" data-acao="fechar">
           <span class="visualmente-oculto">Fechar</span>
-          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+          <Icone nome="fechar" tamanho={22} traco={2} />
         </button>
       </div>
     </div>

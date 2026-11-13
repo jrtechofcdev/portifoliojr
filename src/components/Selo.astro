@@ -1,0 +1,58 @@
+---
+// Selo de couro: o símbolo no centro e um texto em volta, em círculo, como um carimbo de álbum.
+// O anel de texto gira devagar conforme a página rola (classe .gira-ao-rolar, só CSS): parado,
+// nada se move. É decorativo.
+import Simbolo from './Simbolo.astro';
+
+interface Props {
+  texto?: string;
+  class?: string;
+  [atributo: `data-${string}`]: unknown;
+}
+const { texto = 'Jr_Tech_OFC · Fotografia · Imperatriz · Bacabal · ', class: classe, ...resto } = Astro.props;
+const id = `selo-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class:list={['selo', classe]} aria-hidden="true" {...resto}>
+  <svg class="selo-anel gira-ao-rolar" viewBox="0 0 120 120">
+    <defs>
+      <path id={id} d="M60 14a46 46 0 1 1 0 92a46 46 0 1 1 0-92" />
+    </defs>
+    <text>
+      <textPath href={`#${id}`} textLength="287" lengthAdjust="spacing">{texto}</textPath>
+    </text>
+  </svg>
+  <Simbolo tamanho={30} />
+</span>
+
+<style>
+  .selo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    aspect-ratio: 1;
+    flex: none;
+    border-radius: 999px;
+    background: var(--couro-fundo) var(--textura);
+    background-blend-mode: overlay;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      inset 0 0 0 1px rgb(0 252 168 / 0.3),
+      0 14px 26px -12px rgb(0 0 0 / 0.7);
+  }
+  .selo-anel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .selo-anel text {
+    fill: #dfe9e4;
+    font-family: var(--fonte);
+    font-size: 9.4px;
+    font-weight: 620;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>

@@ -15,6 +15,8 @@ Revisão de 13/11/2026 (noite): repaginada da home (DESIGN.md §0d): álbuns em 
 
 Revisão de 13/11/2026 (noite): prévia de compartilhamento (DESIGN.md §0e): capa de couro em `public/capa-compartilhamento.jpg`, textos em `CAPA_SOCIAL`, endereço oficial fixo em `astro.config.mjs`.
 
+Revisão de 13/11/2026 (noite): edição de luxo e plano comercial (DESIGN.md §0f): ícones próprios, abertura do álbum como objeto, fotos que se alternam na abertura, serviços com orçamento, destaques na ordem do fotógrafo (`DESTAQUES`), capa alternada nas Bodas de Ouro (`capaAlternativa`), rodapé novo.
+
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
@@ -23,6 +25,7 @@ Revisão de 13/11/2026 (noite): prévia de compartilhamento (DESIGN.md §0e): ca
 - `npm run test:bloqueio`: prova que foto pendente não gera arquivo em produção.
 - Ensaios: um YAML por ensaio em `src/content/ensaios/` (esquema em `src/content.config.ts`). Siglas de pasta em `src/data/pastas.json`.
 - A primeira geração de fotos leva cerca de 20 min; depois usa `.cache/fotos/`.
+- `npm run icones`: gera os ícones do site (aba, tela inicial do celular) a partir do símbolo.
 - `npm run capa`: gera a capa de compartilhamento (prévia do link no WhatsApp) com o Edge ou o Chrome da máquina. Textos no próprio script e em `CAPA_SOCIAL`.
 
 ## Skills obrigatórias (instaladas globalmente, ver `RELATORIO_SKILLS.md`)
@@ -35,7 +38,7 @@ Revisão de 13/11/2026 (noite): prévia de compartilhamento (DESIGN.md §0e): ca
 
 ## Exceções a estas skills, específicas deste projeto
 - **Nunca usar fotos substitutas, de banco ou geradas por IA**, mesmo que a Taste Skill sugira stand-ins. Só fotografias reais de `Fotos Para Potifolio/`, com autorização confirmada em `CURADORIA_E_INVENTARIO_DE_ASSETS.md`.
-- Sem shaders, cenas 3D, parallax ou efeitos de demonstração. Fotografia de pessoas não é site de tecnologia. Exceções pedidas pelo cliente: a textura de couro e, desde 13/11/2026, "bastante movimento" (DESIGN.md §0b: Stories, zoom lento na abertura, entradas ao rolar só com CSS) e a capa de couro que abre na home (§0c).
+- Sem shaders, cenas 3D, parallax ou efeitos de demonstração. Fotografia de pessoas não é site de tecnologia. Exceções pedidas pelo cliente: a textura de couro e, desde 13/11/2026, "bastante movimento" (DESIGN.md §0b: Stories, zoom lento na abertura, entradas ao rolar só com CSS) e a capa de couro que abre na home (§0c, refeita em §0f), e desde a noite de 13/11/2026 a troca de fotos na abertura, a capa alternada, o reflexo nos cartões e o selo que gira ao rolar (§0f).
 
 ## Regras de arquivo
 - `Fotos Para Potifolio/`, os prints e o briefing são originais: nunca editar, mover, renomear nem recomprimir. Versões web são geradas como cópias derivadas.

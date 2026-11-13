@@ -1,34 +1,158 @@
 ---
 // Abertura em tela cheia: a foto ocupa a tela do celular, com um zoom lento contínuo,
 // e o texto entra por baixo em sequência. O recorte segue o ponto focal do manifesto.
+// Na home (prop `rolo`) as fotos de abertura dos álbuns mais recentes se alternam devagar, com o
+// nome do álbum, marcas de progresso e botão de pausa (WCAG 2.2.2). As outras fotos só são
+// baixadas quando chega a vez delas. Com movimento reduzido ou sem JavaScript fica a primeira foto.
 import Foto from './Foto.astro';
+import Icone from './Icone.astro';
 import type { FotoEnsaio } from '../lib/fotos';
+
+export type Quadro = {
+  foto: FotoEnsaio;
+  foco: string;
+  nome: string;
+  legenda: string;
+  href: string;
+  /** Posição do álbum na lista de Stories da página: o botão "Ver as fotos" abre o álbum que está na tela. */
+  historia: number;
+};
 
 interface Props {
   foto: FotoEnsaio | null;
   foco?: string;
   /** Nome de view-transition: a capa do cartão do álbum cresce até virar esta foto. */
   transicao?: string;
+  /** Fotos que se alternam na abertura. A primeira repete `foto`. */
+  rolo?: Quadro[];
 }
-const { foto, foco = '50% 35%', transicao } = Astro.props;
+const { foto, foco = '50% 35%', transicao, rolo = [] } = Astro.props;
+const temRolo = rolo.length > 1;
+const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href, historia: q.historia }));
 ---
 
-<section class="heroi">
+<section class="heroi" data-heroi-rolo={temRolo ? '' : undefined}>
   {
     foto && (
-      <div class="heroi-foto" aria-hidden="true" style={transicao ? `view-transition-name: ${transicao}` : undefined}>
-        <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="(min-width: 900px) 100vw, 100vw" prioridade recorte={foco} />
+      <div class="heroi-foto ativa" aria-hidden="true" style={transicao ? `view-transition-name: ${transicao}` : undefined}>
+        <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="100vw" prioridade recorte={foco} />
       </div>
     )
+  }
+  {
+    temRolo &&
+      rolo.slice(1).map((q) => (
+        <div class="heroi-foto" aria-hidden="true" hidden>
+          <Foto slug={q.foto.slug} arquivo={q.foto.arquivo} alt="" sizes="100vw" recorte={q.foco} />
+        </div>
+      ))
   }
   <div class="heroi-conteudo wrap">
     <slot />
   </div>
-  <a class="heroi-seta" href="#depois-da-abertura" aria-label="Rolar para o conteúdo">
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-  </a>
+  {
+    temRolo ? (
+      <div class="heroi-rolo wrap">
+        <a class="heroi-album" href={rolo[0].href} data-album>
+          <span class="visualmente-oculto">Álbum na tela: </span>
+          <span class="heroi-album-nome serifa" data-album-nome>
+            {rolo[0].nome}
+          </span>
+          <span class="heroi-album-legenda" data-album-legenda>
+            {rolo[0].legenda}
+          </span>
+        </a>
+        <span class="heroi-marcas" aria-hidden="true">
+          {rolo.map(() => (
+            <i>
+              <b />
+            </i>
+          ))}
+        </span>
+        <button type="button" class="heroi-pausa" aria-pressed="false" data-pausa>
+          <span class="visualmente-oculto">Pausar a troca de fotos</span>
+          <Icone nome="pausa" tamanho={18} class="ic-pausa" />
+          <Icone nome="play" tamanho={18} class="ic-play" />
+        </button>
+      </div>
+    ) : (
+      <a class="heroi-seta" href="#depois-da-abertura" aria-label="Rolar para o conteúdo">
+        <Icone nome="seta-baixo" tamanho={22} />
+      </a>
+    )
+  }
 </section>
 <span id="depois-da-abertura"></span>
+{temRolo && <script type="application/json" id="heroi-rolo-dados" set:html={JSON.stringify(dados)} />}
+
+<script>
+  type Dado = { nome: string; legenda: string; href: string; historia: number };
+
+  const raiz = document.querySelector<HTMLElement>('[data-heroi-rolo]');
+  const fonte = document.getElementById('heroi-rolo-dados');
+  if (raiz && fonte && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const dados: Dado[] = JSON.parse(fonte.textContent || '[]');
+    const fotos = [...raiz.querySelectorAll<HTMLElement>('.heroi-foto')];
+    const marcas = [...raiz.querySelectorAll<HTMLElement>('.heroi-marcas > i')];
+    const album = raiz.querySelector<HTMLAnchorElement>('[data-album]')!;
+    const nome = raiz.querySelector<HTMLElement>('[data-album-nome]')!;
+    const legenda = raiz.querySelector<HTMLElement>('[data-album-legenda]')!;
+    const pausa = raiz.querySelector<HTMLButtonElement>('[data-pausa]')!;
+    const gatilho = raiz.querySelector<HTMLElement>('.heroi-conteudo [data-historia]');
+    let atual = 0;
+
+    function mostrar(n: number) {
+      const sai = fotos[atual];
+      atual = n;
+      const entra = fotos[atual];
+      entra.hidden = false;
+      void entra.offsetWidth; // aplica o estado inicial antes de a transição começar
+      sai.classList.remove('ativa');
+      entra.classList.add('ativa');
+      // Depois da troca, a foto que saiu deixa de ser desenhada (e o zoom dela para).
+      setTimeout(() => {
+        if (!sai.classList.contains('ativa')) sai.hidden = true;
+      }, 1800);
+      marcas.forEach((m, k) => {
+        m.classList.toggle('feita', k < atual);
+        m.classList.toggle('ativa', k === atual);
+      });
+      const d = dados[atual];
+      album.href = d.href;
+      nome.textContent = d.nome;
+      legenda.textContent = d.legenda;
+      album.classList.remove('troca');
+      void album.offsetWidth;
+      album.classList.add('troca');
+      if (gatilho) gatilho.dataset.historia = String(d.historia);
+      // A próxima foto começa a ser baixada agora, ainda invisível.
+      fotos[(atual + 1) % fotos.length].hidden = false;
+    }
+
+    // O tempo de cada foto é a animação CSS da marca: pausar a animação pausa a troca.
+    marcas.forEach((m) => m.addEventListener('animationend', () => mostrar((atual + 1) % fotos.length)));
+
+    pausa.addEventListener('click', () => {
+      const parado = raiz.toggleAttribute('data-pausado');
+      pausa.setAttribute('aria-pressed', String(parado));
+      pausa.querySelector('.visualmente-oculto')!.textContent = parado ? 'Continuar a troca de fotos' : 'Pausar a troca de fotos';
+    });
+
+    // Fora da tela, a troca espera.
+    new IntersectionObserver(([e]) => raiz.toggleAttribute('data-fora', !e.isIntersecting), { threshold: 0.25 }).observe(raiz);
+
+    // Começa depois que a capa de couro (se houver) terminar de abrir.
+    const comCapa = !!document.querySelector('[data-capa]') && !document.documentElement.classList.contains('ja-abriu');
+    raiz.setAttribute('data-vivo', '');
+    setTimeout(
+      () => {
+        marcas[0]?.classList.add('ativa');
+        if (fotos[1]) fotos[1].hidden = false;
+      },
+      comCapa ? 3600 : 900,
+    );
+  }
+</script>
 
 <style>
   .heroi {
@@ -53,6 +177,11 @@ const { foto, foco = '50% 35%', transicao } = Astro.props;
     position: absolute;
     inset: 0;
     z-index: -2;
+    opacity: 0;
+    transition: opacity 1500ms ease;
+  }
+  .heroi-foto.ativa {
+    opacity: 1;
   }
   .heroi-foto :global(.foto) {
     height: 100%;
@@ -70,7 +199,7 @@ const { foto, foco = '50% 35%', transicao } = Astro.props;
     z-index: -1;
     background:
       linear-gradient(180deg, rgb(8 12 11 / 0.55) 0%, rgb(8 12 11 / 0) 18%),
-      linear-gradient(0deg, rgb(8 12 11 / 0.9) 0%, rgb(8 12 11 / 0.55) 28%, rgb(8 12 11 / 0.12) 50%, rgb(8 12 11 / 0) 62%);
+      linear-gradient(0deg, rgb(8 12 11 / 0.92) 0%, rgb(8 12 11 / 0.6) 28%, rgb(8 12 11 / 0.14) 52%, rgb(8 12 11 / 0) 64%);
   }
   .heroi-conteudo {
     display: grid;
@@ -82,6 +211,110 @@ const { foto, foco = '50% 35%', transicao } = Astro.props;
   .heroi-conteudo :global(.sobretitulo) {
     color: #e6e1d7;
   }
+  .heroi[data-heroi-rolo] .heroi-conteudo {
+    padding-bottom: calc(68px + var(--s3) + env(safe-area-inset-bottom));
+  }
+
+  /* Faixa de baixo: o álbum que está na tela, as marcas de progresso e a pausa */
+  .heroi-rolo {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 68px;
+    padding-bottom: env(safe-area-inset-bottom);
+    border-top: 1px solid rgb(242 238 230 / 0.16);
+  }
+  .heroi-album {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 3px;
+    min-height: 44px;
+    padding-block: 10px;
+    color: #f2eee6;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .heroi-album-nome {
+    font-size: 19px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .heroi-album-legenda {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #cfcac0;
+  }
+  .heroi-album:hover {
+    color: var(--verde);
+  }
+  .heroi-marcas,
+  .heroi-pausa {
+    display: none;
+  }
+  .heroi[data-vivo] .heroi-marcas {
+    display: flex;
+    gap: 5px;
+  }
+  .heroi-marcas i {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(242 238 230 / 0.3);
+    overflow: hidden;
+  }
+  .heroi-marcas b {
+    display: block;
+    height: 100%;
+    background: var(--verde);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .heroi-marcas i.feita b {
+    transform: scaleX(1);
+  }
+  .heroi-marcas i.ativa b {
+    animation: heroi-marca 6.5s linear forwards;
+  }
+  .heroi[data-pausado] .heroi-marcas b,
+  .heroi[data-fora] .heroi-marcas b {
+    animation-play-state: paused;
+  }
+  .heroi[data-vivo] .heroi-pausa {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -12px;
+    flex: none;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #f2eee6;
+    cursor: pointer;
+  }
+  .heroi-pausa:active {
+    background: rgb(255 255 255 / 0.14);
+  }
+  .heroi-pausa .ic-play,
+  .heroi[data-pausado] .heroi-pausa .ic-pausa {
+    display: none;
+  }
+  .heroi[data-pausado] .heroi-pausa .ic-play {
+    display: block;
+  }
+
   .heroi-seta {
     position: absolute;
     left: 50%;
@@ -111,17 +344,40 @@ const { foto, foco = '50% 35%', transicao } = Astro.props;
       transform: translateY(7px);
     }
   }
+  @keyframes heroi-marca {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes heroi-legenda {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
   @media (prefers-reduced-motion: no-preference) {
     .heroi-foto :global(img) {
       animation: respirar 22s ease-in-out infinite alternate;
     }
-    .heroi-seta svg {
+    .heroi-foto:nth-of-type(even) :global(img) {
+      animation-direction: alternate-reverse;
+    }
+    .heroi-seta :global(svg) {
       animation: quicar 1.8s ease-in-out infinite;
+    }
+    .heroi-album.troca > span {
+      animation: heroi-legenda 700ms var(--curva) both;
     }
   }
   @media (min-width: 900px) {
     .heroi-conteudo {
       padding-bottom: var(--s6);
+    }
+    .heroi[data-heroi-rolo] .heroi-conteudo {
+      padding-bottom: calc(68px + var(--s5));
+    }
+    .heroi-marcas i {
+      width: 28px;
     }
   }
 </style>

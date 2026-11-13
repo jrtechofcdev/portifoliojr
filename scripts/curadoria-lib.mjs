@@ -118,6 +118,8 @@ function yamlManifesto(slug, m) {
     `pasta: ${m.pasta}`,
     `abertura: { arquivo: ${q(m.abertura.arquivo)}, foco: ${m.abertura.foco ?? '50% 35%'} }`,
     `capa: ${q(m.capa)}`,
+    // Segunda capa (alternada nos cartões): só existe se foi escrita à mão no manifesto.
+    ...(m.capaAlternativa ? [`capaAlternativa: ${q(m.capaAlternativa)}`] : []),
     'fotos:',
     ...m.fotos.map((f) => `  - { arquivo: ${q(f.arquivo)}, alt: ${q(f.alt)} }${f.rascunho ? ' # alt a revisar' : ''}`),
   ];
@@ -150,7 +152,10 @@ export async function aplicar() {
       return { arquivo, alt, rascunho: alt === provisorio(arquivo) };
     });
     const manter = atual?.m.abertura?.arquivo?.normalize('NFC') === s.casa;
-    const m = { ...base, pasta: sigla, capa: s.casa, abertura: { arquivo: s.casa, foco: manter ? atual.m.abertura.foco : '50% 35%' }, fotos };
+    // A capa alternativa continua valendo enquanto a foto tiver estrela e não for a própria capa.
+    const outra = atual?.m.capaAlternativa?.normalize('NFC');
+    const capaAlternativa = outra && outra !== s.casa && s.estrelas.includes(outra) ? outra : undefined;
+    const m = { ...base, pasta: sigla, capa: s.casa, capaAlternativa, abertura: { arquivo: s.casa, foco: manter ? atual.m.abertura.foco : '50% 35%' }, fotos };
     await writeFile(destino, yamlManifesto(slug, m));
     if (atual?.fora) await unlink(path.join(MANIFESTOS, atual.arquivo));
     resumo.push({ sigla, slug, publicada: true, estrelas: fotos.length, rascunhos: fotos.filter((f) => f.rascunho).length });
