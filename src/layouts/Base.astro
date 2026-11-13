@@ -47,8 +47,12 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
     <link rel="canonical" href={canonica} />
     {PREVIA && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content={tema === 'claro' ? '#EFE6D6' : '#121B18'} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Ícone: álbum de capa dura em perspectiva (scripts/icones.mjs). O SVG vem por último: é o preferido. -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:type" content="website" />

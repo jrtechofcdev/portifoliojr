@@ -17,6 +17,8 @@ Revisão de 13/11/2026 (noite): prévia de compartilhamento (DESIGN.md §0e): ca
 
 Revisão de 13/11/2026 (noite): edição de luxo e plano comercial (DESIGN.md §0f): ícones próprios, abertura do álbum como objeto, fotos que se alternam na abertura, serviços com orçamento, destaques na ordem do fotógrafo (`DESTAQUES`), capa alternada nas Bodas de Ouro (`capaAlternativa`), rodapé novo.
 
+Revisão de 13/11/2026 (noite): plano de melhorias (DESIGN.md §0g): foto do livro da Sabrina na abertura, com a foto num palco ao lado do texto; textos novos; botão "Solicitar orçamento" em todo o site (`CHAMADA`); categorias numa fonte só (`CAPITULOS`); chamada final e rodapé compacto; ícone de álbum em perspectiva; textos alternativos de todas as fotos.
+
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
@@ -25,7 +27,7 @@ Revisão de 13/11/2026 (noite): edição de luxo e plano comercial (DESIGN.md §
 - `npm run test:bloqueio`: prova que foto pendente não gera arquivo em produção.
 - Ensaios: um YAML por ensaio em `src/content/ensaios/` (esquema em `src/content.config.ts`). Siglas de pasta em `src/data/pastas.json`.
 - A primeira geração de fotos leva cerca de 20 min; depois usa `.cache/fotos/`.
-- `npm run icones`: gera os ícones do site (aba, tela inicial do celular) a partir do símbolo.
+- `npm run icones`: gera os ícones do site (álbum em perspectiva: `favicon.svg`, `favicon.ico`, PNGs da aba e da tela inicial do celular).
 - `npm run capa`: gera a capa de compartilhamento (prévia do link no WhatsApp) com o Edge ou o Chrome da máquina. Textos no próprio script e em `CAPA_SOCIAL`.
 
 ## Skills obrigatórias (instaladas globalmente, ver `RELATORIO_SKILLS.md`)

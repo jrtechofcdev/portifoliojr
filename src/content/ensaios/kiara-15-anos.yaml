@@ -12,43 +12,43 @@ pasta: KI
 abertura: { arquivo: "FOTO-85.jpg", foco: 50% 35% }
 capa: "FOTO-85.jpg"
 fotos:
-  - { arquivo: "FOTO-85.jpg", alt: "15 anos de Kiara, foto FOTO-85" } # alt a revisar
-  - { arquivo: "FOTO-2.jpg", alt: "15 anos de Kiara, foto FOTO-2" } # alt a revisar
-  - { arquivo: "FOTO-3.jpg", alt: "15 anos de Kiara, foto FOTO-3" } # alt a revisar
-  - { arquivo: "FOTO-6.jpg", alt: "15 anos de Kiara, foto FOTO-6" } # alt a revisar
-  - { arquivo: "FOTO-10.jpg", alt: "15 anos de Kiara, foto FOTO-10" } # alt a revisar
-  - { arquivo: "FOTO-12.jpg", alt: "15 anos de Kiara, foto FOTO-12" } # alt a revisar
-  - { arquivo: "FOTO-13.jpg", alt: "15 anos de Kiara, foto FOTO-13" } # alt a revisar
-  - { arquivo: "FOTO-16.jpg", alt: "15 anos de Kiara, foto FOTO-16" } # alt a revisar
-  - { arquivo: "FOTO-17.jpg", alt: "15 anos de Kiara, foto FOTO-17" } # alt a revisar
-  - { arquivo: "FOTO-19.jpg", alt: "15 anos de Kiara, foto FOTO-19" } # alt a revisar
-  - { arquivo: "FOTO-23.jpg", alt: "15 anos de Kiara, foto FOTO-23" } # alt a revisar
-  - { arquivo: "FOTO-24.jpg", alt: "15 anos de Kiara, foto FOTO-24" } # alt a revisar
-  - { arquivo: "FOTO-28.jpg", alt: "15 anos de Kiara, foto FOTO-28" } # alt a revisar
-  - { arquivo: "FOTO-32.jpg", alt: "15 anos de Kiara, foto FOTO-32" } # alt a revisar
-  - { arquivo: "FOTO-36.jpg", alt: "15 anos de Kiara, foto FOTO-36" } # alt a revisar
-  - { arquivo: "FOTO-38.jpg", alt: "15 anos de Kiara, foto FOTO-38" } # alt a revisar
-  - { arquivo: "FOTO-39.jpg", alt: "15 anos de Kiara, foto FOTO-39" } # alt a revisar
-  - { arquivo: "FOTO-44.jpg", alt: "15 anos de Kiara, foto FOTO-44" } # alt a revisar
-  - { arquivo: "FOTO-47.jpg", alt: "15 anos de Kiara, foto FOTO-47" } # alt a revisar
-  - { arquivo: "FOTO-49.jpg", alt: "15 anos de Kiara, foto FOTO-49" } # alt a revisar
-  - { arquivo: "FOTO-51.jpg", alt: "15 anos de Kiara, foto FOTO-51" } # alt a revisar
-  - { arquivo: "FOTO-52.jpg", alt: "15 anos de Kiara, foto FOTO-52" } # alt a revisar
-  - { arquivo: "FOTO-62.jpg", alt: "15 anos de Kiara, foto FOTO-62" } # alt a revisar
-  - { arquivo: "FOTO-63.jpg", alt: "15 anos de Kiara, foto FOTO-63" } # alt a revisar
-  - { arquivo: "FOTO-84.jpg", alt: "15 anos de Kiara, foto FOTO-84" } # alt a revisar
-  - { arquivo: "FOTO-86.jpg", alt: "15 anos de Kiara, foto FOTO-86" } # alt a revisar
-  - { arquivo: "FOTO-87.jpg", alt: "15 anos de Kiara, foto FOTO-87" } # alt a revisar
-  - { arquivo: "FOTO-88.jpg", alt: "15 anos de Kiara, foto FOTO-88" } # alt a revisar
-  - { arquivo: "FOTO-90.jpg", alt: "15 anos de Kiara, foto FOTO-90" } # alt a revisar
-  - { arquivo: "FOTO-91.jpg", alt: "15 anos de Kiara, foto FOTO-91" } # alt a revisar
-  - { arquivo: "FOTO-92.jpg", alt: "15 anos de Kiara, foto FOTO-92" } # alt a revisar
-  - { arquivo: "FOTO-94.jpg", alt: "15 anos de Kiara, foto FOTO-94" } # alt a revisar
-  - { arquivo: "FOTO-95.jpg", alt: "15 anos de Kiara, foto FOTO-95" } # alt a revisar
-  - { arquivo: "FOTO-98.jpg", alt: "15 anos de Kiara, foto FOTO-98" } # alt a revisar
-  - { arquivo: "FOTO-103.jpg", alt: "15 anos de Kiara, foto FOTO-103" } # alt a revisar
-  - { arquivo: "FOTO-107.jpg", alt: "15 anos de Kiara, foto FOTO-107" } # alt a revisar
-  - { arquivo: "FOTO-108.jpg", alt: "15 anos de Kiara, foto FOTO-108" } # alt a revisar
-  - { arquivo: "FOTO-111.jpg", alt: "15 anos de Kiara, foto FOTO-111" } # alt a revisar
-  - { arquivo: "FOTO-147.jpg", alt: "15 anos de Kiara, foto FOTO-147" } # alt a revisar
-  - { arquivo: "FOTO-151.jpg", alt: "15 anos de Kiara, foto FOTO-151" } # alt a revisar
+  - { arquivo: "FOTO-85.jpg", alt: "Kiara sorri atrás do bolo lilás, diante do painel de balões" }
+  - { arquivo: "FOTO-2.jpg", alt: "Bolo lilás de três andares com borboletas, diante do painel de balões" }
+  - { arquivo: "FOTO-3.jpg", alt: "Mão segura o cartão “Meus 15 anos” com um laço lilás" }
+  - { arquivo: "FOTO-6.jpg", alt: "Kiara de vestido lilás e tiara, sentada no carro" }
+  - { arquivo: "FOTO-10.jpg", alt: "Kiara de vestido lilás canta ao microfone" }
+  - { arquivo: "FOTO-12.jpg", alt: "Kiara de vestido lilás fala ao microfone diante dos convidados" }
+  - { arquivo: "FOTO-13.jpg", alt: "Kiara de vestido lilás ao microfone, sobre o tapete vermelho" }
+  - { arquivo: "FOTO-16.jpg", alt: "Kiara fala ao microfone ao lado do bolo" }
+  - { arquivo: "FOTO-17.jpg", alt: "Kiara e um homem de camisa verde diante do bolo" }
+  - { arquivo: "FOTO-19.jpg", alt: "Kiara ao lado de uma jovem de óculos que se emociona" }
+  - { arquivo: "FOTO-23.jpg", alt: "Kiara de tiara ouve com as mãos juntas" }
+  - { arquivo: "FOTO-24.jpg", alt: "Kiara emocionada, com as mãos juntas, durante a homenagem" }
+  - { arquivo: "FOTO-28.jpg", alt: "Kiara e a família ouvem um homem que fala ao microfone" }
+  - { arquivo: "FOTO-32.jpg", alt: "Kiara olha para baixo, emocionada, durante a homenagem" }
+  - { arquivo: "FOTO-36.jpg", alt: "Uma jovem lê uma mensagem ao microfone para Kiara" }
+  - { arquivo: "FOTO-38.jpg", alt: "Kiara recebe o abraço de uma jovem de saia lilás" }
+  - { arquivo: "FOTO-39.jpg", alt: "Jovem de saia lilás fala ao microfone ao lado de Kiara" }
+  - { arquivo: "FOTO-44.jpg", alt: "Jovem de vestido verde fala ao microfone para Kiara" }
+  - { arquivo: "FOTO-47.jpg", alt: "Kiara abraça a jovem de vestido verde" }
+  - { arquivo: "FOTO-49.jpg", alt: "Kiara aplaude ao lado do bolo com a vela de faísca acesa" }
+  - { arquivo: "FOTO-51.jpg", alt: "Convidados aplaudem no tapete vermelho durante a festa" }
+  - { arquivo: "FOTO-52.jpg", alt: "Kiara sorri atrás do bolo lilás, diante do painel de balões" }
+  - { arquivo: "FOTO-62.jpg", alt: "Kiara com as convidadas atrás da mesa do bolo" }
+  - { arquivo: "FOTO-63.jpg", alt: "Kiara e um grupo de amigas atrás da mesa do bolo" }
+  - { arquivo: "FOTO-84.jpg", alt: "Kiara sorri atrás do bolo lilás de três andares" }
+  - { arquivo: "FOTO-86.jpg", alt: "Kiara posa com a mão na cintura ao lado do bolo" }
+  - { arquivo: "FOTO-87.jpg", alt: "Kiara sorri ao lado do bolo, diante do painel de balões lilás" }
+  - { arquivo: "FOTO-88.jpg", alt: "Kiara posa atrás do bolo com a mão no cabelo" }
+  - { arquivo: "FOTO-90.jpg", alt: "Kiara de vestido lilás em frente ao painel de balões" }
+  - { arquivo: "FOTO-91.jpg", alt: "Kiara sentada entre as amigas de camiseta branca e saia lilás" }
+  - { arquivo: "FOTO-92.jpg", alt: "Kiara abraçada às amigas ao lado do bolo" }
+  - { arquivo: "FOTO-94.jpg", alt: "Kiara e as amigas de mãos dadas em roda, vistas do alto" }
+  - { arquivo: "FOTO-95.jpg", alt: "Kiara e as amigas giram de mãos dadas, vistas do alto" }
+  - { arquivo: "FOTO-98.jpg", alt: "Kiara de mãos juntas olha para o alto, emocionada" }
+  - { arquivo: "FOTO-103.jpg", alt: "Kiara gira o vestido lilás diante do painel" }
+  - { arquivo: "FOTO-107.jpg", alt: "Kiara de braço erguido mostra o vestido lilás rodado" }
+  - { arquivo: "FOTO-108.jpg", alt: "Kiara posa com a mão no rosto ao lado do bolo" }
+  - { arquivo: "FOTO-111.jpg", alt: "Kiara de vestido lilás e tiara, de pé, olhando para a câmera" }
+  - { arquivo: "FOTO-147.jpg", alt: "Kiara de vestido branco corta o bolo" }
+  - { arquivo: "FOTO-151.jpg", alt: "Kiara de vestido branco junto à mesa de presentes" }

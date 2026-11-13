@@ -8,6 +8,20 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0g. Revisão de 13/11/2026 (noite): plano de melhorias (vale sobre §0f e o resto)
+
+Pedido do responsável (arquivo "Plano de melhorias, Portfólio Jr_Tech_OFC"): mais unidade, linguagem de fotógrafo conversando com o cliente, a foto do livro da Sabrina na abertura, um encerramento claro e um ícone de álbum.
+
+- **Abertura da home (palco):** a foto não fica mais embaixo do texto. No celular ela ocupa o alto da tela (cerca de metade), inteira na largura e sem passar da proporção da própria foto; o texto vem embaixo. No computador (tela deitada) a foto fica à direita e o texto à esquerda. Assim o livro "Um caminho para a liberdade", o rosto e a mão da Sabrina (`sabrina-44.png`, a foto de abertura do álbum) ficam à vista. Zoom lento bem menor no palco. Legenda sobre a base da foto: nome, tipo · cidade · ano, o link "Ver o álbum completo" (troca junto com a foto), marcas de progresso e pausa. As páginas de álbum continuam com a foto em tela cheia.
+- **Textos:** os da seção 3 do plano, aplicados na home, nos serviços (`SERVICOS`), nos capítulos (`CAPITULOS`) e no Sobre. "Bacabal e Imperatriz" nessa ordem em todo o site. O botão de orçamento diz sempre "Solicitar orçamento" (`CHAMADA` em `site.ts`); "Coberturas externas" virou "Cobertura fotográfica no local".
+- **Destaques:** título "Em destaque" com uma linha de apoio; cada álbum mostra nome, tipo e cidade · ano.
+- **Sem "Combina com você":** o assistente continua pondo primeiro o que combina (com a costura verde no cartão), mas sem a etiqueta.
+- **Uma fonte só para as categorias:** os quatro tipos dos capítulos (`CAPITULOS` e `tipoDoEnsaio`) valem também para os filtros de /trabalhos (com a contagem em cada filtro) e para o rótulo na página do álbum. Endereços antigos (`?c=eventos`, `?c=casais`) continuam funcionando.
+- **Sobre:** sem foto ao lado (não há retrato do fotógrafo no acervo, e uma foto de cliente ao lado do nome dele confundiria): título "Prazer, sou José Renato." e o selo de um lado, texto e citação do outro.
+- **Encerramento:** Sobre, depois a chamada final (`ChamadaFinal.astro`: faixa larga de couro, um só botão "Solicitar orçamento pelo WhatsApp", e-mail e Instagram como links discretos), depois o rodapé compacto (marca, fale comigo, atendimento, navegue, direitos). A mesma chamada fecha /trabalhos e cada álbum. O rodapé perdeu as miniaturas dos álbuns e o nome gigante em contorno.
+- **Ícone:** álbum de capa dura em perspectiva (lombada, páginas claras por cima, símbolo em folha verde-ciano; nos tamanhos grandes, costura, cantoneiras e fita). `favicon.svg`, `favicon.ico` (16, 32 e 48) e PNGs de 16 a 512 gerados por `npm run icones`; ícones de tela inicial sobre papel creme.
+- **Textos alternativos:** as 319 fotos que ainda tinham texto provisório ganharam descrição do que aparece na foto. Nos eventos, quem não tem o nome no álbum é descrito pela roupa ou pelo papel (a aniversariante, o casal homenageado).
+
 ## 0f. Revisão de 13/11/2026 (noite): edição de luxo e plano comercial (vale sobre §0d e o resto)
 
 Pedidos do responsável: ícones melhores, abertura "Premium de luxo", tipografia, linguagem e rodapé mais ricos, "mais vida"; depois, o plano de expansão comercial (orçamento fácil, serviços claros), os oito álbuns em destaque numa ordem escolhida por ele e duas capas que se alternam nas Bodas de Ouro.

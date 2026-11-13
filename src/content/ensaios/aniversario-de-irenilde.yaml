@@ -12,39 +12,39 @@ pasta: IR
 abertura: { arquivo: "1710079173030(1).jpg", foco: 50% 35% }
 capa: "1710079173030(1).jpg"
 fotos:
-  - { arquivo: "1710079173030(1).jpg", alt: "Aniversário de Irenilde, foto 1710079173030(1)" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -001.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -001" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -003.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -003" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -004.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -004" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -005.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -005" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -009.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -009" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -010.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -010" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -019.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -019" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -021.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -021" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -025.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -025" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -034.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -034" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -038.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -038" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -041.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -041" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -042.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -042" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -044.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -044" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -045.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -045" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -054.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -054" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -062.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -062" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -065.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -065" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -066.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -066" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -067.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -067" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -075.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -075" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -080.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -080" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -084.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -084" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -086.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -086" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -088.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -088" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -094.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -094" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -096.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -096" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -098.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -098" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -099.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -099" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -102.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -102" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -105.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -105" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -107.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -107" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -112.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -112" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -113.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -113" } # alt a revisar
-  - { arquivo: "ANIVERSÁRIO IRENILDE -120.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -120" } # alt a revisar
+  - { arquivo: "1710079173030(1).jpg", alt: "A aniversariante atrás do bolo de 40 anos, diante do painel rosa “Happy Birthday”" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -001.jpg", alt: "A aniversariante e um homem de camisa azul posam diante dos balões rosa" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -003.jpg", alt: "A aniversariante e uma convidada atrás da mesa do bolo, com flores e doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -004.jpg", alt: "A aniversariante entre um rapaz de camiseta branca e uma jovem de calça laranja" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -005.jpg", alt: "A aniversariante cercada de familiares atrás da mesa do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -009.jpg", alt: "A aniversariante entre uma mulher de blusa rosa e um homem de camisa azul, atrás do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -010.jpg", alt: "A aniversariante sentada no chão, abraçada por um menino, diante da decoração" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -019.jpg", alt: "A aniversariante sentada no chão com cinco meninas de vestido de festa" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -021.jpg", alt: "Duas mulheres com duas crianças pequenas num cenário claro com folhagens" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -025.jpg", alt: "A aniversariante atrás do bolo, com o número 40 iluminado à frente" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -034.jpg", alt: "A aniversariante e uma convidada de blusa clara atrás da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -038.jpg", alt: "A aniversariante entre dois rapazes de camisa escura, atrás do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -041.jpg", alt: "A aniversariante com uma jovem e um rapaz atrás da mesa do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -042.jpg", alt: "A aniversariante entre dois rapazes, atrás da mesa decorada com flores" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -044.jpg", alt: "A aniversariante sorri ao lado da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -045.jpg", alt: "A aniversariante e uma mulher de vestido azul atrás do bolo de 40 anos" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -054.jpg", alt: "A aniversariante entre uma jovem e um rapaz de camisa azul, atrás do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -062.jpg", alt: "A aniversariante e um rapaz de camiseta preta atrás da mesa do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -065.jpg", alt: "A aniversariante sentada no chão, com um menino apoiado no ombro dela" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -066.jpg", alt: "A aniversariante e um policial de colete, abraçados ao lado da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -067.jpg", alt: "A aniversariante e um rapaz com camiseta da Jr_Tech_OFC ao lado da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -075.jpg", alt: "A aniversariante e um policial de colete posam juntos diante do painel rosa" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -080.jpg", alt: "Mulher de vestido de bolinhas agachada com uma criança pequena num cenário claro" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -084.jpg", alt: "A aniversariante e uma jovem de vestido preto atrás do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -086.jpg", alt: "A aniversariante e um rapaz de camiseta amarela atrás da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -088.jpg", alt: "A aniversariante e um rapaz de camisa preta atrás do bolo de 40 anos" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -094.jpg", alt: "A aniversariante com familiares e uma criança no colo, atrás da mesa do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -096.jpg", alt: "A aniversariante segura o número 40 iluminado diante do painel de rosas" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -098.jpg", alt: "A aniversariante sentada no tapete, com o número 40 iluminado à frente" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -099.jpg", alt: "A aniversariante sorri segurando o número 40 iluminado diante do painel de rosas" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -102.jpg", alt: "A aniversariante e uma convidada de blusa branca atrás da mesa de doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -105.jpg", alt: "A aniversariante beija o rosto de um rapaz ao lado do bolo" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -107.jpg", alt: "A aniversariante dá um beijo no rosto de um rapaz atrás do bolo de 40 anos" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -112.jpg", alt: "A aniversariante recebe um beijo de uma menina que está no colo dela, ao lado dos doces" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -113.jpg", alt: "A aniversariante sentada no chão com quatro meninas, diante da decoração rosa" }
+  - { arquivo: "ANIVERSÁRIO IRENILDE -120.jpg", alt: "Família reunida atrás da mesa do bolo, com o painel de balões rosa" }

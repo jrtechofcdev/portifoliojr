@@ -9,7 +9,7 @@ interface Props {
   class?: string;
   [atributo: `data-${string}`]: unknown;
 }
-const { texto = 'Jr_Tech_OFC · Fotografia · Imperatriz · Bacabal · ', class: classe, ...resto } = Astro.props;
+const { texto = 'Jr_Tech_OFC · Fotografia · Bacabal · Imperatriz · ', class: classe, ...resto } = Astro.props;
 const id = `selo-${Math.random().toString(36).slice(2, 8)}`;
 ---
 

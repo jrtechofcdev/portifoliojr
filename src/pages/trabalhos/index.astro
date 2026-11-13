@@ -5,8 +5,8 @@ import Historias, { type Historia } from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import Assistente from '../../components/Assistente.astro';
 import { capasDe, ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
-import { CAPA_SOCIAL, linkWhatsApp } from '../../data/site';
-import Icone from '../../components/Icone.astro';
+import ChamadaFinal from '../../components/ChamadaFinal.astro';
+import { CAPA_SOCIAL } from '../../data/site';
 
 const ensaios = await ensaiosPublicaveis();
 const historias: Historia[] = ensaios.map((e) => {
@@ -14,7 +14,7 @@ const historias: Historia[] = ensaios.map((e) => {
   const resto = fotosDoEnsaio(e).filter((f) => !capas.includes(f));
   return {
     nome: e.data.nome,
-    legenda: [e.data.rotulo, e.data.data.slice(0, 4)].join(' · '),
+    legenda: [e.data.rotulo, e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · '),
     href: `/trabalhos/${e.id}`,
     fotos: [...capas, ...resto.slice(0, 8 - capas.length)],
   };
@@ -23,7 +23,7 @@ const historias: Historia[] = ensaios.map((e) => {
 
 <Base
   titulo="Trabalhos | Jr_Tech_OFC Fotografia"
-  descricao="Ensaios externos, casais, gestantes, 15 anos e eventos fotografados por José Renato em Imperatriz e Bacabal, MA."
+  descricao="Ensaios externos, casais, gestantes, aniversários, festas de 15 anos e eventos fotografados por José Renato em Bacabal e Imperatriz, MA."
   imagem={CAPA_SOCIAL.imagem}
   social={{ imagemAlt: CAPA_SOCIAL.imagemAlt }}
 >
@@ -31,7 +31,7 @@ const historias: Historia[] = ensaios.map((e) => {
     <div class="wrap indice-topo">
       <p class="sobretitulo entra" style="--i:0">Portfólio</p>
       <h1 class="display-l entra" style="--i:1">Todos os <em>álbuns</em></h1>
-      <p class="lead entra" style="--i:2">Ensaios, casais, gestantes, 15 anos e celebrações em Imperatriz e Bacabal.</p>
+      <p class="lead entra" style="--i:2">Ensaios, casais, gestantes, aniversários, festas de 15 anos e eventos em Bacabal e Imperatriz.</p>
     </div>
 
     <Assistente variante="indice" alvo="#lista" />
@@ -41,17 +41,7 @@ const historias: Historia[] = ensaios.map((e) => {
     <ListaAlbuns ensaios={ensaios} prioridade />
   </section>
 
-  <section class="secao wrap" data-contato-ensaio aria-labelledby="cta-titulo">
-    <div class="contato couro surge">
-      <p class="sobretitulo">Contato</p>
-      <h2 class="h2" id="cta-titulo">Vamos criar o seu <em>álbum?</em></h2>
-      <p class="lead">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
-      <a class="botao botao-grande" href={linkWhatsApp()} data-wa-auto>
-        <Icone nome="whatsapp" tamanho={22} />
-        Pedir orçamento
-      </a>
-    </div>
-  </section>
+  <ChamadaFinal auto />
 
   <Historias historias={historias} slot="depois" />
   <BarraWhatsApp slot="depois" auto />
@@ -60,6 +50,7 @@ const historias: Historia[] = ensaios.map((e) => {
 <style>
   .indice {
     padding-top: var(--s4);
+    padding-bottom: var(--secao);
   }
   .indice-topo {
     display: grid;
@@ -70,23 +61,5 @@ const historias: Historia[] = ensaios.map((e) => {
   #lista {
     display: block;
     scroll-margin-top: calc(var(--cab) + 8px);
-  }
-  .apoio {
-    color: var(--texto-2);
-  }
-  .contato {
-    display: grid;
-    gap: var(--s3);
-    justify-items: center;
-    text-align: center;
-    padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
-  }
-  .botao-grande {
-    min-height: 56px;
-    padding-inline: 32px;
-    font-size: 18px;
-  }
-  .contato .lead {
-    max-width: 30ch;
   }
 </style>

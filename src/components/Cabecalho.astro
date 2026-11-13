@@ -1,5 +1,5 @@
 ---
-import { linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+import { CHAMADA, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
 import Simbolo from './Simbolo.astro';
 import Icone from './Icone.astro';
 
@@ -32,7 +32,7 @@ const links = [
       </ul>
       <a class="botao botao-barra" href={linkWhatsApp()}>
         <Icone nome="whatsapp" tamanho={20} />
-        Orçamento
+        {CHAMADA}
       </a>
     </nav>
     <button class="menu-abrir" type="button" aria-expanded="false" aria-controls="menu-movel">
@@ -66,7 +66,7 @@ const links = [
       <div class="menu-contato">
         <a class="botao" href={linkWhatsApp()}>
           <Icone nome="whatsapp" tamanho={22} />
-          Pedir orçamento
+          {CHAMADA}
         </a>
         <div class="menu-outros">
           <a class="botao-fantasma" href={linkInstagram}>
@@ -360,6 +360,19 @@ const links = [
     }
     .botao-barra {
       min-height: 44px;
+      white-space: nowrap;
+    }
+  }
+  /* Entre 900 e 1200 px o botão "Solicitar orçamento" precisa do espaço do subtítulo */
+  @media (min-width: 900px) and (max-width: 1199px) {
+    .marca-sub {
+      display: none;
+    }
+    .nav-desktop {
+      gap: var(--s3);
+    }
+    .nav-desktop ul {
+      gap: 20px;
     }
   }
 </style>

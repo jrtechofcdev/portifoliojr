@@ -1,9 +1,11 @@
 ---
-// Lista completa de álbuns em cartões grandes de foto (um por tela no celular), com filtro por
-// categoria. Usada na página de trabalhos. Sem JS o filtro fica escondido e todos os álbuns aparecem.
+// Lista completa de álbuns em cartões grandes de foto (um por tela no celular), com filtro pelos
+// mesmos tipos dos capítulos da home (CAPITULOS, tipoDoEnsaio). Usada na página de trabalhos.
+// Sem JS o filtro fica escondido e todos os álbuns aparecem.
+// O endereço guarda o filtro (?c=casal); os endereços antigos por categoria (?c=casais) continuam valendo.
 import CartaoAlbum from './CartaoAlbum.astro';
 import { maisRecente, type Ensaio } from '../lib/fotos';
-import { CATEGORIAS, type Categoria } from '../data/site';
+import { CAPITULOS, TIPOS_ASSISTENTE, tipoDoEnsaio } from '../data/site';
 
 interface Props {
   ensaios: Ensaio[];
@@ -12,8 +14,12 @@ interface Props {
 }
 const { ensaios, prioridade = false } = Astro.props;
 const novo = maisRecente(ensaios);
-const usadas = new Set(ensaios.map((e) => e.data.categoria));
-const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.has(c));
+const contagem = new Map<string, number>();
+for (const e of ensaios) {
+  const t = tipoDoEnsaio(e.data.categoria, e.data.rotulo);
+  contagem.set(t, (contagem.get(t) ?? 0) + 1);
+}
+const filtros = TIPOS_ASSISTENTE.map((t) => t.id).filter((t) => contagem.has(t));
 ---
 
 <div class="lista-albuns" data-lista-albuns>
@@ -21,11 +27,11 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     filtros.length > 1 && (
       <div class="filtro trilho" role="group" aria-label="Filtrar por categoria" hidden data-filtro>
         <button type="button" class="chip" aria-pressed="true" data-c="">
-          Todos
+          Todos <span class="chip-conta">{ensaios.length}</span>
         </button>
         {filtros.map((c) => (
           <button type="button" class="chip" aria-pressed="false" data-c={c}>
-            {CATEGORIAS[c].nome}
+            {CAPITULOS[c].nome} <span class="chip-conta">{contagem.get(c)}</span>
           </button>
         ))}
       </div>
@@ -46,17 +52,22 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
     const filtro = raiz.querySelector<HTMLElement>('[data-filtro]');
     if (!filtro) return;
     const botoes = [...filtro.querySelectorAll<HTMLButtonElement>('button')];
-    const itens = [...raiz.querySelectorAll<HTMLElement>('[data-categoria]')];
+    const itens = [...raiz.querySelectorAll<HTMLElement>('.cartao[data-tipo]')];
     const vazio = raiz.querySelector<HTMLElement>('[data-vazio]')!;
+    const divisor = raiz.querySelector<HTMLElement>('[data-divisor]');
+    // Endereços antigos, de quando o filtro era por categoria
+    const antigos: Record<string, string> = { ensaios: 'ensaio', casais: 'casal', eventos: 'evento' };
     function aplicar(c: string) {
       botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === c)));
       let n = 0;
       itens.forEach((li) => {
-        const ok = !c || li.dataset.categoria === c;
+        const ok = !c || li.dataset.tipo === c;
         li.hidden = !ok;
         if (ok) n++;
       });
       vazio.hidden = n > 0;
+      // "Mais trabalhos" (assistente) só faz sentido com todos os álbuns na tela
+      if (divisor) divisor.classList.toggle('filtrado', !!c);
       const url = new URL(location.href);
       c ? url.searchParams.set('c', c) : url.searchParams.delete('c');
       history.replaceState(null, '', url);
@@ -68,7 +79,8 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
       }),
     );
     filtro.hidden = false;
-    const inicial = new URLSearchParams(location.search).get('c');
+    const pedido = new URLSearchParams(location.search).get('c') ?? '';
+    const inicial = antigos[pedido] ?? pedido;
     if (inicial && botoes.some((b) => b.dataset.c === inicial)) aplicar(inicial);
   });
 </script>
@@ -87,6 +99,15 @@ const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.ha
   .cartoes-divisor {
     grid-column: 1 / -1;
     padding-top: var(--s3);
+  }
+  .cartoes-divisor.filtrado {
+    display: none;
+  }
+  .chip-conta {
+    margin-left: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    opacity: 0.7;
   }
   @media (min-width: 700px) {
     .cartoes {

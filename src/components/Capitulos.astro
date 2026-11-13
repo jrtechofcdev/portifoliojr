@@ -31,7 +31,6 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
             <span class="cap-fio" aria-hidden="true" />
             <span class="cap-conta">{c.albuns.length === 1 ? '1 álbum' : `${c.albuns.length} álbuns`}</span>
           </p>
-          <span class="cap-selo">Combina com você</span>
           <h3 class="cap-titulo serifa" id={`capitulo-${c.id}`}>
             {c.titulo[0]} <em>{c.titulo[1]}</em>
           </h3>
@@ -103,20 +102,6 @@ const capitulos = TIPOS_ASSISTENTE.map((t) => ({
     font-weight: 360;
     line-height: 1.4;
     color: var(--texto-2);
-  }
-  /* Selo do assistente: só no capítulo que combina com a resposta */
-  .cap-selo {
-    display: none;
-    padding: 5px 12px;
-    border-radius: 999px;
-    background: linear-gradient(100deg, #00fca8, #22d8ff);
-    color: #0d1512;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-  .combina .cap-selo {
-    display: inline-block;
   }
   .cap-lista {
     list-style: none;

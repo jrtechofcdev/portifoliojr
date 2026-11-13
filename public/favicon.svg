@@ -1,21 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <style>.contorno{stroke:#050a08;stroke-width:22}@media (prefers-color-scheme:dark){.contorno{stroke:#9cc4b6}}</style>
   <defs>
-    <radialGradient id="couro" cx="32%" cy="24%" r="95%">
-      <stop offset="0" stop-color="#22342e"/>
-      <stop offset=".55" stop-color="#121b18"/>
-      <stop offset="1" stop-color="#080d0b"/>
-    </radialGradient>
-    <linearGradient id="folha" gradientUnits="userSpaceOnUse" x1="120" y1="40" x2="380" y2="470">
-      <stop offset="0" stop-color="#00FCA8"/>
-      <stop offset="1" stop-color="#22D8FF"/>
+    <linearGradient id="couro" gradientUnits="userSpaceOnUse" x1="0" y1="-35" x2="250" y2="318">
+      <stop offset="0" stop-color="#34493f"/><stop offset=".45" stop-color="#18261f"/><stop offset="1" stop-color="#0a120f"/>
     </linearGradient>
+    <linearGradient id="lombada" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="0" y2="0">
+      <stop offset="0" stop-color="#070d0b"/><stop offset=".55" stop-color="#1e2e27"/><stop offset="1" stop-color="#0e1713"/>
+    </linearGradient>
+    <linearGradient id="miolo" gradientUnits="userSpaceOnUse" x1="-14.4" y1="-10.9" x2="-75.6" y2="-57.1">
+      <stop offset="0" stop-color="#fbf6ec"/><stop offset="1" stop-color="#ddd0b8"/>
+    </linearGradient>
+    <linearGradient id="folha" gradientUnits="userSpaceOnUse" x1="120" y1="40" x2="380" y2="470">
+      <stop offset="0" stop-color="#00FCA8"/><stop offset="1" stop-color="#22D8FF"/>
+    </linearGradient>
+    <linearGradient id="fita" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00e39a"/><stop offset="1" stop-color="#16b9d8"/>
+    </linearGradient>
+    <linearGradient id="platina" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3fffb"/><stop offset=".5" stop-color="#9fd3c5"/><stop offset="1" stop-color="#5f9a8a"/>
+    </linearGradient>
+    <filter id="desfoque" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="12"/></filter>
+    <radialGradient id="papel" cx="35%" cy="25%" r="90%">
+      <stop offset="0" stop-color="#fbf6ec"/><stop offset=".6" stop-color="#efe6d6"/><stop offset="1" stop-color="#ddcfb6"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#couro)"/>
   
-  <g transform="translate(256 256) scale(0.66) translate(-250 -250)" fill="url(#folha)">
-    <path d="M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z"/>
-    <path d="M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z"/>
-    <path d="M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z"/>
-    <path d="M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z"/>
+  <g transform="translate(256 256) scale(1.1918) translate(-80 -107.5)" stroke-linejoin="round">
+    
+    
+    <polygon class="contorno" points="-90,250 -90,-68 160,-103 250,-35 250,283 0,318" fill="#0a120f"/>
+    <polygon points="0,318 0,0 -90,-68 -90,250" fill="url(#lombada)"/>
+    
+    <polygon points="0,0 250,-35 160,-103 -90,-68" fill="#14201b"/>
+    <polygon points="-14.4,-10.9 225.6,-44.5 164.4,-90.7 -75.6,-57.1" fill="url(#miolo)"/>
+    <g stroke="#b9aa8d" stroke-opacity=".7" stroke-width="1.6"></g>
+    <polygon points="0,0 250,-35 250,283 0,318" fill="url(#couro)"/>
+    <line x1="0" y1="0" x2="250" y2="-35" stroke="#6f9486" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+    
+    <g transform="matrix(1 -0.14 0 1 0 0) translate(135 143.1) scale(0.42) translate(-250 -250)" fill="url(#folha)">
+      <path d="M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z"/><path d="M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z"/><path d="M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z"/><path d="M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z"/>
+    </g>
   </g>
 </svg>

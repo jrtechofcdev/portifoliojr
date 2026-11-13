@@ -12,7 +12,7 @@
 import Simbolo from './Simbolo.astro';
 import Foto from './Foto.astro';
 import { capaDe, ensaiosPublicaveis } from '../lib/fotos';
-import { PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
+import { CHAMADA, PRAZOS_ASSISTENTE, TIPOS_ASSISTENTE, mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
 
 interface Props {
   /** "indice": começa recolhido numa linha (página de trabalhos). */
@@ -33,6 +33,7 @@ const config = {
   whatsapp: site.whatsapp,
   // Mesma mensagem de orçamento do resto do site; o script troca {pedido} pela resposta.
   modelo: mensagemOrcamento('{pedido}', 'Cidade'),
+  chamada: CHAMADA,
   alvo,
 };
 ---
@@ -64,7 +65,7 @@ const config = {
 
 <script>
   type Opcao = { id: string; resposta: string; frase: string; titulo?: string };
-  type Config = { tipos: Opcao[]; prazos: Opcao[]; whatsapp: string; modelo: string; alvo: string };
+  type Config = { tipos: Opcao[]; prazos: Opcao[]; whatsapp: string; modelo: string; chamada: string; alvo: string };
   type Escolha = { tipo: string; prazo?: string };
 
   const raiz = document.querySelector<HTMLElement>('[data-assistente]');
@@ -126,8 +127,13 @@ const config = {
         });
       };
       const vt = (document as Document & { startViewTransition?: (f: () => void) => unknown }).startViewTransition;
-      if (animar && !calmo && vt) vt.call(document, aplicar);
-      else aplicar();
+      if (animar && !calmo && vt) {
+        // Se a transição for cancelada (aba em segundo plano), a nova ordem já foi aplicada: só
+        // silencia o aviso.
+        const t = vt.call(document, aplicar) as { ready?: Promise<void>; finished?: Promise<void> } | undefined;
+        t?.ready?.catch(() => {});
+        t?.finished?.catch(() => {});
+      } else aplicar();
     }
 
     function balao(texto: string, quem: 'eu' | 'voce' = 'eu') {
@@ -211,7 +217,7 @@ const config = {
     function final(e: Escolha) {
       botoes([
         { rotulo: 'Ver o que separei', classe: 'botao assist-acao', acao: irParaLista },
-        { rotulo: 'Pedir orçamento', classe: 'botao-sec assist-wa', href: linkWa(mensagem(e)), acao: () => {} },
+        { rotulo: cfg.chamada, classe: 'botao-sec assist-wa', href: linkWa(mensagem(e)), acao: () => {} },
         { rotulo: 'Recomeçar', classe: 'assist-refazer', acao: recomecar },
       ]);
     }

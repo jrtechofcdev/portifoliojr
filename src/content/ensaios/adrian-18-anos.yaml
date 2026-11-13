@@ -12,26 +12,26 @@ pasta: AD
 abertura: { arquivo: "1736125169870.jpg", foco: 50% 35% }
 capa: "1736125169870.jpg"
 fotos:
-  - { arquivo: "1736125169870.jpg", alt: "18 anos de Adrian, foto 1736125169870" } # alt a revisar
-  - { arquivo: "1736122043260.jpg", alt: "18 anos de Adrian, foto 1736122043260" } # alt a revisar
-  - { arquivo: "1736122104146.jpg", alt: "18 anos de Adrian, foto 1736122104146" } # alt a revisar
-  - { arquivo: "1736122839934.jpg", alt: "18 anos de Adrian, foto 1736122839934" } # alt a revisar
-  - { arquivo: "1736123593887.jpg", alt: "18 anos de Adrian, foto 1736123593887" } # alt a revisar
-  - { arquivo: "1736123703809.jpg", alt: "18 anos de Adrian, foto 1736123703809" } # alt a revisar
-  - { arquivo: "1736123765103.jpg", alt: "18 anos de Adrian, foto 1736123765103" } # alt a revisar
-  - { arquivo: "1736124515555.jpg", alt: "18 anos de Adrian, foto 1736124515555" } # alt a revisar
-  - { arquivo: "1736124620041.jpg", alt: "18 anos de Adrian, foto 1736124620041" } # alt a revisar
-  - { arquivo: "1736124651429.jpg", alt: "18 anos de Adrian, foto 1736124651429" } # alt a revisar
-  - { arquivo: "1736124950778.jpg", alt: "18 anos de Adrian, foto 1736124950778" } # alt a revisar
-  - { arquivo: "1736125043185.jpg", alt: "18 anos de Adrian, foto 1736125043185" } # alt a revisar
-  - { arquivo: "1736125072670.jpg", alt: "18 anos de Adrian, foto 1736125072670" } # alt a revisar
-  - { arquivo: "1736125136798.jpg", alt: "18 anos de Adrian, foto 1736125136798" } # alt a revisar
-  - { arquivo: "1736125302927.jpg", alt: "18 anos de Adrian, foto 1736125302927" } # alt a revisar
-  - { arquivo: "1736125525760.jpg", alt: "18 anos de Adrian, foto 1736125525760" } # alt a revisar
-  - { arquivo: "1736125620914.jpg", alt: "18 anos de Adrian, foto 1736125620914" } # alt a revisar
-  - { arquivo: "1736125656570.jpg", alt: "18 anos de Adrian, foto 1736125656570" } # alt a revisar
-  - { arquivo: "1736125895382.jpg", alt: "18 anos de Adrian, foto 1736125895382" } # alt a revisar
-  - { arquivo: "1736126382053.jpg", alt: "18 anos de Adrian, foto 1736126382053" } # alt a revisar
-  - { arquivo: "1736126443907.jpg", alt: "18 anos de Adrian, foto 1736126443907" } # alt a revisar
-  - { arquivo: "1736126570570.jpg", alt: "18 anos de Adrian, foto 1736126570570" } # alt a revisar
-  - { arquivo: "1736126665677.jpg", alt: "18 anos de Adrian, foto 1736126665677" } # alt a revisar
+  - { arquivo: "1736125169870.jpg", alt: "Família posa atrás da mesa do bolo, com uma menina de vermelho no colo, diante do painel de balões pretos e brancos" }
+  - { arquivo: "1736122043260.jpg", alt: "Mesa do aniversário com o bolo de smoking e o painel de balões com o número 18" }
+  - { arquivo: "1736122104146.jpg", alt: "Bolo de smoking com o topo “18 anos do Adrian” e bigodes, sobre a toalha verde" }
+  - { arquivo: "1736122839934.jpg", alt: "Casal sorri atrás da mesa do bolo, diante do painel de balões pretos e brancos" }
+  - { arquivo: "1736123593887.jpg", alt: "Três mulheres posam juntas atrás da mesa do bolo" }
+  - { arquivo: "1736123703809.jpg", alt: "Duas mulheres abraçadas atrás do bolo de smoking" }
+  - { arquivo: "1736123765103.jpg", alt: "Duas jovens e um homem de camisa listrada posam atrás da mesa do bolo" }
+  - { arquivo: "1736124515555.jpg", alt: "Mulher entre dois homens atrás da mesa do bolo, com o painel de balões ao fundo" }
+  - { arquivo: "1736124620041.jpg", alt: "Duas crianças atrás da mesa do bolo, sob o número 18 em balão prateado" }
+  - { arquivo: "1736124651429.jpg", alt: "Mulher com duas crianças atrás da mesa de doces e salgados" }
+  - { arquivo: "1736124950778.jpg", alt: "O aniversariante, de camiseta branca, posa com três convidados atrás do bolo" }
+  - { arquivo: "1736125043185.jpg", alt: "O aniversariante de camiseta branca ao lado do painel com o número 18" }
+  - { arquivo: "1736125072670.jpg", alt: "O aniversariante e um homem de boné posam atrás do bolo" }
+  - { arquivo: "1736125136798.jpg", alt: "O aniversariante entre um homem de boné e uma mulher de vestido preto" }
+  - { arquivo: "1736125302927.jpg", alt: "O aniversariante e um amigo, os dois de camiseta branca, atrás do bolo" }
+  - { arquivo: "1736125525760.jpg", alt: "O aniversariante sorri atrás do bolo, com duas crianças ao lado" }
+  - { arquivo: "1736125620914.jpg", alt: "O aniversariante gesticula sorrindo atrás da mesa, com duas crianças ao lado" }
+  - { arquivo: "1736125656570.jpg", alt: "O aniversariante ri atrás da mesa do bolo, ao lado de duas crianças" }
+  - { arquivo: "1736125895382.jpg", alt: "Detalhe das mãos do aniversariante ao lado do bolo de smoking" }
+  - { arquivo: "1736126382053.jpg", alt: "O aniversariante segura no colo uma menina de vestido vermelho" }
+  - { arquivo: "1736126443907.jpg", alt: "Mulher de blusa verde arruma os pratos na mesa de bebidas" }
+  - { arquivo: "1736126570570.jpg", alt: "Mulher se serve de salgados enquanto um homem de boné observa" }
+  - { arquivo: "1736126665677.jpg", alt: "Casal sorri com pratos nas mãos ao lado da mesa de salgados" }

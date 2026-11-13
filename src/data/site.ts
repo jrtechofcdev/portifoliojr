@@ -4,7 +4,7 @@ export const site = {
   nome: 'Jr_Tech_OFC Fotografia',
   fotografo: 'José Renato Alves da Silva',
   slogan: 'Nossa Arte, Seu Sucesso!',
-  cidades: 'Imperatriz e Bacabal, MA',
+  cidades: 'Bacabal e Imperatriz, MA',
   whatsapp: '5599982785958',
   whatsappExibicao: '(99) 98278-5958',
   email: 'jrtechofc@gmail.com',
@@ -19,6 +19,9 @@ export function mensagemOrcamento(pedido = 'um serviço fotográfico', completar
 }
 
 export const MENSAGEM_PADRAO = mensagemOrcamento();
+
+// Texto dos botões de orçamento: o mesmo em todo o site (plano de melhorias de 13/11/2026).
+export const CHAMADA = 'Solicitar orçamento';
 
 export function linkWhatsApp(mensagem: string = MENSAGEM_PADRAO): string {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(mensagem)}`;
@@ -86,11 +89,29 @@ export function tipoDoEnsaio(categoria: Categoria, rotulo: string): TipoAssisten
 
 // Capítulos da home (revisão de 13/11/2026, noite): os álbuns agrupados pelo mesmo tipo que o
 // assistente usa. O título tem uma palavra em itálico; o apoio é uma linha só.
-export const CAPITULOS: Record<TipoAssistente, { titulo: [string, string]; apoio: string }> = {
-  ensaio: { titulo: ['Ensaios', 'externos'], apoio: 'Retratos ao ar livre, a sós ou em boa companhia.' },
-  casal: { titulo: ['Casais e', 'gestantes'], apoio: 'A história a dois e a espera de quem está chegando.' },
-  festa: { titulo: ['15 anos e', 'aniversários'], apoio: 'A festa inteira, do primeiro retrato ao parabéns.' },
-  evento: { titulo: ['Eventos e', 'celebrações'], apoio: 'Cultos, confraternizações e festas de família.' },
+// É também a única fonte das categorias do resto do site: filtros de /trabalhos, contagens e o
+// rótulo de categoria na página de cada álbum.
+export const CAPITULOS: Record<TipoAssistente, { nome: string; titulo: [string, string]; apoio: string }> = {
+  ensaio: {
+    nome: 'Ensaios externos',
+    titulo: ['Ensaios', 'externos'],
+    apoio: 'Retratos ao ar livre, com orientação de poses e espaço para a espontaneidade.',
+  },
+  casal: {
+    nome: 'Casais e gestantes',
+    titulo: ['Casais e', 'gestantes'],
+    apoio: 'Registros de conexões, expectativas e momentos vividos a dois ou em família.',
+  },
+  festa: {
+    nome: '15 anos e aniversários',
+    titulo: ['15 anos e', 'aniversários'],
+    apoio: 'Retratos, detalhes e momentos importantes de cada celebração.',
+  },
+  evento: {
+    nome: 'Eventos e celebrações',
+    titulo: ['Eventos e', 'celebrações'],
+    apoio: 'Cultos, confraternizações, bodas e encontros que merecem ser lembrados.',
+  },
 };
 
 // Serviços (plano comercial de 13/11/2026). Cada um tem uma descrição curta e um botão de
@@ -100,7 +121,7 @@ export const SERVICOS = [
   {
     icone: 'pessoa',
     nome: 'Ensaios individuais',
-    texto: 'Retratos ao ar livre, com as poses conduzidas do começo ao fim.',
+    texto: 'Um ensaio pensado para você, em ambiente externo, com orientação de poses e tempo para se sentir à vontade diante da câmera.',
     pedido: 'um ensaio individual',
     completar: 'Data e cidade',
     capitulo: 'ensaio',
@@ -108,7 +129,7 @@ export const SERVICOS = [
   {
     icone: 'coracao',
     nome: 'Ensaios de casais',
-    texto: 'A história a dois, registrada com naturalidade.',
+    texto: 'Um registro da conexão de vocês, com direção leve e espaço para os gestos e momentos espontâneos.',
     pedido: 'um ensaio de casal',
     completar: 'Data e cidade',
     capitulo: 'casal',
@@ -116,7 +137,7 @@ export const SERVICOS = [
   {
     icone: 'broto',
     nome: 'Ensaios gestantes',
-    texto: 'A espera de quem está chegando, a dois ou em família.',
+    texto: 'Fotografias para marcar esse período, com registros individuais, a dois ou em família.',
     pedido: 'um ensaio gestante',
     completar: 'Data e cidade',
     capitulo: 'casal',
@@ -124,7 +145,7 @@ export const SERVICOS = [
   {
     icone: 'bolo',
     nome: 'Aniversários',
-    texto: 'A festa, os convidados e os detalhes da decoração.',
+    texto: 'Registro dos momentos, dos convidados e dos detalhes que dão identidade à comemoração.',
     pedido: 'a cobertura de um aniversário',
     completar: 'Data e local',
     capitulo: 'festa',
@@ -132,7 +153,7 @@ export const SERVICOS = [
   {
     icone: 'coroa',
     nome: 'Festas de 15 anos',
-    texto: 'Do primeiro retrato da debutante ao parabéns.',
+    texto: 'Um olhar atento à debutante, aos retratos, à família e aos momentos marcantes da celebração.',
     pedido: 'a cobertura de uma festa de 15 anos',
     completar: 'Data e local',
     capitulo: 'festa',
@@ -140,16 +161,16 @@ export const SERVICOS = [
   {
     icone: 'brilho',
     nome: 'Eventos e celebrações',
-    texto: 'Cultos, confraternizações, bodas e festas de família.',
+    texto: 'Cobertura fotográfica de cultos, confraternizações, bodas e celebrações familiares.',
     pedido: 'a cobertura de um evento',
     completar: 'Tipo de evento, data e local',
     capitulo: 'evento',
   },
   {
     icone: 'local',
-    nome: 'Coberturas externas',
-    texto: 'Fotografia no local do seu evento. Outras cidades, sob consulta.',
-    pedido: 'uma cobertura fotográfica externa',
+    nome: 'Cobertura fotográfica no local',
+    texto: 'Fotografia no local do seu evento ou da sua comemoração. Atendimento em Bacabal e Imperatriz; outras cidades, sob consulta.',
+    pedido: 'uma cobertura fotográfica no local',
     completar: 'Tipo de evento, data e local',
     capitulo: 'evento',
   },

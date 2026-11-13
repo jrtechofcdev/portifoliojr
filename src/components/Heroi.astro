@@ -1,9 +1,14 @@
 ---
-// Abertura em tela cheia: a foto ocupa a tela do celular, com um zoom lento contínuo,
-// e o texto entra por baixo em sequência. O recorte segue o ponto focal do manifesto.
-// Na home (prop `rolo`) as fotos de abertura dos álbuns mais recentes se alternam devagar, com o
-// nome do álbum, marcas de progresso e botão de pausa (WCAG 2.2.2). As outras fotos só são
-// baixadas quando chega a vez delas. Com movimento reduzido ou sem JavaScript fica a primeira foto.
+// Abertura das páginas. Duas composições:
+//  - Página de álbum (sem `rolo`): a foto ocupa a tela inteira, com um zoom lento contínuo, e o
+//    texto entra por baixo em sequência. O recorte segue o ponto focal do manifesto.
+//  - Home (com `rolo`, plano de melhorias de 13/11/2026): a foto fica num "palco" e o texto ao
+//    lado dela, sem cobrir a foto. No celular o palco ocupa o alto da tela e o texto vem embaixo;
+//    no computador o palco fica à direita e o texto à esquerda. Assim o livro, o rosto e a mão da
+//    foto de abertura da Sabrina continuam à vista.
+//    As fotos de abertura dos álbuns em destaque se alternam devagar, com o nome do álbum, o link
+//    "Ver o álbum completo", marcas de progresso e botão de pausa (WCAG 2.2.2). As outras fotos só
+//    são baixadas quando chega a vez delas. Com movimento reduzido ou sem JavaScript fica a primeira.
 import Foto from './Foto.astro';
 import Icone from './Icone.astro';
 import type { FotoEnsaio } from '../lib/fotos';
@@ -14,8 +19,6 @@ export type Quadro = {
   nome: string;
   legenda: string;
   href: string;
-  /** Posição do álbum na lista de Stories da página: o botão "Ver as fotos" abre o álbum que está na tela. */
-  historia: number;
 };
 
 interface Props {
@@ -27,55 +30,75 @@ interface Props {
   rolo?: Quadro[];
 }
 const { foto, foco = '50% 35%', transicao, rolo = [] } = Astro.props;
+const palco = rolo.length > 0;
 const temRolo = rolo.length > 1;
-const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href, historia: q.historia }));
+const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href }));
+// No palco do computador a foto ocupa pouco menos da metade da largura.
+const sizes = palco ? '(min-width: 900px) and (min-aspect-ratio: 1/1) 50vw, 100vw' : '100vw';
 ---
 
-<section class="heroi" data-heroi-rolo={temRolo ? '' : undefined}>
-  {
-    foto && (
-      <div class="heroi-foto ativa" aria-hidden="true" style={transicao ? `view-transition-name: ${transicao}` : undefined}>
-        <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="100vw" prioridade recorte={foco} />
-      </div>
-    )
-  }
-  {
-    temRolo &&
-      rolo.slice(1).map((q) => (
-        <div class="heroi-foto" aria-hidden="true" hidden>
-          <Foto slug={q.foto.slug} arquivo={q.foto.arquivo} alt="" sizes="100vw" recorte={q.foco} />
+<section class:list={['heroi', { 'heroi-palco': palco }]} data-heroi-rolo={temRolo ? '' : undefined}>
+  <div class="heroi-fotos">
+    {
+      foto && (
+        <div class="heroi-foto ativa" aria-hidden="true" style={transicao ? `view-transition-name: ${transicao}` : undefined}>
+          <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes={sizes} prioridade recorte={foco} />
         </div>
-      ))
-  }
+      )
+    }
+    {
+      temRolo &&
+        rolo.slice(1).map((q) => (
+          <div class="heroi-foto" aria-hidden="true" hidden>
+            <Foto slug={q.foto.slug} arquivo={q.foto.arquivo} alt="" sizes={sizes} recorte={q.foco} />
+          </div>
+        ))
+    }
+    {
+      palco && (
+        <div class="heroi-rolo">
+          <a class="heroi-album" href={rolo[0].href} tabindex="-1" aria-hidden="true" data-album-capa>
+            <span class="heroi-album-nome serifa" data-album-nome>
+              {rolo[0].nome}
+            </span>
+            <span class="heroi-album-legenda" data-album-legenda>
+              {rolo[0].legenda}
+            </span>
+          </a>
+          <div class="heroi-controles">
+            <a class="heroi-ver" href={rolo[0].href} data-album>
+              Ver o álbum completo
+              <span class="visualmente-oculto">
+                : <span data-album-oculto>{rolo[0].nome}, {rolo[0].legenda}</span>
+              </span>
+              <Icone nome="seta-direita" tamanho={16} />
+            </a>
+            {temRolo && (
+              <Fragment>
+                <span class="heroi-marcas" aria-hidden="true">
+                  {rolo.map(() => (
+                    <i>
+                      <b />
+                    </i>
+                  ))}
+                </span>
+                <button type="button" class="heroi-pausa" aria-pressed="false" data-pausa>
+                  <span class="visualmente-oculto">Pausar a troca de fotos</span>
+                  <Icone nome="pausa" tamanho={18} class="ic-pausa" />
+                  <Icone nome="play" tamanho={18} class="ic-play" />
+                </button>
+              </Fragment>
+            )}
+          </div>
+        </div>
+      )
+    }
+  </div>
   <div class="heroi-conteudo wrap">
     <slot />
   </div>
   {
-    temRolo ? (
-      <div class="heroi-rolo wrap">
-        <a class="heroi-album" href={rolo[0].href} data-album>
-          <span class="visualmente-oculto">Álbum na tela: </span>
-          <span class="heroi-album-nome serifa" data-album-nome>
-            {rolo[0].nome}
-          </span>
-          <span class="heroi-album-legenda" data-album-legenda>
-            {rolo[0].legenda}
-          </span>
-        </a>
-        <span class="heroi-marcas" aria-hidden="true">
-          {rolo.map(() => (
-            <i>
-              <b />
-            </i>
-          ))}
-        </span>
-        <button type="button" class="heroi-pausa" aria-pressed="false" data-pausa>
-          <span class="visualmente-oculto">Pausar a troca de fotos</span>
-          <Icone nome="pausa" tamanho={18} class="ic-pausa" />
-          <Icone nome="play" tamanho={18} class="ic-play" />
-        </button>
-      </div>
-    ) : (
+    !palco && (
       <a class="heroi-seta" href="#depois-da-abertura" aria-label="Rolar para o conteúdo">
         <Icone nome="seta-baixo" tamanho={22} />
       </a>
@@ -86,7 +109,7 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
 {temRolo && <script type="application/json" id="heroi-rolo-dados" set:html={JSON.stringify(dados)} />}
 
 <script>
-  type Dado = { nome: string; legenda: string; href: string; historia: number };
+  type Dado = { nome: string; legenda: string; href: string };
 
   const raiz = document.querySelector<HTMLElement>('[data-heroi-rolo]');
   const fonte = document.getElementById('heroi-rolo-dados');
@@ -94,11 +117,12 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
     const dados: Dado[] = JSON.parse(fonte.textContent || '[]');
     const fotos = [...raiz.querySelectorAll<HTMLElement>('.heroi-foto')];
     const marcas = [...raiz.querySelectorAll<HTMLElement>('.heroi-marcas > i')];
-    const album = raiz.querySelector<HTMLAnchorElement>('[data-album]')!;
+    const capa = raiz.querySelector<HTMLAnchorElement>('[data-album-capa]')!;
+    const ver = raiz.querySelector<HTMLAnchorElement>('[data-album]')!;
     const nome = raiz.querySelector<HTMLElement>('[data-album-nome]')!;
     const legenda = raiz.querySelector<HTMLElement>('[data-album-legenda]')!;
+    const oculto = raiz.querySelector<HTMLElement>('[data-album-oculto]')!;
     const pausa = raiz.querySelector<HTMLButtonElement>('[data-pausa]')!;
-    const gatilho = raiz.querySelector<HTMLElement>('.heroi-conteudo [data-historia]');
     let atual = 0;
 
     function mostrar(n: number) {
@@ -118,13 +142,13 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
         m.classList.toggle('ativa', k === atual);
       });
       const d = dados[atual];
-      album.href = d.href;
+      capa.href = ver.href = d.href;
       nome.textContent = d.nome;
       legenda.textContent = d.legenda;
-      album.classList.remove('troca');
-      void album.offsetWidth;
-      album.classList.add('troca');
-      if (gatilho) gatilho.dataset.historia = String(d.historia);
+      oculto.textContent = `${d.nome}, ${d.legenda}`;
+      capa.classList.remove('troca');
+      void capa.offsetWidth;
+      capa.classList.add('troca');
       // A próxima foto começa a ser baixada agora, ainda invisível.
       fotos[(atual + 1) % fotos.length].hidden = false;
     }
@@ -173,6 +197,11 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
     --costura: rgb(0 252 168 / 0.7);
     color-scheme: dark;
   }
+  .heroi-fotos {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
   .heroi-foto {
     position: absolute;
     inset: 0;
@@ -211,52 +240,125 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
   .heroi-conteudo :global(.sobretitulo) {
     color: #e6e1d7;
   }
-  .heroi[data-heroi-rolo] .heroi-conteudo {
-    padding-bottom: calc(68px + var(--s3) + env(safe-area-inset-bottom));
+
+  /* ---------- Palco (home) ---------- */
+  .heroi-palco {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .heroi-palco::after {
+    display: none;
+  }
+  /* No celular, o palco ocupa o alto da tela: cresce para encher o que o texto deixa livre, sem
+     passar da proporção da própria foto (150vw = 2:3 na largura da tela). */
+  .heroi-palco .heroi-fotos {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    isolation: isolate;
+    flex: 1 0 auto;
+    min-height: min(50svh, 150vw);
+    max-height: min(68svh, 150vw);
+    overflow: hidden;
+  }
+  /* Sombra no alto (cabeçalho) e embaixo, onde a foto se funde com o fundo e fica a legenda */
+  .heroi-palco .heroi-fotos::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(8 12 11 / 0.5) 0%, rgb(8 12 11 / 0) 16%),
+      linear-gradient(0deg, #0b110f 0%, rgb(11 17 15 / 0.82) 14%, rgb(11 17 15 / 0.3) 30%, rgb(11 17 15 / 0) 42%);
+    pointer-events: none;
+  }
+  @media (max-width: 400px) {
+    .heroi-palco .heroi-conteudo :global(.sobretitulo) {
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      white-space: nowrap;
+    }
+  }
+  .heroi-palco .heroi-conteudo {
+    flex: none;
+    gap: 14px;
+    padding-top: 16px;
+    padding-bottom: calc(var(--s5) + env(safe-area-inset-bottom));
   }
 
-  /* Faixa de baixo: o álbum que está na tela, as marcas de progresso e a pausa */
+  /* Legenda do palco: o álbum que está na tela, o link para ele, as marcas de progresso e a pausa */
   .heroi-rolo {
     position: absolute;
     inset: auto 0 0;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    min-height: 68px;
-    padding-bottom: env(safe-area-inset-bottom);
-    border-top: 1px solid rgb(242 238 230 / 0.16);
+    z-index: 1;
+    display: grid;
+    gap: 2px;
+    padding: 0 var(--margem) 4px;
   }
   .heroi-album {
-    flex: 1;
-    min-width: 0;
     display: grid;
-    align-content: center;
-    gap: 3px;
-    min-height: 44px;
-    padding-block: 10px;
+    gap: 4px;
+    justify-items: start;
     color: #f2eee6;
     text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
+    min-width: 0;
   }
   .heroi-album-nome {
-    font-size: 19px;
+    max-width: 100%;
+    font-size: clamp(24px, 6.4vw, 34px);
     font-style: italic;
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.005em;
+    font-weight: 380;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.5);
+  }
+  .heroi-album-legenda {
+    max-width: 100%;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #d9d4ca;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .heroi-album-legenda {
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #cfcac0;
-  }
   .heroi-album:hover {
     color: var(--verde);
+  }
+  .heroi-controles {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 48px;
+  }
+  .heroi-ver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-right: auto;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #f2eee6;
+    text-decoration: underline dashed rgb(0 252 168 / 0.7);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.36em;
+    white-space: nowrap;
+  }
+  .heroi-ver :global(svg) {
+    color: var(--verde);
+    transition: transform 250ms var(--curva);
+  }
+  .heroi-ver:hover {
+    color: var(--verde);
+  }
+  .heroi-ver:hover :global(svg) {
+    transform: translateX(4px);
   }
   .heroi-marcas,
   .heroi-pausa {
@@ -335,6 +437,15 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
       transform: scale(1.14) translateY(-1.5%);
     }
   }
+  /* No palco a foto inteira importa (livro, rosto, mão): o zoom é bem menor */
+  @keyframes respirar-leve {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.05);
+    }
+  }
   @keyframes quicar {
     0%,
     100% {
@@ -359,6 +470,9 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
     .heroi-foto :global(img) {
       animation: respirar 22s ease-in-out infinite alternate;
     }
+    .heroi-palco .heroi-foto :global(img) {
+      animation-name: respirar-leve;
+    }
     .heroi-foto:nth-of-type(even) :global(img) {
       animation-direction: alternate-reverse;
     }
@@ -373,11 +487,40 @@ const dados = rolo.map((q) => ({ nome: q.nome, legenda: q.legenda, href: q.href,
     .heroi-conteudo {
       padding-bottom: var(--s6);
     }
-    .heroi[data-heroi-rolo] .heroi-conteudo {
-      padding-bottom: calc(68px + var(--s5));
-    }
     .heroi-marcas i {
       width: 28px;
+    }
+  }
+  /* Computador (tela deitada): palco à direita, texto à esquerda */
+  @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+    .heroi-palco {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+      align-items: stretch;
+    }
+    .heroi-palco .heroi-fotos {
+      grid-column: 2;
+      grid-row: 1;
+      min-height: 100svh;
+      max-height: none;
+    }
+    .heroi-palco .heroi-fotos::after {
+      background:
+        linear-gradient(180deg, rgb(8 12 11 / 0.5) 0%, rgb(8 12 11 / 0) 16%),
+        linear-gradient(90deg, #0b110f 0%, rgb(11 17 15 / 0.55) 9%, rgb(11 17 15 / 0) 24%),
+        linear-gradient(0deg, rgb(8 12 11 / 0.85) 0%, rgb(8 12 11 / 0.3) 18%, rgb(8 12 11 / 0) 34%);
+    }
+    .heroi-palco .heroi-conteudo {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: end;
+      max-width: 760px;
+      padding-top: calc(var(--cab) + var(--s5));
+      padding-right: var(--s5);
+      padding-bottom: calc(var(--s6) + 8px);
+    }
+    .heroi-rolo {
+      padding: 0 var(--s5) var(--s3) clamp(48px, 6vw, 96px);
     }
   }
 </style>

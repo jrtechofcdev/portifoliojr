@@ -1,82 +1,49 @@
 ---
-// Rodapé (edição de luxo, 13/11/2026): a contracapa do álbum. Assinatura da marca, contatos em
-// fichas com ícone, onde atendo, o caminho pelo portfólio, os outros álbuns em miniatura (fora da
-// home, que já tem os capítulos) e o nome gravado bem grande no fim.
-import { CATEGORIAS, linkEmail, linkInstagram, linkWhatsApp, site, type Categoria } from '../data/site';
-import { capaDe, ensaiosPublicaveis } from '../lib/fotos';
+// Rodapé compacto (plano de melhorias de 13/11/2026). Fecha a página depois da chamada final, sem
+// repetir o texto dela: marca, contato, atendimento e navegação. Colunas no computador, blocos
+// empilhados no celular (atendimento e navegação lado a lado). Uma linha fina e um couro um pouco
+// mais escuro o separam da faixa de cima.
+import { linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
 import Simbolo from './Simbolo.astro';
 import Icone, { type NomeIcone } from './Icone.astro';
-import Capa from './Capa.astro';
 
 const ano = new Date().getFullYear();
-const caminho = Astro.url.pathname;
-const ensaios = await ensaiosPublicaveis();
 
-const contatos: { icone: NomeIcone; rotulo: string; valor: string; href: string; seta: NomeIcone }[] = [
-  { icone: 'whatsapp', rotulo: 'WhatsApp', valor: site.whatsappExibicao, href: linkWhatsApp(), seta: 'seta-direita' },
-  { icone: 'email', rotulo: 'E-mail', valor: site.email, href: linkEmail, seta: 'seta-direita' },
-  { icone: 'instagram', rotulo: 'Instagram', valor: `@${site.instagram}`, href: linkInstagram, seta: 'seta-fora' },
+const contatos: { icone: NomeIcone; rotulo: string; valor: string; href: string }[] = [
+  { icone: 'whatsapp', rotulo: 'WhatsApp', valor: site.whatsappExibicao, href: linkWhatsApp() },
+  { icone: 'email', rotulo: 'E-mail', valor: site.email, href: linkEmail },
+  { icone: 'instagram', rotulo: 'Instagram', valor: `@${site.instagram}`, href: linkInstagram },
 ];
-const categorias = (Object.keys(CATEGORIAS) as Categoria[])
-  .map((c) => ({ c, titulo: CATEGORIAS[c].titulo, n: ensaios.filter((e) => e.data.categoria === c).length }))
-  .filter((x) => x.n > 0);
 const paginas = [
   { href: '/', texto: 'Início' },
   { href: '/trabalhos', texto: 'Todos os álbuns' },
   { href: '/#servicos', texto: 'Serviços' },
-  { href: '/#como-funciona', texto: 'Como funciona' },
   { href: '/#sobre', texto: 'Sobre' },
   { href: '/#contato', texto: 'Contato' },
 ];
-// Miniaturas dos outros álbuns: em todas as páginas menos a home; na página de um álbum, sem ele.
-const miniaturas =
-  caminho === '/' ? [] : ensaios.filter((e) => !caminho.startsWith(`/trabalhos/${e.id}`) && capaDe(e));
 ---
 
-<footer class="rodape closing" data-rodape>
-  {
-    miniaturas.length > 0 && (
-      <div class="rodape-albuns">
-        <h2 class="wrap sobretitulo">Folheie os álbuns</h2>
-        <ul class="trilho rodape-trilho">
-          {miniaturas.map((e) => (
-            <li>
-              <a class="mini" href={`/trabalhos/${e.id}`}>
-                <span class="mini-foto">
-                  <Capa ensaio={e} sizes="120px" recorte="50% 28%" />
-                </span>
-                <span class="mini-nome">{e.data.nome}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )
-  }
-
+<footer class="rodape" data-rodape>
   <div class="wrap rodape-grade">
     <div class="rodape-marca">
-      <Simbolo tamanho={54} />
-      <p class="rodape-nome serifa">{site.marca}</p>
+      <a class="rodape-logo" href="/">
+        <Simbolo tamanho={30} />
+        <span class="serifa">{site.marca}</span>
+      </a>
       <p class="rodape-slogan">{site.slogan}</p>
-      <p class="rodape-resumo">Fotografia profissional de ensaios, aniversários, 15 anos e eventos.</p>
+      <p class="rodape-resumo">Fotografia de ensaios, aniversários, festas de 15 anos e eventos em Bacabal e Imperatriz, MA.</p>
     </div>
 
-    <div class="rodape-bloco">
-      <h2 class="sobretitulo">Fale comigo</h2>
-      <ul class="rodape-contatos">
+    <div class="rodape-bloco rodape-fale">
+      <h2 class="rodape-titulo">Fale comigo</h2>
+      <ul class="rodape-lista">
         {
           contatos.map((c) => (
             <li>
-              <a class="rodape-contato" href={c.href}>
-                <span class="medalha">
-                  <Icone nome={c.icone} tamanho={22} />
-                </span>
-                <span class="rodape-contato-texto">
-                  <span class="rodape-rotulo">{c.rotulo}</span>
-                  <span class="rodape-valor">{c.valor}</span>
-                </span>
-                <Icone nome={c.seta} tamanho={18} class="rodape-seta" />
+              <a href={c.href}>
+                <Icone nome={c.icone} tamanho={18} />
+                <span class="visualmente-oculto">{c.rotulo}: </span>
+                {c.valor}
               </a>
             </li>
           ))
@@ -85,33 +52,13 @@ const miniaturas =
     </div>
 
     <div class="rodape-bloco">
-      <h2 class="sobretitulo">Onde atendo</h2>
-      <p class="rodape-local">
-        <span class="medalha">
-          <Icone nome="local" tamanho={22} />
-        </span>
-        <span class="rodape-contato-texto">
-          <span class="rodape-valor">{site.cidades}</span>
-          <span class="rodape-nota">Outras cidades, sob consulta.</span>
-        </span>
-      </p>
+      <h2 class="rodape-titulo">Atendimento</h2>
+      <p class="rodape-texto">Bacabal e Imperatriz, Maranhão. Outras cidades, sob consulta.</p>
     </div>
 
     <nav class="rodape-bloco" aria-label="Rodapé">
-      <h2 class="sobretitulo">O portfólio</h2>
-      <ul class="rodape-links">
-        {
-          categorias.map((x) => (
-            <li>
-              <a href={`/trabalhos?c=${x.c}`}>
-                <span>{x.titulo}</span>
-                <span class="rodape-conta">{x.n === 1 ? '1 álbum' : `${x.n} álbuns`}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <ul class="rodape-paginas">
+      <h2 class="rodape-titulo">Navegue</h2>
+      <ul class="rodape-lista">
         {
           paginas.map((p) => (
             <li>
@@ -125,111 +72,42 @@ const miniaturas =
 
   <div class="wrap rodape-fim">
     <p class="rodape-direitos">
-      © {ano} {site.fotografo}. Todas as fotografias são de trabalhos reais, publicadas com autorização.
+      © {ano} {site.marca} · {site.fotografo}. Fotografias reais, publicadas com autorização.
     </p>
-    <a class="botao-fantasma rodape-topo" href="#conteudo">
-      <Icone nome="seta-cima" tamanho={18} />
+    <a class="rodape-topo" href="#conteudo">
+      <Icone nome="seta-cima" tamanho={16} />
       Voltar ao topo
     </a>
   </div>
-  <p class="rodape-gigante serifa" aria-hidden="true">{site.marca}</p>
 </footer>
 
 <style>
-  /* Rodapé: couro mais escuro, cantos de cima arredondados e costura no alto */
   .rodape {
     position: relative;
-    margin-top: var(--s4);
     background: var(--couro-fundo) var(--textura);
     background-blend-mode: overlay;
-    border-radius: var(--raio-g) var(--raio-g) 0 0;
+    border-top: 1px solid rgb(242 238 230 / 0.1);
     color: var(--papel);
-    padding-top: var(--s6);
-    overflow: hidden;
+    padding-block: var(--s6) calc(var(--s3) + env(safe-area-inset-bottom));
     color-scheme: dark;
     --fundo: var(--couro-fundo);
     --texto: var(--papel);
     --link: var(--papel);
     --link-hover: var(--verde);
-    --texto-2: var(--cinza);
+    --texto-2: #b9b4aa;
     --destaque: var(--verde);
-    --costura: rgb(0 252 168 / 0.55);
-    --costura-suave: rgb(0 252 168 / 0.28);
     --foco: var(--verde);
     --relevo: 0 -1px 0 rgb(0 0 0 / 0.55);
-  }
-  .rodape::before {
-    content: '';
-    position: absolute;
-    top: 9px;
-    left: 9px;
-    right: 9px;
-    height: 40px;
-    border: 1.5px dashed rgb(0 252 168 / 0.5);
-    border-bottom: 0;
-    border-radius: calc(var(--raio-g) - 9px) calc(var(--raio-g) - 9px) 0 0;
-    pointer-events: none;
-  }
-
-  /* Miniaturas dos álbuns */
-  .rodape-albuns {
-    display: grid;
-    gap: var(--s3);
-    margin-bottom: var(--s6);
-  }
-  .rodape-trilho {
-    list-style: none;
-    margin: 0;
-    gap: 14px;
-    padding-bottom: 6px;
-  }
-  .mini {
-    display: grid;
-    gap: 10px;
-    width: 104px;
-    color: var(--texto);
-    text-decoration: none;
-  }
-  .mini-foto {
-    position: relative;
-    display: block;
-    aspect-ratio: 4 / 5;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 12px 22px -14px rgb(0 0 0 / 0.9);
-    transition: transform 250ms var(--curva);
-  }
-  .mini-foto::after {
-    content: '';
-    position: absolute;
-    inset: 5px;
-    border: 1.5px dashed rgb(242 238 230 / 0.34);
-    border-radius: 11px;
-    transition: border-color 300ms;
-  }
-  .mini-foto :global(.foto) {
-    height: 100%;
-    border-radius: 0;
-  }
-  .mini:hover .mini-foto::after {
-    border-color: rgb(0 252 168 / 0.8);
-  }
-  .mini:active .mini-foto {
-    transform: scale(0.95);
-  }
-  .mini-nome {
-    font-size: 13px;
-    font-weight: 550;
-    line-height: 1.25;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
   }
 
   .rodape-grade {
     display: grid;
-    gap: var(--s5);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s5) var(--s3);
+  }
+  .rodape-marca,
+  .rodape-fale {
+    grid-column: 1 / -1;
   }
   .rodape-marca {
     display: grid;
@@ -237,222 +115,116 @@ const miniaturas =
     justify-items: start;
     align-content: start;
   }
-  .rodape-nome {
-    margin-top: 8px;
-    font-size: clamp(38px, 10vw, 56px);
+  .rodape-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    color: var(--texto);
+    text-decoration: none;
+    font-size: 28px;
     font-weight: 420;
-    line-height: 1;
+    letter-spacing: -0.015em;
+  }
+  .rodape-logo:hover {
+    color: var(--texto);
   }
   .rodape-slogan {
     font-size: 11.5px;
     font-weight: 600;
-    letter-spacing: 0.28em;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
     color: var(--verde);
   }
   .rodape-resumo {
-    max-width: 30ch;
-    margin-top: 6px;
-    font-family: var(--serifa);
-    font-optical-sizing: auto;
-    font-size: 19px;
-    font-weight: 360;
-    line-height: 1.4;
-    color: #cdc8be;
-  }
-  .rodape-bloco {
-    display: grid;
-    gap: var(--s2);
-    align-content: start;
+    max-width: 36ch;
+    margin-top: 4px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--texto-2);
   }
 
-  /* Contatos: fichas com ícone, rótulo e valor */
-  .rodape-contatos {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .rodape-bloco {
     display: grid;
+    gap: 10px;
+    align-content: start;
   }
-  .rodape-contatos li + li {
-    border-top: 1.5px dashed rgb(242 238 230 / 0.12);
-  }
-  .rodape-contato,
-  .rodape-local {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .rodape-contato {
-    min-height: 72px;
-    padding-block: 10px;
-    color: var(--texto);
-    text-decoration: none;
-  }
-  .rodape-contato-texto {
-    flex: 1;
-    min-width: 0;
-    display: grid;
-    gap: 2px;
-  }
-  .rodape-rotulo {
-    font-size: 11px;
+  .rodape-titulo {
+    font-size: 11.5px;
     font-weight: 600;
     letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--texto-2);
   }
-  .rodape-valor {
-    font-size: 17px;
-    font-weight: 550;
-    overflow-wrap: anywhere;
-  }
-  .rodape-nota {
-    font-size: 14.5px;
-    color: var(--texto-2);
-  }
-  .rodape-contato .medalha {
-    transition:
-      background-color 250ms,
-      color 250ms,
-      border-color 250ms;
-  }
-  .rodape-contato:hover .medalha {
-    background: var(--verde);
-    border-color: transparent;
-    color: #06241b;
-  }
-  .rodape-contato .rodape-seta {
-    color: var(--texto-2);
-    transition:
-      transform 250ms var(--curva),
-      color 250ms;
-  }
-  .rodape-contato:hover .rodape-seta {
-    color: var(--verde);
-    transform: translateX(4px);
-  }
-
-  /* O caminho pelo portfólio */
-  .rodape-links,
-  .rodape-paginas {
+  .rodape-lista {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .rodape-links li + li {
-    border-top: 1.5px dashed rgb(242 238 230 / 0.12);
-  }
-  .rodape-links a {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--s2);
-    min-height: 52px;
-    padding-block: 12px;
-    font-family: var(--serifa);
-    font-optical-sizing: auto;
-    font-size: 22px;
-    font-weight: 400;
-    line-height: 1.15;
-    text-decoration: none;
-  }
-  .rodape-links a:hover {
-    font-style: italic;
-  }
-  .rodape-conta {
-    flex: none;
-    font-family: var(--fonte);
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--texto-2);
-  }
-  .rodape-paginas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 var(--s3);
-    margin-top: 4px;
-  }
-  .rodape-paginas a {
+  .rodape-lista a {
     display: inline-flex;
     align-items: center;
+    gap: 10px;
     min-height: 44px;
-    font-size: 15px;
+    font-size: 15.5px;
     font-weight: 500;
-    color: #cdc8be;
-    text-decoration-color: rgb(242 238 230 / 0.3);
+    color: var(--texto);
+    text-decoration: none;
+    overflow-wrap: anywhere;
   }
-  .rodape-paginas a:hover {
+  .rodape-lista a :global(svg) {
+    flex: none;
     color: var(--verde);
+  }
+  .rodape-lista a:hover {
+    color: var(--verde);
+    text-decoration: underline dashed;
+    text-underline-offset: 0.34em;
+  }
+  .rodape-texto {
+    max-width: 30ch;
+    font-size: 15.5px;
+    line-height: 1.55;
   }
 
   .rodape-fim {
-    display: grid;
-    gap: var(--s3);
-    justify-items: start;
-    margin-top: var(--s6);
-    padding-top: var(--s4);
-    border-top: 1.5px dashed rgb(0 252 168 / 0.28);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s1) var(--s3);
+    margin-top: var(--s5);
+    padding-top: var(--s3);
+    border-top: 1px solid rgb(242 238 230 / 0.1);
   }
   .rodape-direitos {
-    max-width: 52ch;
+    max-width: 60ch;
     font-size: 13.5px;
     line-height: 1.55;
     color: var(--texto-2);
   }
   .rodape-topo {
-    font-size: 14.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 550;
+    color: var(--texto-2);
+    text-decoration: none;
   }
-
-  /* O nome gravado bem grande, só em contorno, cortado pela borda de baixo */
-  .rodape-gigante {
-    margin: var(--s4) 0 -0.17em;
-    font-size: min(17vw, 250px);
-    font-style: italic;
-    font-weight: 300;
-    line-height: 0.9;
-    letter-spacing: -0.03em;
-    text-align: center;
-    white-space: nowrap;
-    color: transparent;
-    -webkit-text-stroke: 1px rgb(0 252 168 / 0.3);
-    text-shadow: none;
-    user-select: none;
-    pointer-events: none;
+  .rodape-topo:hover {
+    color: var(--verde);
   }
 
   @media (min-width: 900px) {
     .rodape-grade {
-      grid-template-columns: 5fr 4fr 4fr;
-      gap: var(--s6) var(--s6);
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.8fr);
+      gap: var(--s5);
     }
-    .rodape-marca {
-      grid-row: span 2;
-    }
-    .rodape-bloco:last-child {
-      grid-column: 2 / -1;
-    }
-    .rodape-links {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0 var(--s4);
-    }
-    .rodape-links li + li {
-      border-top: 0;
-    }
-    .rodape-links a {
-      flex-direction: column;
-      gap: 6px;
-      justify-content: flex-start;
-    }
-    .rodape-fim {
-      grid-template-columns: 1fr auto;
-      align-items: center;
-    }
-    .mini {
-      width: 120px;
+    .rodape-marca,
+    .rodape-fale {
+      grid-column: auto;
     }
   }
 </style>

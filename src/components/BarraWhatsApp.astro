@@ -3,7 +3,7 @@
 // e some quando o contato ou o rodapé real estão na tela, para não cobrir os contatos.
 // Enquanto a pessoa rola para baixo vendo as fotos, encolhe para só o ícone; ao rolar para cima,
 // volta a mostrar o texto.
-import { linkWhatsApp } from '../data/site';
+import { CHAMADA, linkWhatsApp } from '../data/site';
 import Icone from './Icone.astro';
 interface Props {
   mensagem?: string;
@@ -16,7 +16,7 @@ const { mensagem, auto = false } = Astro.props;
 <div class="barra-wa" data-barra-wa data-oculta>
   <a class="wa" href={linkWhatsApp(mensagem)} data-wa-auto={auto ? '' : undefined}>
     <Icone nome="whatsapp" tamanho={24} />
-    <span>Pedir orçamento</span>
+    <span>{CHAMADA}</span>
   </a>
 </div>
 
@@ -84,7 +84,7 @@ const { mensagem, auto = false } = Astro.props;
       gap 320ms var(--curva);
   }
   .wa span {
-    max-width: 220px;
+    max-width: 240px;
     overflow: hidden;
     white-space: nowrap;
     transition:

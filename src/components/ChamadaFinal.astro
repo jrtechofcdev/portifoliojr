@@ -1,0 +1,154 @@
+---
+// Chamada final para orçamento (plano de melhorias de 13/11/2026): o encerramento de cada página,
+// logo antes do rodapé. Uma faixa larga de couro escuro, de ponta a ponta, com um só botão
+// principal (WhatsApp) e dois links discretos (e-mail e Instagram). Usada na home, em /trabalhos
+// e no fim de cada álbum, sempre com o mesmo desenho.
+// [data-contato-ensaio] esconde o botão flutuante do WhatsApp enquanto a faixa está na tela.
+import Icone from './Icone.astro';
+import { CHAMADA, linkEmail, linkInstagram, linkWhatsApp } from '../data/site';
+
+interface Props {
+  /** Título em duas partes: a segunda vai em itálico na cor da marca. */
+  titulo?: [string, string];
+  texto?: string;
+  /** Mensagem do WhatsApp; sem ela, a mensagem padrão de orçamento. */
+  mensagem?: string;
+  /** Usa a mensagem montada pelo assistente de escolha, quando houver. */
+  auto?: boolean;
+  id?: string;
+}
+const {
+  titulo = ['Vamos conversar sobre', 'suas fotos?'],
+  texto = 'Me conte qual é a ocasião, a data e a cidade. Com essas informações, consigo entender o que você precisa e preparar um orçamento adequado.',
+  mensagem,
+  auto = false,
+  id = 'contato',
+} = Astro.props;
+---
+
+<section class="chamada" id={id} aria-labelledby={`${id}-titulo`} data-contato-ensaio>
+  <div class="wrap chamada-miolo surge">
+    <span class="chamada-fio" aria-hidden="true"></span>
+    <h2 class="chamada-titulo serifa" id={`${id}-titulo`}>
+      {titulo[0]} <em>{titulo[1]}</em>
+    </h2>
+    <p class="chamada-texto">{texto}</p>
+    <a class="botao chamada-botao" href={linkWhatsApp(mensagem)} data-wa-auto={auto ? '' : undefined}>
+      <Icone nome="whatsapp" tamanho={22} />
+      {CHAMADA} pelo WhatsApp
+    </a>
+    <p class="chamada-links">
+      <a href={linkEmail}>
+        <Icone nome="email" tamanho={18} />
+        Enviar e-mail
+      </a>
+      <a href={linkInstagram}>
+        <Icone nome="instagram" tamanho={18} />
+        Ver Instagram
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .chamada {
+    position: relative;
+    isolation: isolate;
+    background: var(--couro-painel) var(--textura);
+    background-blend-mode: overlay;
+    color: var(--papel);
+    color-scheme: dark;
+    --texto: var(--papel);
+    --texto-2: #c9c4ba;
+    --link: var(--papel);
+    --link-hover: var(--verde);
+    --destaque: var(--verde);
+    --foco: var(--verde);
+    --relevo: 0 -1px 0 rgb(0 0 0 / 0.5);
+    scroll-margin-top: var(--cab);
+  }
+  /* Costura de ponta a ponta, em cima e embaixo, como a borda de um álbum */
+  .chamada::before,
+  .chamada::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1.5px dashed rgb(0 252 168 / 0.38);
+    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.45));
+    pointer-events: none;
+  }
+  .chamada::before {
+    top: 10px;
+  }
+  .chamada::after {
+    bottom: 10px;
+  }
+  .chamada-miolo {
+    display: grid;
+    justify-items: center;
+    gap: var(--s3);
+    padding-block: clamp(72px, 11vw, 136px);
+    text-align: center;
+  }
+  /* O detalhe nas cores da marca: um fio curto no degradê do símbolo */
+  .chamada-fio {
+    width: 56px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--folha);
+  }
+  .chamada-titulo {
+    max-width: 16ch;
+    font-size: clamp(38px, 9vw, 80px);
+    font-weight: 380;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  .chamada-texto {
+    max-width: 44ch;
+    font-size: clamp(16.5px, 4.2vw, 19px);
+    line-height: 1.55;
+    color: var(--texto-2);
+  }
+  .chamada-botao {
+    min-height: 58px;
+    margin-top: var(--s1);
+    padding-inline: 26px 30px;
+    font-size: 17.5px;
+  }
+  .chamada-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0 var(--s4);
+  }
+  .chamada-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 550;
+    color: var(--texto-2);
+    text-decoration: underline dashed rgb(242 238 230 / 0.3);
+    text-underline-offset: 0.34em;
+  }
+  .chamada-links a:hover {
+    color: var(--verde);
+    text-decoration-color: currentColor;
+  }
+  @media (max-width: 480px) {
+    .chamada-botao {
+      gap: 8px;
+      padding-inline: 18px 22px;
+      font-size: 16px;
+    }
+  }
+  @media (max-width: 360px) {
+    .chamada-botao {
+      font-size: 15px;
+    }
+  }
+</style>

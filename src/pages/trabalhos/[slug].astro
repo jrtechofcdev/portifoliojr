@@ -6,8 +6,9 @@ import Galeria from '../../components/Galeria.astro';
 import Historias from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import Icone from '../../components/Icone.astro';
+import ChamadaFinal from '../../components/ChamadaFinal.astro';
 import { capaDe, ensaiosPublicaveis, fotosDoEnsaio, mesAno, type Ensaio } from '../../lib/fotos';
-import { CATEGORIAS, linkWhatsApp, mensagemOrcamento } from '../../data/site';
+import { CAPITULOS, mensagemOrcamento, tipoDoEnsaio } from '../../data/site';
 
 export async function getStaticPaths() {
   const ensaios = await ensaiosPublicaveis();
@@ -26,8 +27,9 @@ const d = ensaio.data;
 const fotos = fotosDoEnsaio(ensaio);
 const abertura = fotos.find((f) => f.arquivo === d.abertura.arquivo)!;
 const evento = d.categoria === 'eventos';
+const tipo = tipoDoEnsaio(d.categoria, d.rotulo);
 const ficha = [d.cidade, mesAno(d.data), `${fotos.length} fotos`].filter(Boolean).join(' · ');
-const pergunta = evento ? 'Tem uma data especial chegando?' : 'Quer um ensaio assim?';
+const pergunta: [string, string] = evento ? ['Tem uma data especial', 'chegando?'] : ['Quer um ensaio', 'assim?'];
 // A mensagem de orçamento leva o nome do álbum: o fotógrafo sabe de onde veio o pedido.
 const mensagem = evento
   ? mensagemOrcamento(`a cobertura de um evento como o do álbum "${d.nome}"`, 'Tipo de evento, data e local')
@@ -41,7 +43,7 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
 <Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
   <article>
     <Heroi foto={abertura} foco={d.abertura.foco} transicao={`capa-${ensaio.id}`}>
-      <a class="sobretitulo entra" style="--i:0" href={`/trabalhos?c=${d.categoria}`}>{CATEGORIAS[d.categoria].titulo}</a>
+      <a class="sobretitulo entra" style="--i:0" href={`/trabalhos?c=${tipo}`}>{CAPITULOS[tipo].nome}</a>
       <h1 class="ensaio-titulo serifa entra" style="--i:1">{d.nome}</h1>
       <p class="ensaio-ficha entra" style="--i:2"><span class="ensaio-rotulo">{d.rotulo}</span>{ficha}</p>
       <div class="acoes entra" style="--i:3">
@@ -86,18 +88,9 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
     )
   }
 
-  <section class="secao wrap" data-contato-ensaio aria-labelledby="contato-ensaio">
-    <div class="contato couro surge">
-      <h2 class="h2" id="contato-ensaio">{pergunta}</h2>
-      <p class="lead">Conte o que você imagina, a data e a cidade. Eu respondo pelo WhatsApp.</p>
-      <a class="botao botao-grande" href={linkWhatsApp(mensagem)}>
-        <Icone nome="whatsapp" tamanho={22} />
-        Pedir orçamento
-      </a>
-    </div>
-  </section>
+  <ChamadaFinal titulo={pergunta} mensagem={mensagem} />
 
-  <Historias historias={[{ nome: d.nome, legenda: [d.rotulo, d.data.slice(0, 4)].join(' · '), fotos }]} slot="depois" />
+  <Historias historias={[{ nome: d.nome, legenda: [d.rotulo, d.cidade, d.data.slice(0, 4)].filter(Boolean).join(' · '), fotos }]} slot="depois" />
   <BarraWhatsApp mensagem={mensagem} slot="depois" />
 </Base>
 
@@ -226,19 +219,4 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
     transform: translateX(6px);
   }
 
-  .contato {
-    display: grid;
-    gap: var(--s3);
-    justify-items: center;
-    text-align: center;
-    padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
-  }
-  .botao-grande {
-    min-height: 56px;
-    padding-inline: 32px;
-    font-size: 18px;
-  }
-  .contato .lead {
-    max-width: 30ch;
-  }
 </style>
