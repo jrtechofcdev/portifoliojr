@@ -12,8 +12,7 @@ anti-slop/
 node_modules/
 dist/
 .astro/
-public/fotos/
-src/generated/
+# public/fotos/ e src/generated/ vão para o Git: a Vercel não tem os originais (npm run fotos:publicar)
 .cache/
 
 # Ambiente

@@ -13,18 +13,46 @@ abertura: { arquivo: "IMG_1081.jpg", foco: 50% 25% }
 capa: "IMG_1081.jpg"
 fotos:
   - { arquivo: "IMG_1081.jpg", alt: "Retrato noturno com flash sob céu de tempestade, olhar direto para a câmera" }
+  - { arquivo: "IMG_0724.jpg", alt: "Sara & Yasmin, foto IMG_0724" } # alt a revisar
   - { arquivo: "IMG_0725.jpg", alt: "Sorriso na luz de fim de tarde" }
+  - { arquivo: "IMG_0742.jpg", alt: "Sara & Yasmin, foto IMG_0742" } # alt a revisar
+  - { arquivo: "IMG_0767.jpg", alt: "Sara & Yasmin, foto IMG_0767" } # alt a revisar
   - { arquivo: "IMG_0787.jpg", alt: "De costas, com vestido floral" }
   - { arquivo: "IMG_0808.jpg", alt: "Vestido preto contra o céu" }
+  - { arquivo: "IMG_0818.jpg", alt: "Sara & Yasmin, foto IMG_0818" } # alt a revisar
+  - { arquivo: "IMG_0820.jpg", alt: "Sara & Yasmin, foto IMG_0820" } # alt a revisar
   - { arquivo: "IMG_0866.jpg", alt: "Retrato diante de um muro branco" }
   - { arquivo: "IMG_0906.jpg", alt: "Sorriso de lado diante de uma parede branca, vestido preto" }
   - { arquivo: "IMG_0914.jpg", alt: "Sentada, sorrindo, vestido preto de um ombro só" }
+  - { arquivo: "IMG_0923 (1).jpg", alt: "Sara & Yasmin, foto IMG_0923 (1)" } # alt a revisar
+  - { arquivo: "IMG_0940.jpg", alt: "Sara & Yasmin, foto IMG_0940" } # alt a revisar
+  - { arquivo: "IMG_0943.jpg", alt: "Sara & Yasmin, foto IMG_0943" } # alt a revisar
+  - { arquivo: "IMG_0945.jpg", alt: "Sara & Yasmin, foto IMG_0945" } # alt a revisar
+  - { arquivo: "IMG_0946.jpg", alt: "Sara & Yasmin, foto IMG_0946" } # alt a revisar
   - { arquivo: "IMG_0957.jpg", alt: "Deitada no gramado, cabelo aberto em leque com pétalas, vista de cima" }
+  - { arquivo: "IMG_0987.jpg", alt: "Sara & Yasmin, foto IMG_0987" } # alt a revisar
+  - { arquivo: "IMG_0990.jpg", alt: "Sara & Yasmin, foto IMG_0990" } # alt a revisar
+  - { arquivo: "IMG_0993.jpg", alt: "Sara & Yasmin, foto IMG_0993" } # alt a revisar
   - { arquivo: "IMG_0994.jpg", alt: "Cabelo arrumado em forma de coração" }
   - { arquivo: "IMG_1031.jpg", alt: "Vestido preto ao entardecer, cabelo longo sobre o ombro" }
   - { arquivo: "IMG_1032.jpg", alt: "Sorriso largo com vestido estampado de flores vermelhas, fim de tarde" }
+  - { arquivo: "IMG_1033.jpg", alt: "Sara & Yasmin, foto IMG_1033" } # alt a revisar
+  - { arquivo: "IMG_1034.jpg", alt: "Sara & Yasmin, foto IMG_1034" } # alt a revisar
+  - { arquivo: "IMG_1035.jpg", alt: "Sara & Yasmin, foto IMG_1035" } # alt a revisar
+  - { arquivo: "IMG_1040.jpg", alt: "Sara & Yasmin, foto IMG_1040" } # alt a revisar
+  - { arquivo: "IMG_1043.jpg", alt: "Sara & Yasmin, foto IMG_1043" } # alt a revisar
+  - { arquivo: "IMG_1044.jpg", alt: "Sara & Yasmin, foto IMG_1044" } # alt a revisar
+  - { arquivo: "IMG_1045.jpg", alt: "Sara & Yasmin, foto IMG_1045" } # alt a revisar
+  - { arquivo: "IMG_1046.jpg", alt: "Sara & Yasmin, foto IMG_1046" } # alt a revisar
   - { arquivo: "IMG_1050.jpg", alt: "Sorriso por cima do ombro, vestido de flores vermelhas" }
   - { arquivo: "IMG_1057.jpg", alt: "Olhar por cima do ombro" }
+  - { arquivo: "IMG_1066.jpg", alt: "Sara & Yasmin, foto IMG_1066" } # alt a revisar
   - { arquivo: "IMG_1072.jpg", alt: "Corpo inteiro de vestido preto, descalça no asfalto molhado, céu escuro" }
   - { arquivo: "IMG_1077.jpg", alt: "De costas, olhando por cima do ombro, vestido preto com saia transparente" }
+  - { arquivo: "IMG_1078.jpg", alt: "Sara & Yasmin, foto IMG_1078" } # alt a revisar
+  - { arquivo: "IMG_1082.jpg", alt: "Sara & Yasmin, foto IMG_1082" } # alt a revisar
   - { arquivo: "IMG_1084.jpg", alt: "Retrato noturno com flash sob céu escuro" }
+  - { arquivo: "IMG_1085.jpg", alt: "Sara & Yasmin, foto IMG_1085" } # alt a revisar
+  - { arquivo: "IMG_1086.jpg", alt: "Sara & Yasmin, foto IMG_1086" } # alt a revisar
+  - { arquivo: "IMG_1097 (1).jpg", alt: "Sara & Yasmin, foto IMG_1097 (1)" } # alt a revisar
+  - { arquivo: "IMG_1100.jpg", alt: "Sara & Yasmin, foto IMG_1100" } # alt a revisar

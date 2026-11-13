@@ -8,6 +8,20 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0b. Revisão de 13/11/2026: fotos em tela cheia, celular Android primeiro (vale sobre §0 e o resto)
+
+Pedido do responsável: o site estava "muito sem vida"; tem que ser "voltado para celular Android, que é onde o cliente vai acessar", "bem otimizado", "com mais vida" e "uma experiência melhorada". Escolhas dele: **fotos em tela cheia**, **bastante movimento**.
+
+- **Dial: ENERGY 4 / RHYTHM 3 / MOTION 3.**
+- **Sai o álbum que se folheia** (componentes Album e CapaAlbum removidos). O couro e a costura ficam como acabamento: cabeçalho ao rolar, cartões de passo, contato, rodapé, anéis dos destaques.
+- **Abertura em tela cheia** (`Heroi.astro`): foto ocupando a tela do celular com zoom lento contínuo, escurecimento só embaixo para o texto, textos entrando em sequência. O cabeçalho fica transparente sobre a foto e se esconde ao rolar para baixo.
+- **Stories** (`Historias.astro`): cada álbum abre em tela cheia com barras de progresso, avanço automático de 5 s, toque à direita avança e à esquerda volta, segurar pausa, deslizar para baixo fecha, deslizar para o lado troca de álbum. Botão de pausa (WCAG 2.2.2). A foto aparece inteira, sem corte, com fundo borrado da própria foto.
+- **Home:** abertura, fileira de destaques (círculos com costura verde), álbuns em cartões grandes 4:5 com botão de assistir, foto horizontal de pausa que se abre ao entrar, "Como funciona" em cartões que se deslizam, sobre, contato. **Botão flutuante de WhatsApp** no celular, escondido sobre a abertura e perto do contato.
+- **Página do álbum:** abertura em tela cheia com "Assistir" e "Ver todas as fotos"; grade em duas colunas no celular; visualização ampliada com deslize; próximo álbum em cartão de foto.
+- **Movimento ao rolar só com CSS** (`animation-timeline: view()`, classes `.surge`, `.surge-lado`, `.revela`): roda fora da thread principal no Chrome do Android, sem JavaScript; sem suporte, tudo aparece parado. Continua proibido: parallax, scroll-jacking, cursor customizado, carrossel automático na página. Com `prefers-reduced-motion` nada se move.
+- **Desempenho:** fotos em 480, 800, 1200 e 1800 px, AVIF e WebP (JPEG só de reserva em 800 e 1200); só a abertura carrega com prioridade, o resto com `loading="lazy"`.
+- Deixam de valer: §0 "a home abre com o álbum fechado" e a virada de página; §8 "reveal de cada bloco ao rolar" (agora permitido, só com CSS).
+
 ## 0. Revisão de 09/11/2026: álbum de couro (vale sobre qualquer item abaixo que a contradiga)
 
 Pedido do responsável: "luxo com estética confortável", "couro com as cores da marca" e, para quem chega pelo link do Instagram, "como se tivesse folheado um álbum de luxo". O site é o **portfólio** da marca, não o site institucional.

@@ -1,0 +1,251 @@
+---
+// Lista de álbuns em cartões grandes de foto (um por tela no celular), com filtro por categoria
+// e um botão que abre o álbum no modo Stories (componente Historias, índice = posição na lista).
+// Sem JS o filtro fica escondido e todos os álbuns aparecem.
+import Foto from './Foto.astro';
+import { capaDe, fotosDoEnsaio, type Ensaio } from '../lib/fotos';
+import { CATEGORIAS, type Categoria } from '../data/site';
+
+interface Props {
+  ensaios: Ensaio[];
+  /** Primeiro cartão com prioridade de carregamento (página sem abertura em tela cheia). */
+  prioridade?: boolean;
+}
+const { ensaios, prioridade = false } = Astro.props;
+const usadas = new Set(ensaios.map((e) => e.data.categoria));
+const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.has(c));
+---
+
+<div class="lista-albuns" data-lista-albuns>
+  {
+    filtros.length > 1 && (
+      <div class="filtro trilho" role="group" aria-label="Filtrar por categoria" hidden data-filtro>
+        <button type="button" class="chip" aria-pressed="true" data-c="">
+          Todos
+        </button>
+        {filtros.map((c) => (
+          <button type="button" class="chip" aria-pressed="false" data-c={c}>
+            {CATEGORIAS[c].nome}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <ul class="cartoes wrap">
+    {
+      ensaios.map((e, i) => {
+        const capa = capaDe(e);
+        const total = fotosDoEnsaio(e).length;
+        return (
+          <li class="cartao surge" data-categoria={e.data.categoria}>
+            <a class="cartao-link" href={`/trabalhos/${e.id}`}>
+              {capa && (
+                <span class="cartao-foto">
+                  <Foto
+                    slug={capa.slug}
+                    arquivo={capa.arquivo}
+                    alt=""
+                    sizes="(min-width: 1100px) 31vw, (min-width: 700px) 46vw, 92vw"
+                    recorte={e.data.capa === e.data.abertura.arquivo ? e.data.abertura.foco : '50% 30%'}
+                    prioridade={prioridade && i === 0}
+                  />
+                </span>
+              )}
+              <span class="cartao-texto">
+                <span class="cartao-rotulo">{e.data.rotulo}</span>
+                <span class="cartao-nome serifa">{e.data.nome}</span>
+                <span class="cartao-ficha">
+                  {[e.data.cidade, e.data.data.slice(0, 4), `${total} fotos`].filter(Boolean).join(' · ')}
+                </span>
+              </span>
+            </a>
+            <button type="button" class="cartao-play" data-historia={i} aria-label={`Assistir as fotos de ${e.data.nome} em tela cheia`}>
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor" /></svg>
+            </button>
+          </li>
+        );
+      })
+    }
+  </ul>
+  <p class="wrap texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-lista-albuns]').forEach((raiz) => {
+    const filtro = raiz.querySelector<HTMLElement>('[data-filtro]');
+    if (!filtro) return;
+    const botoes = [...filtro.querySelectorAll<HTMLButtonElement>('button')];
+    const itens = [...raiz.querySelectorAll<HTMLElement>('[data-categoria]')];
+    const vazio = raiz.querySelector<HTMLElement>('[data-vazio]')!;
+    function aplicar(c: string) {
+      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === c)));
+      let n = 0;
+      itens.forEach((li) => {
+        const ok = !c || li.dataset.categoria === c;
+        li.hidden = !ok;
+        if (ok) n++;
+      });
+      vazio.hidden = n > 0;
+      const url = new URL(location.href);
+      c ? url.searchParams.set('c', c) : url.searchParams.delete('c');
+      history.replaceState(null, '', url);
+    }
+    botoes.forEach((b) =>
+      b.addEventListener('click', () => {
+        aplicar(b.dataset.c ?? '');
+        b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      }),
+    );
+    filtro.hidden = false;
+    const inicial = new URLSearchParams(location.search).get('c');
+    if (inicial && botoes.some((b) => b.dataset.c === inicial)) aplicar(inicial);
+  });
+</script>
+
+<style>
+  .filtro {
+    padding-block: 10px;
+    margin-bottom: var(--s2);
+  }
+  .cartoes {
+    list-style: none;
+    margin: 0;
+    display: grid;
+    gap: var(--s3);
+  }
+  .cartao {
+    position: relative;
+    min-width: 0;
+  }
+  .cartao-link {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--raio-g);
+    overflow: hidden;
+    isolation: isolate;
+    color: #f2eee6;
+    text-decoration: none;
+    background: #0b110f;
+    box-shadow: var(--sombra);
+    transition: transform 250ms var(--curva);
+  }
+  .cartao-link:active {
+    transform: scale(0.98);
+  }
+  .cartao-link:hover {
+    color: #f2eee6;
+  }
+  .cartao-foto {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .cartao-foto :global(.foto) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .cartao-foto :global(img) {
+    transition: transform 900ms var(--curva);
+  }
+  .cartao-link:hover .cartao-foto :global(img) {
+    transform: scale(1.06);
+  }
+  .cartao-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(0deg, rgb(8 12 11 / 0.88) 0%, rgb(8 12 11 / 0.35) 32%, rgb(8 12 11 / 0) 55%);
+  }
+  .cartao-texto {
+    position: absolute;
+    inset: auto 0 0;
+    display: grid;
+    gap: 6px;
+    padding: var(--s3);
+  }
+  .cartao-rotulo {
+    justify-self: start;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--verde);
+    color: #0d1512;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .cartao-nome {
+    font-size: clamp(34px, 9vw, 52px);
+    line-height: 1;
+    text-shadow: 0 2px 16px rgb(0 0 0 / 0.45);
+  }
+  .cartao-ficha {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ddd8ce;
+  }
+  .cartao-link:focus-visible {
+    outline-offset: 4px;
+  }
+  /* Botão de assistir: pílula no canto, com costura, fora do link (não aninhado) */
+  .cartao-play {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 2px dashed rgb(0 252 168 / 0.8);
+    border-radius: 999px;
+    background: rgb(8 12 11 / 0.6);
+    color: #f2eee6;
+    cursor: pointer;
+    transition:
+      transform 200ms var(--curva),
+      background-color 200ms;
+  }
+  .cartao-play:hover {
+    background: var(--verde);
+    color: #0d1512;
+  }
+  .cartao-play:active {
+    transform: scale(0.9);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cartao-play svg {
+      animation: pulsar 2.4s ease-in-out infinite;
+    }
+  }
+  @keyframes pulsar {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.18);
+    }
+  }
+  @media (min-width: 700px) {
+    .cartoes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .cartao:nth-child(even) {
+      margin-top: var(--s6);
+    }
+  }
+  @media (min-width: 1100px) {
+    .cartoes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .cartao:nth-child(even) {
+      margin-top: 0;
+    }
+    .cartao:nth-child(3n + 2) {
+      margin-top: var(--s6);
+    }
+  }
+</style>

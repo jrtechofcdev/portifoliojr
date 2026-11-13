@@ -7,6 +7,8 @@ Fases 0 a 6 concluídas na parte do desenvolvimento em 08/11/2026 (ver `RELATORI
 
 Revisão de 09/11/2026: visual "álbum de couro" (DESIGN.md §0) e curadoria pelo fotógrafo em `/curadoria`. Autorizações de imagem confirmadas pelo responsável em 09/11/2026.
 
+Revisão de 13/11/2026: curadoria final feita pelo fotógrafo (14 álbuns). Novo visual "fotos em tela cheia", celular Android primeiro, com Stories e bastante movimento (DESIGN.md §0b). A pasta do Bombeiro Mirim (BM) não está na cópia das fotos deste computador.
+
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
@@ -26,7 +28,7 @@ Revisão de 09/11/2026: visual "álbum de couro" (DESIGN.md §0) e curadoria pel
 
 ## Exceções a estas skills, específicas deste projeto
 - **Nunca usar fotos substitutas, de banco ou geradas por IA**, mesmo que a Taste Skill sugira stand-ins. Só fotografias reais de `Fotos Para Potifolio/`, com autorização confirmada em `CURADORIA_E_INVENTARIO_DE_ASSETS.md`.
-- Sem shaders, cenas 3D, parallax ou efeitos de demonstração. Fotografia de pessoas não é site de tecnologia. Exceções pedidas pelo cliente: a virada de página do álbum (CSS, por clique) e a textura de couro.
+- Sem shaders, cenas 3D, parallax ou efeitos de demonstração. Fotografia de pessoas não é site de tecnologia. Exceções pedidas pelo cliente: a textura de couro e, desde 13/11/2026, "bastante movimento" (DESIGN.md §0b: Stories, zoom lento na abertura, entradas ao rolar só com CSS).
 
 ## Regras de arquivo
 - `Fotos Para Potifolio/`, os prints e o briefing são originais: nunca editar, mover, renomear nem recomprimir. Versões web são geradas como cópias derivadas.

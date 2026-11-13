@@ -1,0 +1,50 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Aniversário de Irenilde"
+titulo: "Aniversário de Irenilde"
+categoria: eventos
+rotulo: "Aniversário"
+cidade: null
+data: "2024-03-09"
+tema: escuro
+autorizacao: sim
+pasta: IR
+abertura: { arquivo: "1710079173030(1).jpg", foco: 50% 35% }
+capa: "1710079173030(1).jpg"
+fotos:
+  - { arquivo: "1710079173030(1).jpg", alt: "Aniversário de Irenilde, foto 1710079173030(1)" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -001.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -001" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -003.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -003" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -004.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -004" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -005.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -005" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -009.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -009" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -010.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -010" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -019.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -019" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -021.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -021" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -025.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -025" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -034.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -034" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -038.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -038" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -041.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -041" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -042.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -042" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -044.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -044" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -045.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -045" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -054.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -054" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -062.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -062" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -065.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -065" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -066.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -066" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -067.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -067" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -075.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -075" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -080.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -080" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -084.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -084" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -086.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -086" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -088.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -088" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -094.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -094" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -096.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -096" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -098.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -098" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -099.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -099" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -102.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -102" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -105.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -105" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -107.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -107" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -112.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -112" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -113.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -113" } # alt a revisar
+  - { arquivo: "ANIVERSÁRIO IRENILDE -120.jpg", alt: "Aniversário de Irenilde, foto ANIVERSÁRIO IRENILDE -120" } # alt a revisar

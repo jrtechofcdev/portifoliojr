@@ -1,0 +1,19 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Victor & Tamires"
+titulo: "Victor & Tamires"
+categoria: casais
+rotulo: "Ensaio gestante"
+cidade: null
+data: "2024-03-01"
+tema: escuro
+autorizacao: sim
+pasta: VT
+abertura: { arquivo: "Edição Jr_Tech_OFC-04.jpg", foco: 50% 35% }
+capa: "Edição Jr_Tech_OFC-04.jpg"
+fotos:
+  - { arquivo: "Edição Jr_Tech_OFC-04.jpg", alt: "Victor & Tamires, foto Edição Jr_Tech_OFC-04" } # alt a revisar
+  - { arquivo: "Edição Jr_Tech_OFC-06.jpg", alt: "Victor & Tamires, foto Edição Jr_Tech_OFC-06" } # alt a revisar
+  - { arquivo: "Edição Jr_Tech_OFC-08.jpg", alt: "Victor & Tamires, foto Edição Jr_Tech_OFC-08" } # alt a revisar
+  - { arquivo: "Edição Jr_Tech_OFC-10.jpg", alt: "Victor & Tamires, foto Edição Jr_Tech_OFC-10" } # alt a revisar
+  - { arquivo: "Edição Jr_Tech_OFC-11.jpg", alt: "Victor & Tamires, foto Edição Jr_Tech_OFC-11" } # alt a revisar

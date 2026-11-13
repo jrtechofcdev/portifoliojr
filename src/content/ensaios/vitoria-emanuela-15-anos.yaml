@@ -1,0 +1,31 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "15 anos de Vitória Emanuela"
+titulo: "15 anos de Vitória Emanuela"
+categoria: eventos
+rotulo: "Festa de 15 anos"
+cidade: null
+data: "2024-02-17"
+tema: escuro
+autorizacao: sim
+pasta: VE
+abertura: { arquivo: "PXL_20240217_194225659.jpg", foco: 50% 35% }
+capa: "PXL_20240217_194225659.jpg"
+fotos:
+  - { arquivo: "PXL_20240217_194225659.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194225659" } # alt a revisar
+  - { arquivo: "PXL_20240217_192027794.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_192027794" } # alt a revisar
+  - { arquivo: "PXL_20240217_194128335.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194128335" } # alt a revisar
+  - { arquivo: "PXL_20240217_194205098.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194205098" } # alt a revisar
+  - { arquivo: "PXL_20240217_194257572.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194257572" } # alt a revisar
+  - { arquivo: "PXL_20240217_194331585.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194331585" } # alt a revisar
+  - { arquivo: "PXL_20240217_194406710.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194406710" } # alt a revisar
+  - { arquivo: "PXL_20240217_194947874.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_194947874" } # alt a revisar
+  - { arquivo: "PXL_20240217_195631841.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_195631841" } # alt a revisar
+  - { arquivo: "PXL_20240217_195835813.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_195835813" } # alt a revisar
+  - { arquivo: "PXL_20240217_195928188.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_195928188" } # alt a revisar
+  - { arquivo: "PXL_20240217_195929996.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_195929996" } # alt a revisar
+  - { arquivo: "PXL_20240217_200155574.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_200155574" } # alt a revisar
+  - { arquivo: "PXL_20240217_203256069.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_203256069" } # alt a revisar
+  - { arquivo: "PXL_20240217_204015963.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_204015963" } # alt a revisar
+  - { arquivo: "PXL_20240217_204058384.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_204058384" } # alt a revisar
+  - { arquivo: "PXL_20240217_204259925.jpg", alt: "15 anos de Vitória Emanuela, foto PXL_20240217_204259925" } # alt a revisar

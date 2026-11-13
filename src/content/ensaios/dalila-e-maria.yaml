@@ -9,18 +9,54 @@ data: "2024-10-22"
 tema: claro
 autorizacao: sim
 pasta: DM
-abertura: { arquivo: "Dalila e Maria (29).jpg", foco: 50% 50% }
-capa: "Dalila e Maria (29).jpg"
+abertura: { arquivo: "Dalila e Maria (17).jpg", foco: 50% 35% }
+capa: "Dalila e Maria (17).jpg"
 fotos:
-  - { arquivo: "Dalila e Maria (29).jpg", alt: "Silhueta no lago ao pôr do sol" }
+  - { arquivo: "Dalila e Maria (17).jpg", alt: "Dalila & Maria, foto Dalila e Maria (17)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (2).jpg", alt: "Dalila & Maria, foto Dalila e Maria (2)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (3).jpg", alt: "Dalila & Maria, foto Dalila e Maria (3)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (6).jpg", alt: "Dalila & Maria, foto Dalila e Maria (6)" } # alt a revisar
   - { arquivo: "Dalila e Maria (7).jpg", alt: "Vestido vermelho de bolinhas, sorrindo com o pôr do sol no lago ao fundo" }
+  - { arquivo: "Dalila e Maria (10).jpg", alt: "Dalila & Maria, foto Dalila e Maria (10)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (12).jpg", alt: "Dalila & Maria, foto Dalila e Maria (12)" } # alt a revisar
   - { arquivo: "Dalila e Maria (13).jpg", alt: "Retrato no azul do começo da noite" }
   - { arquivo: "Dalila e Maria (14).jpg", alt: "Sol refletido na água do lago" }
   - { arquivo: "Dalila e Maria (15).jpg", alt: "Ensaio no lago ao fim da tarde" }
+  - { arquivo: "Dalila e Maria (16).jpg", alt: "Dalila & Maria, foto Dalila e Maria (16)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (18).jpg", alt: "Dalila & Maria, foto Dalila e Maria (18)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (19).jpg", alt: "Dalila & Maria, foto Dalila e Maria (19)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (20).jpg", alt: "Dalila & Maria, foto Dalila e Maria (20)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (25).jpg", alt: "Dalila & Maria, foto Dalila e Maria (25)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (26).jpg", alt: "Dalila & Maria, foto Dalila e Maria (26)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (27).jpg", alt: "Dalila & Maria, foto Dalila e Maria (27)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (29).jpg", alt: "Silhueta no lago ao pôr do sol" }
+  - { arquivo: "Dalila e Maria (30).jpg", alt: "Dalila & Maria, foto Dalila e Maria (30)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (33).jpg", alt: "Dalila & Maria, foto Dalila e Maria (33)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (34).jpg", alt: "Dalila & Maria, foto Dalila e Maria (34)" } # alt a revisar
   - { arquivo: "Dalila e Maria (36).jpg", alt: "Dalila e Maria juntas" }
+  - { arquivo: "Dalila e Maria (37).jpg", alt: "Dalila & Maria, foto Dalila e Maria (37)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (38).jpg", alt: "Dalila & Maria, foto Dalila e Maria (38)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (39).jpg", alt: "Dalila & Maria, foto Dalila e Maria (39)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (41).jpg", alt: "Dalila & Maria, foto Dalila e Maria (41)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (46).jpg", alt: "Dalila & Maria, foto Dalila e Maria (46)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (48).jpg", alt: "Dalila & Maria, foto Dalila e Maria (48)" } # alt a revisar
   - { arquivo: "Dalila e Maria (49).jpg", alt: "Silhueta com vestido de organza" }
+  - { arquivo: "Dalila e Maria (50).jpg", alt: "Dalila & Maria, foto Dalila e Maria (50)" } # alt a revisar
   - { arquivo: "Dalila e Maria (52).jpg", alt: "Dentro da água do lago" }
+  - { arquivo: "Dalila e Maria (54).jpg", alt: "Dalila & Maria, foto Dalila e Maria (54)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (55).jpg", alt: "Dalila & Maria, foto Dalila e Maria (55)" } # alt a revisar
   - { arquivo: "Dalila e Maria (56).jpg", alt: "Sorriso ao pôr do sol" }
-  - { arquivo: "Dalila e Maria (59).jpg", alt: "Vestido preto brilhante à beira do lago, luzes da cidade ao fundo" }
+  - { arquivo: "Dalila e Maria (57).jpg", alt: "Dalila & Maria, foto Dalila e Maria (57)" } # alt a revisar
   - { arquivo: "Dalila e Maria (61).jpg", alt: "Cachos com uma flor no cabelo e vestido de bolinhas, olhar para baixo" }
   - { arquivo: "Dalila e Maria (64).jpg", alt: "Olhos fechados sob luz suave" }
+  - { arquivo: "Dalila e Maria (65).jpg", alt: "Dalila & Maria, foto Dalila e Maria (65)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (68).jpg", alt: "Dalila & Maria, foto Dalila e Maria (68)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (69).jpg", alt: "Dalila & Maria, foto Dalila e Maria (69)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (70).jpg", alt: "Dalila & Maria, foto Dalila e Maria (70)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (71).jpg", alt: "Dalila & Maria, foto Dalila e Maria (71)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (72).jpg", alt: "Dalila & Maria, foto Dalila e Maria (72)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (73).jpg", alt: "Dalila & Maria, foto Dalila e Maria (73)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (79).jpg", alt: "Dalila & Maria, foto Dalila e Maria (79)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (80).jpg", alt: "Dalila & Maria, foto Dalila e Maria (80)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (83).jpg", alt: "Dalila & Maria, foto Dalila e Maria (83)" } # alt a revisar
+  - { arquivo: "Dalila e Maria (84).jpg", alt: "Dalila & Maria, foto Dalila e Maria (84)" } # alt a revisar

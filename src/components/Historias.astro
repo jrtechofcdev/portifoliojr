@@ -1,0 +1,466 @@
+---
+// Visualizador em tela cheia no estilo dos Stories: barras de progresso, toque na direita avança,
+// na esquerda volta, segurar pausa, deslizar para baixo fecha, deslizar para o lado troca de álbum.
+// Abre por qualquer elemento com data-historia="<indice>" (e data-foto="<n>" opcional).
+// Avanço automático com botão de pausa (WCAG 2.2.2); Esc fecha (dialog nativo).
+import type { FotoEnsaio } from '../lib/fotos';
+
+export type Historia = { nome: string; legenda: string; href?: string; fotos: FotoEnsaio[] };
+
+interface Props {
+  historias: Historia[];
+  /** Texto do link no rodapé de cada história, quando ela tem href. */
+  convite?: string;
+}
+const { historias, convite = 'Ver o álbum completo' } = Astro.props;
+
+const dados = historias.map((h) => ({
+  nome: h.nome,
+  legenda: h.legenda,
+  href: h.href ?? null,
+  fotos: h.fotos.map((f) => ({
+    avif: f.dados.srcset.avif,
+    webp: f.dados.srcset.webp,
+    src: f.dados.src,
+    alt: f.alt,
+    cor: f.dados.cor,
+    lqip: f.dados.lqip,
+  })),
+}));
+---
+
+<dialog class="hist" aria-label="Fotos em tela cheia" data-convite={convite}>
+  <div class="hist-palco">
+    <picture class="hist-foto">
+      <source type="image/avif" sizes="100vw" />
+      <source type="image/webp" sizes="100vw" />
+      <img alt="" sizes="100vw" decoding="async" />
+    </picture>
+    <div class="hist-topo">
+      <div class="hist-barras" aria-hidden="true"></div>
+      <div class="hist-cab">
+        <div class="hist-titulo">
+          <p class="hist-nome serifa"></p>
+          <p class="hist-legenda"></p>
+        </div>
+        <button type="button" class="hist-botao" data-acao="pausa" aria-pressed="false">
+          <span class="visualmente-oculto">Pausar</span>
+          <svg class="ic-pausa" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 5v14M16 5v14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" /></svg>
+          <svg class="ic-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7 5l12 7-12 7z" fill="currentColor" /></svg>
+        </button>
+        <button type="button" class="hist-botao" data-acao="fechar">
+          <span class="visualmente-oculto">Fechar</span>
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+        </button>
+      </div>
+    </div>
+    <button type="button" class="hist-zona hist-zona-ant" data-acao="anterior"><span class="visualmente-oculto">Foto anterior</span></button>
+    <button type="button" class="hist-zona hist-zona-prox" data-acao="proxima"><span class="visualmente-oculto">Próxima foto</span></button>
+    <p class="visualmente-oculto" aria-live="polite" data-anuncio></p>
+    <div class="hist-rodape">
+      <a class="botao hist-link" hidden></a>
+    </div>
+  </div>
+</dialog>
+<script type="application/json" id="historias-dados" set:html={JSON.stringify(dados)} />
+
+<script>
+  type F = { avif: string; webp: string; src: string; alt: string; cor: string; lqip: string };
+  type H = { nome: string; legenda: string; href: string | null; fotos: F[] };
+
+  const dialogo = document.querySelector<HTMLDialogElement>('dialog.hist');
+  const fonte = document.getElementById('historias-dados');
+  if (dialogo && fonte) {
+    const historias: H[] = JSON.parse(fonte.textContent || '[]');
+    const DURACAO = 5000;
+    const palco = dialogo.querySelector<HTMLElement>('.hist-palco')!;
+    const foto = dialogo.querySelector<HTMLElement>('.hist-foto')!;
+    const [srcAvif, srcWebp] = foto.querySelectorAll('source');
+    const img = foto.querySelector('img')!;
+    const barras = dialogo.querySelector<HTMLElement>('.hist-barras')!;
+    const nome = dialogo.querySelector<HTMLElement>('.hist-nome')!;
+    const legenda = dialogo.querySelector<HTMLElement>('.hist-legenda')!;
+    const link = dialogo.querySelector<HTMLAnchorElement>('.hist-link')!;
+    const pausa = dialogo.querySelector<HTMLButtonElement>('[data-acao="pausa"]')!;
+    const anuncio = dialogo.querySelector<HTMLElement>('[data-anuncio]')!;
+    const convite = dialogo.dataset.convite ?? '';
+    const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let h = 0;
+    let f = 0;
+    let decorrido = 0;
+    let ultimo = 0;
+    let rodando = false;
+    let pausado = false;
+    let segurando = false;
+    let carregada = false;
+    let quadro = 0;
+    let origem: HTMLElement | null = null;
+
+    const atual = () => historias[h];
+
+    function montarBarras() {
+      barras.replaceChildren(
+        ...atual().fotos.map(() => {
+          const b = document.createElement('span');
+          b.append(document.createElement('i'));
+          return b;
+        }),
+      );
+    }
+    function pintarBarras(p: number) {
+      [...barras.children].forEach((b, i) => {
+        (b.firstElementChild as HTMLElement).style.transform = `scaleX(${i < f ? 1 : i === f ? p : 0})`;
+      });
+    }
+    function preCarregar(x: F | undefined) {
+      if (!x) return;
+      const im = new Image();
+      im.sizes = '100vw';
+      im.srcset = x.webp;
+    }
+
+    function mostrar() {
+      const x = atual().fotos[f];
+      carregada = false;
+      decorrido = 0;
+      pintarBarras(0);
+      foto.style.setProperty('--cor', x.cor);
+      foto.style.setProperty('--lqip', `url(${x.lqip})`);
+      srcAvif.srcset = x.avif;
+      srcWebp.srcset = x.webp;
+      img.srcset = x.webp;
+      img.src = x.src;
+      img.alt = x.alt;
+      foto.classList.remove('troca');
+      void foto.offsetWidth;
+      foto.classList.add('troca');
+      anuncio.textContent = `${atual().nome}, foto ${f + 1} de ${atual().fotos.length}`;
+      const pronto = () => {
+        carregada = true;
+        ultimo = performance.now();
+      };
+      img.decode().then(pronto, pronto);
+      preCarregar(atual().fotos[f + 1] ?? historias[h + 1]?.fotos[0]);
+    }
+
+    function abrirHistoria(i: number, inicio = 0) {
+      h = (i + historias.length) % historias.length;
+      f = Math.min(inicio, atual().fotos.length - 1);
+      nome.textContent = atual().nome;
+      legenda.textContent = atual().legenda;
+      link.hidden = !atual().href;
+      if (atual().href) {
+        link.href = atual().href!;
+        link.textContent = convite;
+      }
+      montarBarras();
+      mostrar();
+    }
+
+    function avancar() {
+      if (f < atual().fotos.length - 1) {
+        f++;
+        mostrar();
+      } else if (h < historias.length - 1) abrirHistoria(h + 1);
+      else dialogo!.close();
+    }
+    function voltar() {
+      if (f > 0) {
+        f--;
+        mostrar();
+      } else if (h > 0) abrirHistoria(h - 1, historias[h - 1].fotos.length - 1);
+      else mostrar();
+    }
+
+    function passo(t: number) {
+      if (!rodando) return;
+      if (carregada && !pausado && !segurando) {
+        decorrido += t - ultimo;
+        if (decorrido >= DURACAO) {
+          avancar();
+        } else pintarBarras(decorrido / DURACAO);
+      }
+      ultimo = t;
+      quadro = requestAnimationFrame(passo);
+    }
+
+    function definirPausa(v: boolean) {
+      pausado = v;
+      pausa.setAttribute('aria-pressed', String(v));
+      pausa.querySelector('.visualmente-oculto')!.textContent = v ? 'Continuar' : 'Pausar';
+      dialogo!.toggleAttribute('data-pausado', v);
+    }
+
+    document.addEventListener('click', (ev) => {
+      const gatilho = (ev.target as HTMLElement).closest<HTMLElement>('[data-historia]');
+      if (!gatilho) return;
+      ev.preventDefault();
+      origem = gatilho;
+      definirPausa(false);
+      abrirHistoria(Number(gatilho.dataset.historia), Number(gatilho.dataset.foto ?? 0));
+      dialogo.showModal();
+      document.documentElement.classList.add('menu-aberto');
+      rodando = true;
+      ultimo = performance.now();
+      cancelAnimationFrame(quadro);
+      quadro = requestAnimationFrame(passo);
+    });
+
+    dialogo.addEventListener('close', () => {
+      rodando = false;
+      cancelAnimationFrame(quadro);
+      document.documentElement.classList.remove('menu-aberto');
+      origem?.focus();
+    });
+
+    dialogo.addEventListener('click', (ev) => {
+      const acao = (ev.target as HTMLElement).closest<HTMLElement>('[data-acao]')?.dataset.acao;
+      if (arrastou) return;
+      if (acao === 'fechar') dialogo.close();
+      else if (acao === 'pausa') definirPausa(!pausado);
+      else if (acao === 'proxima') avancar();
+      else if (acao === 'anterior') voltar();
+    });
+    dialogo.addEventListener('keydown', (ev) => {
+      if (ev.key === 'ArrowRight') avancar();
+      else if (ev.key === 'ArrowLeft') voltar();
+      else if (ev.key === ' ' && (ev.target as HTMLElement).tagName !== 'BUTTON') {
+        ev.preventDefault();
+        definirPausa(!pausado);
+      }
+    });
+
+    // Gestos: segurar pausa; arrastar para baixo fecha; arrastar para o lado troca de álbum.
+    let x0 = 0;
+    let y0 = 0;
+    let t0 = 0;
+    let arrastou = false;
+    let apertado = false;
+    palco.addEventListener('pointerdown', (ev) => {
+      if ((ev.target as HTMLElement).closest('.hist-cab, .hist-rodape')) return;
+      apertado = true;
+      arrastou = false;
+      x0 = ev.clientX;
+      y0 = ev.clientY;
+      t0 = performance.now();
+      setTimeout(() => apertado && !arrastou && (segurando = true) && dialogo.setAttribute('data-segurando', ''), 220);
+    });
+    palco.addEventListener('pointermove', (ev) => {
+      if (!apertado) return;
+      const dy = ev.clientY - y0;
+      const dx = ev.clientX - x0;
+      if (Math.abs(dy) > 12 || Math.abs(dx) > 12) arrastou = true;
+      if (dy > 0 && Math.abs(dy) > Math.abs(dx) && !calmo) {
+        palco.style.transform = `translateY(${dy}px) scale(${1 - Math.min(dy, 400) / 2000})`;
+        palco.style.opacity = String(1 - Math.min(dy, 400) / 800);
+      }
+    });
+    const soltar = (ev: PointerEvent) => {
+      if (!apertado) return;
+      apertado = false;
+      const dy = ev.clientY - y0;
+      const dx = ev.clientX - x0;
+      const segurou = segurando;
+      segurando = false;
+      dialogo.removeAttribute('data-segurando');
+      palco.style.transform = '';
+      palco.style.opacity = '';
+      if (dy > 90 && Math.abs(dy) > Math.abs(dx)) dialogo.close();
+      else if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) && historias.length > 1) abrirHistoria(h + (dx < 0 ? 1 : -1));
+      // Toque curto é tratado pelo clique nas zonas; depois de segurar, não avança.
+      if (segurou || performance.now() - t0 > 400) {
+        arrastou = true;
+        setTimeout(() => (arrastou = false), 50);
+      } else if (arrastou) setTimeout(() => (arrastou = false), 50);
+    };
+    palco.addEventListener('pointerup', soltar);
+    palco.addEventListener('pointercancel', soltar);
+  }
+</script>
+
+<style>
+  .hist {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: #050807;
+    color: #f2eee6;
+    overflow: hidden;
+    --foco: #00fca8;
+  }
+  .hist::backdrop {
+    background: #050807;
+  }
+  .hist[open] {
+    display: grid;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hist[open] {
+      animation: hist-abrir 320ms var(--curva);
+    }
+  }
+  @keyframes hist-abrir {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+  }
+  .hist-palco {
+    position: relative;
+    width: min(100vw, calc(100dvh * 9 / 16 + 120px));
+    height: 100dvh;
+    margin-inline: auto;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    transition:
+      transform 200ms var(--curva),
+      opacity 200ms;
+  }
+  .hist-foto {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--cor, #111) var(--lqip) center / cover no-repeat;
+  }
+  /* A foto inteira, sem cortar cabeça: o fundo borrado preenche as sobras */
+  .hist-foto::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background: inherit;
+    filter: blur(28px) brightness(0.55);
+  }
+  .hist-foto img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hist-foto.troca img {
+      animation: hist-troca 5.6s ease-out both;
+    }
+  }
+  @keyframes hist-troca {
+    0% {
+      opacity: 0;
+      transform: scale(1.06);
+    }
+    8% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  .hist-topo {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 3;
+    padding: calc(10px + env(safe-area-inset-top)) 12px 28px;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+    transition: opacity 200ms;
+  }
+  .hist[data-segurando] .hist-topo,
+  .hist[data-segurando] .hist-rodape {
+    opacity: 0;
+  }
+  .hist-barras {
+    display: flex;
+    gap: 4px;
+  }
+  /* As barras são criadas pelo script: precisam de :global para receber o estilo. */
+  .hist-barras > :global(span) {
+    flex: 1;
+    height: 3px;
+    border-radius: 3px;
+    background: rgb(255 255 255 / 0.32);
+    overflow: hidden;
+  }
+  .hist-barras :global(i) {
+    display: block;
+    height: 100%;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .hist-cab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .hist-titulo {
+    flex: 1;
+    min-width: 0;
+    padding-left: 4px;
+  }
+  .hist-nome {
+    font-size: 20px;
+    line-height: 1.15;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.5);
+  }
+  .hist-legenda {
+    font-size: 13px;
+    font-weight: 500;
+    color: #ddd8ce;
+  }
+  .hist-botao {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+  }
+  .hist-botao:active {
+    background: rgb(255 255 255 / 0.14);
+  }
+  .ic-play,
+  .hist[data-pausado] .ic-pausa {
+    display: none;
+  }
+  .hist[data-pausado] .ic-play {
+    display: block;
+  }
+  .hist-zona {
+    position: absolute;
+    top: 96px;
+    bottom: 96px;
+    z-index: 2;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .hist-zona-ant {
+    left: 0;
+    width: 33%;
+  }
+  .hist-zona-prox {
+    right: 0;
+    width: 67%;
+  }
+  .hist-zona:focus-visible {
+    outline-offset: -6px;
+  }
+  .hist-rodape {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    padding: 40px var(--margem) calc(18px + env(safe-area-inset-bottom));
+    background: linear-gradient(0deg, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+    transition: opacity 200ms;
+  }
+</style>

@@ -87,19 +87,60 @@ const links = [
   fechar.addEventListener('click', fecharMenu);
   menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => menu.hidden || fecharMenu()));
 
-  const rolar = () => cab.toggleAttribute('data-rolado', scrollY > 8);
+  // Sobre a foto de abertura a barra fica transparente; ao rolar ganha o couro.
+  // Rolando para baixo ela se esconde (mais tela para as fotos no celular); para cima, volta.
+  let antes = scrollY;
+  let pedido = 0;
+  const rolar = () => {
+    pedido = 0;
+    const y = scrollY;
+    cab.toggleAttribute('data-rolado', y > 40);
+    if (Math.abs(y - antes) > 6) {
+      cab.toggleAttribute('data-escondido', y > antes && y > 240 && !document.documentElement.classList.contains('menu-aberto'));
+      antes = y;
+    }
+  };
   rolar();
-  addEventListener('scroll', rolar, { passive: true });
+  addEventListener('scroll', () => (pedido ||= requestAnimationFrame(rolar)), { passive: true });
+  cab.addEventListener('focusin', () => cab.removeAttribute('data-escondido'));
 
 </script>
 
 <style>
   /* Cabeçalho: alça de couro flutuante, com costura */
   .cabecalho {
-    position: sticky;
-    top: 0;
+    position: fixed;
+    inset: 0 0 auto;
     z-index: 50;
-    padding: 10px var(--margem) 0;
+    padding: calc(10px + env(safe-area-inset-top)) var(--margem) 0;
+    transition: transform 320ms var(--curva);
+  }
+  .cabecalho[data-escondido] {
+    transform: translateY(-110%);
+  }
+  .barra {
+    transition:
+      background-color 300ms,
+      box-shadow 300ms;
+  }
+  .barra::before {
+    transition: opacity 300ms;
+  }
+  /* Sobre a foto em tela cheia, antes de rolar: sem couro, texto claro */
+  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .barra {
+    background: transparent;
+    box-shadow: none;
+    --texto: #f2eee6;
+    --texto-2: #e6e1d7;
+    --link-hover: var(--verde);
+    --costura: rgb(242 238 230 / 0.7);
+    color-scheme: dark;
+  }
+  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .barra::before {
+    opacity: 0;
+  }
+  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .marca {
+    text-shadow: 0 1px 10px rgb(0 0 0 / 0.5);
   }
   .barra {
     height: var(--barra);

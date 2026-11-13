@@ -1,0 +1,125 @@
+---
+// Abertura em tela cheia: a foto ocupa a tela do celular, com um zoom lento contínuo,
+// e o texto entra por baixo em sequência. O recorte segue o ponto focal do manifesto.
+import Foto from './Foto.astro';
+import type { FotoEnsaio } from '../lib/fotos';
+
+interface Props {
+  foto: FotoEnsaio | null;
+  foco?: string;
+}
+const { foto, foco = '50% 35%' } = Astro.props;
+---
+
+<section class="heroi">
+  {
+    foto && (
+      <div class="heroi-foto" aria-hidden="true">
+        <Foto slug={foto.slug} arquivo={foto.arquivo} alt="" sizes="(min-width: 900px) 100vw, 100vw" prioridade recorte={foco} />
+      </div>
+    )
+  }
+  <div class="heroi-conteudo wrap">
+    <slot />
+  </div>
+  <a class="heroi-seta" href="#depois-da-abertura" aria-label="Rolar para o conteúdo">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5v14m0 0-6-6m6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+  </a>
+</section>
+<span id="depois-da-abertura"></span>
+
+<style>
+  .heroi {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    background: #0b110f;
+    color: #f2eee6;
+    --texto: #f2eee6;
+    --texto-2: #d9d4ca;
+    --link: #f2eee6;
+    --link-hover: var(--verde);
+    --destaque: var(--verde);
+    --foco: var(--verde);
+    --costura: rgb(0 252 168 / 0.7);
+    color-scheme: dark;
+  }
+  .heroi-foto {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .heroi-foto :global(.foto) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .heroi-foto :global(img) {
+    height: 100%;
+    transform-origin: 50% 30%;
+  }
+  /* Escurece só embaixo (onde fica o texto) e um pouco no alto (cabeçalho). Não tinge a foto. */
+  .heroi::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(8 12 11 / 0.55) 0%, rgb(8 12 11 / 0) 18%),
+      linear-gradient(0deg, rgb(8 12 11 / 0.92) 0%, rgb(8 12 11 / 0.6) 30%, rgb(8 12 11 / 0) 58%);
+  }
+  .heroi-conteudo {
+    display: grid;
+    gap: var(--s2);
+    justify-items: start;
+    padding-bottom: calc(var(--s6) + env(safe-area-inset-bottom));
+    max-width: 900px;
+  }
+  .heroi-conteudo :global(.sobretitulo) {
+    color: #e6e1d7;
+  }
+  .heroi-seta {
+    position: absolute;
+    left: 50%;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    translate: -50% 0;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: #f2eee6;
+    border-radius: 999px;
+  }
+  @keyframes respirar {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.14) translateY(-1.5%);
+    }
+  }
+  @keyframes quicar {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(7px);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .heroi-foto :global(img) {
+      animation: respirar 22s ease-in-out infinite alternate;
+    }
+    .heroi-seta svg {
+      animation: quicar 1.8s ease-in-out infinite;
+    }
+  }
+  @media (min-width: 900px) {
+    .heroi-conteudo {
+      padding-bottom: var(--s6);
+    }
+  }
+</style>

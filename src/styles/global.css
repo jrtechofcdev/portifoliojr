@@ -1,8 +1,8 @@
 /* Tokens e base. Fonte de verdade: DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento).
    Direção "álbum de couro" (08/11/2026): couro grafite-esverdeado com costura no verde da marca, cantos macios. */
-@import '@fontsource-variable/archivo/wdth.css';
-@import '@fontsource-variable/fraunces/full.css';
-@import '@fontsource-variable/fraunces/full-italic.css';
+@import '@fontsource-variable/archivo/index.css'; /* só o eixo de peso: o de largura não é usado */
+@import '@fontsource-variable/fraunces/soft.css'; /* pesos e eixo SOFT: metade do tamanho da versão full */
+@import '@fontsource-variable/fraunces/soft-italic.css';
 
 :root {
   /* §2 Cores da marca */
@@ -420,94 +420,131 @@ html.menu-aberto {
   border-top: 2px dashed var(--costura);
 }
 
-/* Páginas do álbum (componente Album). Papel creme por dentro, couro nas capas. */
-.pagina {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  /* Os textos das páginas medem pela altura da própria página (cqh) */
-  container-type: size;
+
+/* ------------------------------------------------------------------------------------------
+   Revisão de 13/11/2026: fotos em tela cheia, pensado para celular Android (DESIGN.md §0b).
+   O cabeçalho flutua sobre a foto de abertura; as páginas sem abertura em tela cheia
+   reservam o espaço dele.
+   ------------------------------------------------------------------------------------------ */
+main {
+  padding-top: var(--cab);
 }
-.pagina-papel {
-  background: #f3ede2 var(--textura);
-  background-blend-mode: soft-light;
-  color: #1b1a17;
-  --texto: #1b1a17;
-  --texto-2: #5a5146;
-  --link: var(--verde-escuro);
-  --link-hover: #1b1a17;
-  --foco: var(--verde-escuro);
-  --destaque: var(--verde-escuro);
-  --costura: rgb(0 122 85 / 0.7);
-  --costura-suave: rgb(0 122 85 / 0.35);
-  --relevo: none;
-  color-scheme: light;
+body:has(.heroi) main {
+  padding-top: 0;
 }
-.pagina-couro {
-  isolation: isolate;
-  background: var(--couro-painel) var(--textura);
-  background-blend-mode: overlay;
+
+/* Fileira que se desliza com o dedo, com encaixe (Destaques, Como funciona, filtros) */
+.trilho {
+  display: flex;
+  gap: var(--s2);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--margem);
+  padding-inline: var(--margem);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.trilho::-webkit-scrollbar {
+  display: none;
+}
+.trilho > * {
+  scroll-snap-align: start;
+  flex: none;
+}
+
+/* Movimento ao rolar (MOTION 3, pedido de 13/11/2026). Feito só com CSS (animation-timeline),
+   sem JavaScript: no Chrome do Android roda fora da thread principal. Navegador sem suporte
+   mostra tudo parado. Nada aqui é parallax: cada bloco só entra no lugar. */
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(56px) scale(0.94);
+  }
+}
+@keyframes surgir-lado {
+  from {
+    opacity: 0;
+    transform: translateX(48px) rotate(1.5deg);
+  }
+}
+@keyframes abrir-foto {
+  from {
+    clip-path: inset(14% 8% 14% 8% round 28px);
+    transform: scale(1.12);
+  }
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .surge {
+      animation: surgir linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+    .surge-lado {
+      animation: surgir-lado linear both;
+      animation-timeline: view(inline);
+      animation-range: entry 0% cover 40%;
+    }
+    .revela {
+      animation: abrir-foto linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
+}
+
+/* Entrada da abertura ao carregar a página: os textos sobem em sequência */
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .entra {
+    animation: entrar 900ms var(--curva) both;
+    animation-delay: calc(var(--i, 0) * 120ms + 150ms);
+  }
+}
+
+/* Chips (filtros): pílulas com costura, a ativa em verde */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px dashed var(--costura);
+  background: var(--painel);
+  color: var(--texto);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--t-estado),
+    color var(--t-estado),
+    transform var(--t-estado) var(--curva);
+}
+.chip:active {
+  transform: scale(0.95);
+}
+.chip[aria-pressed='true'] {
+  background: var(--verde);
+  border-color: transparent;
+  color: #0d1512;
+}
+.tema-claro .chip[aria-pressed='true'] {
+  background: var(--verde-escuro);
   color: var(--papel);
-  --texto: var(--papel);
-  --texto-2: var(--cinza);
-  --link: var(--papel);
-  --link-hover: var(--verde);
-  --foco: var(--verde);
-  --destaque: var(--verde);
-  --costura: rgb(0 252 168 / 0.55);
-  --costura-suave: rgb(0 252 168 / 0.28);
-  color-scheme: dark;
 }
-.pagina-couro::before {
-  content: '';
-  position: absolute;
-  inset: 4%;
-  border: 2px dashed var(--costura);
-  border-radius: 14px;
-  pointer-events: none;
-  z-index: -1;
-}
-.pagina-foto {
-  display: grid;
-  place-items: center;
-  padding: 9%;
-}
-.pagina-foto .foto {
-  width: 100%;
-  border-radius: 4px;
-  background: none;
-  box-shadow: 0 10px 24px -12px rgb(0 0 0 / 0.55);
-}
-/* Foto vertical ocupa a página inteira, como num álbum lay-flat */
-.pagina-foto.sangria {
-  padding: 0;
-}
-.pagina-foto.sangria .foto {
-  height: 100%;
-  border-radius: 0;
-  box-shadow: none;
-}
-.pagina-foto.sangria .foto img {
-  height: 100%;
-  object-fit: cover;
-}
-.pagina-texto {
-  display: grid;
-  align-content: center;
-  gap: clamp(8px, 2.6cqh, 22px);
-  padding: 12% 11% 12% 13%;
-}
-.pagina-texto .titulo-pagina {
-  font-family: var(--serifa);
-  font-optical-sizing: auto;
-  font-variation-settings: 'SOFT' 100;
-  font-size: clamp(22px, 6.4cqh, 52px);
-  font-weight: 480;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
-}
-.pagina-texto .titulo-pagina em {
-  font-style: italic;
-  color: var(--destaque);
+
+/* Toque no celular: sem o flash azul do Android, e resposta imediata */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }

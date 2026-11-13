@@ -9,22 +9,43 @@ data: "2025-08-17"
 tema: claro
 autorizacao: sim
 pasta: SAB
-abertura: { arquivo: "sabrina-20.png", foco: 50% 30% }
-capa: "sabrina-20.png"
+abertura: { arquivo: "sabrina-44.png", foco: 50% 35% }
+capa: "sabrina-44.png"
 fotos:
-  - { arquivo: "sabrina-20.png", alt: "Retrato de Sabrina com os cachos em contraluz, olhar firme" }
+  - { arquivo: "sabrina-44.png", alt: "Sabrina com um livro aberto nas mãos" }
   - { arquivo: "sabrina-01.png", alt: "Sabrina de corpo inteiro com vestido laranja sob céu azul" }
   - { arquivo: "sabrina-02.png", alt: "Sabrina em close, olhando para a câmera" }
+  - { arquivo: "sabrina-04.png", alt: "Sabrina, foto sabrina-04" } # alt a revisar
   - { arquivo: "sabrina-05.png", alt: "Sabrina de vestido laranja, mão no cabelo, céu azul ao fundo" }
+  - { arquivo: "sabrina-07.png", alt: "Sabrina, foto sabrina-07" } # alt a revisar
+  - { arquivo: "sabrina-08.png", alt: "Sabrina, foto sabrina-08" } # alt a revisar
+  - { arquivo: "sabrina-09.png", alt: "Sabrina, foto sabrina-09" } # alt a revisar
+  - { arquivo: "sabrina-10.png", alt: "Sabrina, foto sabrina-10" } # alt a revisar
+  - { arquivo: "sabrina-11.png", alt: "Sabrina, foto sabrina-11" } # alt a revisar
   - { arquivo: "sabrina-12.png", alt: "Retrato de Sabrina em preto e branco" }
+  - { arquivo: "sabrina-13.png", alt: "Sabrina, foto sabrina-13" } # alt a revisar
   - { arquivo: "sabrina-16.png", alt: "Sabrina sentada, mão perto do rosto, olhando para a câmera" }
+  - { arquivo: "sabrina-17.png", alt: "Sabrina, foto sabrina-17" } # alt a revisar
+  - { arquivo: "sabrina-18.png", alt: "Sabrina, foto sabrina-18" } # alt a revisar
+  - { arquivo: "sabrina-19.png", alt: "Sabrina, foto sabrina-19" } # alt a revisar
+  - { arquivo: "sabrina-20.png", alt: "Retrato de Sabrina com os cachos em contraluz, olhar firme" }
+  - { arquivo: "sabrina-21.png", alt: "Sabrina, foto sabrina-21" } # alt a revisar
   - { arquivo: "sabrina-22.png", alt: "Sabrina rindo com a mão no rosto" }
   - { arquivo: "sabrina-24.png", alt: "Sabrina de perfil segurando uma flor" }
+  - { arquivo: "sabrina-25.png", alt: "Sabrina, foto sabrina-25" } # alt a revisar
+  - { arquivo: "sabrina-27.png", alt: "Sabrina, foto sabrina-27" } # alt a revisar
   - { arquivo: "sabrina-29.png", alt: "Sabrina segurando uma flor junto ao tronco de uma árvore" }
+  - { arquivo: "sabrina-30.png", alt: "Sabrina, foto sabrina-30" } # alt a revisar
+  - { arquivo: "sabrina-31.png", alt: "Sabrina, foto sabrina-31" } # alt a revisar
+  - { arquivo: "sabrina-33.png", alt: "Sabrina, foto sabrina-33" } # alt a revisar
+  - { arquivo: "sabrina-34.png", alt: "Sabrina, foto sabrina-34" } # alt a revisar
   - { arquivo: "sabrina-36.png", alt: "Rosto de Sabrina iluminado pela luz dourada do fim da tarde" }
   - { arquivo: "sabrina-40.png", alt: "Sabrina de óculos, vista de baixo para cima" }
+  - { arquivo: "sabrina-41.png", alt: "Sabrina, foto sabrina-41" } # alt a revisar
+  - { arquivo: "sabrina-42.png", alt: "Sabrina, foto sabrina-42" } # alt a revisar
   - { arquivo: "sabrina-43.png", alt: "Sabrina lendo um livro" }
-  - { arquivo: "sabrina-44.png", alt: "Sabrina com um livro aberto nas mãos" }
+  - { arquivo: "sabrina-46.png", alt: "Sabrina, foto sabrina-46" } # alt a revisar
   - { arquivo: "sabrina-49.png", alt: "Sabrina sobre o calçamento da rua" }
+  - { arquivo: "sabrina-50.png", alt: "Sabrina, foto sabrina-50" } # alt a revisar
   - { arquivo: "sabrina-52.png", alt: "Sabrina sentada num banco amarelo da praça" }
   - { arquivo: "sabrina-53.png", alt: "Sabrina de costas, com prédios ao fundo" }

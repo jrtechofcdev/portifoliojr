@@ -2,9 +2,15 @@
 import { defineConfig } from 'astro/config';
 import curadoria from './scripts/curadoria-dev.mjs';
 
+// Endereço do site (canônico, sitemap, Open Graph). SITE_URL vence; na Vercel usa o domínio de produção
+// do projeto. Quando houver domínio próprio, defina SITE_URL nas variáveis de ambiente da Vercel.
+/** @type {Record<string, string | undefined>} */
+const env = /** @type {any} */ (globalThis).process.env;
+const vercel = env.VERCEL_PROJECT_PRODUCTION_URL;
+const site = env.SITE_URL ?? (vercel ? `https://${vercel}` : 'https://example.invalid');
+
 export default defineConfig({
-  // Domínio definitivo pendente (PENDENCIAS item 16). Usado em sitemap e Open Graph na Fase 5.
-  site: 'https://example.invalid',
+  site,
   trailingSlash: 'ignore',
   build: { format: 'directory' },
   vite: {

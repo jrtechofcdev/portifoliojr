@@ -30,13 +30,13 @@ for (let i = 0; i < fotos.length; i++) {
     pares++;
   }
 }
-const tamanhos = { sangria: '100vw', par: '(min-width: 768px) 45vw, 100vw', unica: '(min-width: 768px) 60vw, 100vw' };
+const tamanhos = { sangria: "100vw", par: "(min-width: 768px) 45vw, 50vw", unica: "(min-width: 768px) 60vw, 100vw" };
 ---
 
 <div class="galeria" data-galeria>
   {
     blocos.map((b) => (
-      <div class:list={['bloco', `bloco-${b.tipo}`]}>
+      <div class:list={['bloco', `bloco-${b.tipo}`, 'surge']}>
         {b.itens.map(({ foto, i }) => (
           <a
             class="item"
@@ -44,7 +44,6 @@ const tamanhos = { sangria: '100vw', par: '(min-width: 768px) 45vw, 100vw', unic
             data-indice={i}
             data-avif={foto.dados.srcset.avif}
             data-webp={foto.dados.srcset.webp}
-            data-jpg={foto.dados.srcset.jpg}
             data-w={foto.dados.width}
             data-h={foto.dados.height}
             aria-label={`Ampliar foto ${i + 1} de ${fotos.length}: ${foto.alt}`}
@@ -59,37 +58,42 @@ const tamanhos = { sangria: '100vw', par: '(min-width: 768px) 45vw, 100vw', unic
 <Lightbox nome={nome} />
 
 <style>
+  /* Celular: verticais em par (duas colunas), horizontais de ponta a ponta. Cada bloco entra ao rolar. */
   .galeria {
     display: grid;
-    gap: var(--s2);
+    gap: 8px;
+    padding-inline: clamp(8px, 2vw, 24px);
   }
   .bloco {
     display: grid;
-    gap: var(--s2);
-    padding-inline: var(--margem);
+    gap: 8px;
   }
-  .bloco-sangria :global(.foto) {
-    border-radius: var(--raio-g);
-  }
-  .item :global(.foto) {
-    box-shadow: var(--sombra);
+  .bloco-par {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
   .item {
     display: block;
     cursor: zoom-in;
     border-radius: var(--raio-m);
+    transition: transform 200ms var(--curva);
+  }
+  .item:active {
+    transform: scale(0.97);
+  }
+  .item :global(.foto) {
+    border-radius: clamp(10px, 1.4vw, 20px);
   }
   .item:focus-visible {
-    outline-offset: 4px;
+    outline-offset: 3px;
   }
   @media (min-width: 768px) {
     .galeria,
     .bloco {
       gap: var(--gutter);
     }
-    .bloco-par {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
+    .galeria {
+      padding-inline: var(--margem);
     }
     .bloco-unica .item {
       width: 60%;

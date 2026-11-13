@@ -10,7 +10,7 @@ export type DadosFoto = {
   src: string;
   grande: string;
   og?: string;
-  srcset: { avif: string; webp: string; jpg: string };
+  srcset: { avif: string; webp: string };
 };
 
 const json = gerado as { producao: boolean; fotos: Record<string, DadosFoto> };

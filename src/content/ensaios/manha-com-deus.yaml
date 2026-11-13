@@ -9,14 +9,28 @@ data: "2024-12-15"
 tema: claro
 autorizacao: sim
 pasta: MCD
-abertura: { arquivo: "IMG_0690.jpg", foco: 50% 35% }
-capa: "IMG_0690.jpg"
+abertura: { arquivo: "IMG_0729.jpg", foco: 50% 35% }
+capa: "IMG_0729.jpg"
 fotos:
-  - { arquivo: "IMG_0690.jpg", alt: "Cantor tocando violão durante o louvor" }
+  - { arquivo: "IMG_0729.jpg", alt: "Manhã com Deus, foto IMG_0729" } # alt a revisar
   - { arquivo: "IMG_0672.jpg", alt: "Trio de louvor cantando" }
+  - { arquivo: "IMG_0677.jpg", alt: "Manhã com Deus, foto IMG_0677" } # alt a revisar
+  - { arquivo: "IMG_0680.jpg", alt: "Manhã com Deus, foto IMG_0680" } # alt a revisar
+  - { arquivo: "IMG_0686.jpg", alt: "Manhã com Deus, foto IMG_0686" } # alt a revisar
+  - { arquivo: "IMG_0690.jpg", alt: "Cantor tocando violão durante o louvor" }
+  - { arquivo: "IMG_0695.jpg", alt: "Manhã com Deus, foto IMG_0695" } # alt a revisar
   - { arquivo: "IMG_0701.jpg", alt: "Pregador segurando a Bíblia" }
   - { arquivo: "IMG_0705.jpg", alt: "Pregador com a Bíblia aberta" }
   - { arquivo: "IMG_0725.jpg", alt: "Pregador apontando para o alto" }
+  - { arquivo: "IMG_0730.jpg", alt: "Manhã com Deus, foto IMG_0730" } # alt a revisar
   - { arquivo: "IMG_0732.jpg", alt: "Público acompanhando o culto" }
   - { arquivo: "IMG_0736.jpg", alt: "Jovens na plateia" }
   - { arquivo: "IMG_0741.jpg", alt: "Pregador durante a mensagem" }
+  - { arquivo: "IMG_0743.jpg", alt: "Manhã com Deus, foto IMG_0743" } # alt a revisar
+  - { arquivo: "IMG_0759.jpg", alt: "Manhã com Deus, foto IMG_0759" } # alt a revisar
+  - { arquivo: "IMG_0764.jpg", alt: "Manhã com Deus, foto IMG_0764" } # alt a revisar
+  - { arquivo: "IMG_0766.jpg", alt: "Manhã com Deus, foto IMG_0766" } # alt a revisar
+  - { arquivo: "IMG_0768.jpg", alt: "Manhã com Deus, foto IMG_0768" } # alt a revisar
+  - { arquivo: "IMG_0769.jpg", alt: "Manhã com Deus, foto IMG_0769" } # alt a revisar
+  - { arquivo: "IMG_0779.jpg", alt: "Manhã com Deus, foto IMG_0779" } # alt a revisar
+  - { arquivo: "IMG_0782.jpg", alt: "Manhã com Deus, foto IMG_0782" } # alt a revisar

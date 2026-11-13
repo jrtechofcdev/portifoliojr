@@ -1,0 +1,54 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "15 anos de Kiara"
+titulo: "15 anos de Kiara"
+categoria: eventos
+rotulo: "Festa de 15 anos"
+cidade: null
+data: "2026-01-31"
+tema: escuro
+autorizacao: sim
+pasta: KI
+abertura: { arquivo: "FOTO-85.jpg", foco: 50% 35% }
+capa: "FOTO-85.jpg"
+fotos:
+  - { arquivo: "FOTO-85.jpg", alt: "15 anos de Kiara, foto FOTO-85" } # alt a revisar
+  - { arquivo: "FOTO-2.jpg", alt: "15 anos de Kiara, foto FOTO-2" } # alt a revisar
+  - { arquivo: "FOTO-3.jpg", alt: "15 anos de Kiara, foto FOTO-3" } # alt a revisar
+  - { arquivo: "FOTO-6.jpg", alt: "15 anos de Kiara, foto FOTO-6" } # alt a revisar
+  - { arquivo: "FOTO-10.jpg", alt: "15 anos de Kiara, foto FOTO-10" } # alt a revisar
+  - { arquivo: "FOTO-12.jpg", alt: "15 anos de Kiara, foto FOTO-12" } # alt a revisar
+  - { arquivo: "FOTO-13.jpg", alt: "15 anos de Kiara, foto FOTO-13" } # alt a revisar
+  - { arquivo: "FOTO-16.jpg", alt: "15 anos de Kiara, foto FOTO-16" } # alt a revisar
+  - { arquivo: "FOTO-17.jpg", alt: "15 anos de Kiara, foto FOTO-17" } # alt a revisar
+  - { arquivo: "FOTO-19.jpg", alt: "15 anos de Kiara, foto FOTO-19" } # alt a revisar
+  - { arquivo: "FOTO-23.jpg", alt: "15 anos de Kiara, foto FOTO-23" } # alt a revisar
+  - { arquivo: "FOTO-24.jpg", alt: "15 anos de Kiara, foto FOTO-24" } # alt a revisar
+  - { arquivo: "FOTO-28.jpg", alt: "15 anos de Kiara, foto FOTO-28" } # alt a revisar
+  - { arquivo: "FOTO-32.jpg", alt: "15 anos de Kiara, foto FOTO-32" } # alt a revisar
+  - { arquivo: "FOTO-36.jpg", alt: "15 anos de Kiara, foto FOTO-36" } # alt a revisar
+  - { arquivo: "FOTO-38.jpg", alt: "15 anos de Kiara, foto FOTO-38" } # alt a revisar
+  - { arquivo: "FOTO-39.jpg", alt: "15 anos de Kiara, foto FOTO-39" } # alt a revisar
+  - { arquivo: "FOTO-44.jpg", alt: "15 anos de Kiara, foto FOTO-44" } # alt a revisar
+  - { arquivo: "FOTO-47.jpg", alt: "15 anos de Kiara, foto FOTO-47" } # alt a revisar
+  - { arquivo: "FOTO-49.jpg", alt: "15 anos de Kiara, foto FOTO-49" } # alt a revisar
+  - { arquivo: "FOTO-51.jpg", alt: "15 anos de Kiara, foto FOTO-51" } # alt a revisar
+  - { arquivo: "FOTO-52.jpg", alt: "15 anos de Kiara, foto FOTO-52" } # alt a revisar
+  - { arquivo: "FOTO-62.jpg", alt: "15 anos de Kiara, foto FOTO-62" } # alt a revisar
+  - { arquivo: "FOTO-63.jpg", alt: "15 anos de Kiara, foto FOTO-63" } # alt a revisar
+  - { arquivo: "FOTO-84.jpg", alt: "15 anos de Kiara, foto FOTO-84" } # alt a revisar
+  - { arquivo: "FOTO-86.jpg", alt: "15 anos de Kiara, foto FOTO-86" } # alt a revisar
+  - { arquivo: "FOTO-87.jpg", alt: "15 anos de Kiara, foto FOTO-87" } # alt a revisar
+  - { arquivo: "FOTO-88.jpg", alt: "15 anos de Kiara, foto FOTO-88" } # alt a revisar
+  - { arquivo: "FOTO-90.jpg", alt: "15 anos de Kiara, foto FOTO-90" } # alt a revisar
+  - { arquivo: "FOTO-91.jpg", alt: "15 anos de Kiara, foto FOTO-91" } # alt a revisar
+  - { arquivo: "FOTO-92.jpg", alt: "15 anos de Kiara, foto FOTO-92" } # alt a revisar
+  - { arquivo: "FOTO-94.jpg", alt: "15 anos de Kiara, foto FOTO-94" } # alt a revisar
+  - { arquivo: "FOTO-95.jpg", alt: "15 anos de Kiara, foto FOTO-95" } # alt a revisar
+  - { arquivo: "FOTO-98.jpg", alt: "15 anos de Kiara, foto FOTO-98" } # alt a revisar
+  - { arquivo: "FOTO-103.jpg", alt: "15 anos de Kiara, foto FOTO-103" } # alt a revisar
+  - { arquivo: "FOTO-107.jpg", alt: "15 anos de Kiara, foto FOTO-107" } # alt a revisar
+  - { arquivo: "FOTO-108.jpg", alt: "15 anos de Kiara, foto FOTO-108" } # alt a revisar
+  - { arquivo: "FOTO-111.jpg", alt: "15 anos de Kiara, foto FOTO-111" } # alt a revisar
+  - { arquivo: "FOTO-147.jpg", alt: "15 anos de Kiara, foto FOTO-147" } # alt a revisar
+  - { arquivo: "FOTO-151.jpg", alt: "15 anos de Kiara, foto FOTO-151" } # alt a revisar

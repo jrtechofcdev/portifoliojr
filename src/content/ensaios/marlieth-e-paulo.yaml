@@ -9,16 +9,28 @@ data: "2026-03-21"
 tema: claro
 autorizacao: sim
 pasta: MP
-abertura: { arquivo: "Foto (18).jpg", foco: 50% 35% }
-capa: "Foto (18).jpg"
+abertura: { arquivo: "Foto (9).jpg", foco: 50% 35% }
+capa: "Foto (9).jpg"
 fotos:
-  - { arquivo: "Foto (18).jpg", alt: "Marlieth e Paulo abraçados, rosto colado" }
+  - { arquivo: "Foto (9).jpg", alt: "Marlieth encostada no ombro de Paulo, a mão sobre a barriga" }
   - { arquivo: "Foto (3).jpg", alt: "Marlieth com um livro, prédios ao fundo" }
+  - { arquivo: "Foto (4).jpg", alt: "Marlieth & Paulo, foto Foto (4)" } # alt a revisar
   - { arquivo: "Foto (5).jpg", alt: "Marlieth e Paulo se beijando" }
   - { arquivo: "Foto (6).jpg", alt: "Mãos do casal segurando um sapatinho de bebê" }
-  - { arquivo: "Foto (9).jpg", alt: "Marlieth encostada no ombro de Paulo, a mão sobre a barriga" }
+  - { arquivo: "Foto (7).jpg", alt: "Marlieth & Paulo, foto Foto (7)" } # alt a revisar
+  - { arquivo: "Foto (8).jpg", alt: "Marlieth & Paulo, foto Foto (8)" } # alt a revisar
+  - { arquivo: "Foto (11).jpg", alt: "Marlieth & Paulo, foto Foto (11)" } # alt a revisar
   - { arquivo: "Foto (13).jpg", alt: "Marlieth sentada, sozinha" }
+  - { arquivo: "Foto (14).jpg", alt: "Marlieth & Paulo, foto Foto (14)" } # alt a revisar
+  - { arquivo: "Foto (17).jpg", alt: "Marlieth & Paulo, foto Foto (17)" } # alt a revisar
+  - { arquivo: "Foto (18).jpg", alt: "Marlieth e Paulo abraçados, rosto colado" }
+  - { arquivo: "Foto (19).jpg", alt: "Marlieth & Paulo, foto Foto (19)" } # alt a revisar
+  - { arquivo: "Foto (20).jpg", alt: "Marlieth & Paulo, foto Foto (20)" } # alt a revisar
+  - { arquivo: "Foto (21).jpg", alt: "Marlieth & Paulo, foto Foto (21)" } # alt a revisar
+  - { arquivo: "Foto (22).jpg", alt: "Marlieth & Paulo, foto Foto (22)" } # alt a revisar
+  - { arquivo: "Foto (23).jpg", alt: "Marlieth & Paulo, foto Foto (23)" } # alt a revisar
   - { arquivo: "Foto (24).jpg", alt: "Marlieth com um ursinho de pelúcia" }
+  - { arquivo: "Foto (25).jpg", alt: "Marlieth & Paulo, foto Foto (25)" } # alt a revisar
   - { arquivo: "Foto (26).jpg", alt: "O casal sentado lado a lado" }
   - { arquivo: "Foto (27).jpg", alt: "Varal com roupinhas de bebê" }
   - { arquivo: "Foto (28).jpg", alt: "O casal encostado numa árvore" }

@@ -1,0 +1,37 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "18 anos de Adrian"
+titulo: "18 anos de Adrian"
+categoria: eventos
+rotulo: "Aniversário"
+cidade: null
+data: "2025-01-05"
+tema: escuro
+autorizacao: sim
+pasta: AD
+abertura: { arquivo: "1736125169870.jpg", foco: 50% 35% }
+capa: "1736125169870.jpg"
+fotos:
+  - { arquivo: "1736125169870.jpg", alt: "18 anos de Adrian, foto 1736125169870" } # alt a revisar
+  - { arquivo: "1736122043260.jpg", alt: "18 anos de Adrian, foto 1736122043260" } # alt a revisar
+  - { arquivo: "1736122104146.jpg", alt: "18 anos de Adrian, foto 1736122104146" } # alt a revisar
+  - { arquivo: "1736122839934.jpg", alt: "18 anos de Adrian, foto 1736122839934" } # alt a revisar
+  - { arquivo: "1736123593887.jpg", alt: "18 anos de Adrian, foto 1736123593887" } # alt a revisar
+  - { arquivo: "1736123703809.jpg", alt: "18 anos de Adrian, foto 1736123703809" } # alt a revisar
+  - { arquivo: "1736123765103.jpg", alt: "18 anos de Adrian, foto 1736123765103" } # alt a revisar
+  - { arquivo: "1736124515555.jpg", alt: "18 anos de Adrian, foto 1736124515555" } # alt a revisar
+  - { arquivo: "1736124620041.jpg", alt: "18 anos de Adrian, foto 1736124620041" } # alt a revisar
+  - { arquivo: "1736124651429.jpg", alt: "18 anos de Adrian, foto 1736124651429" } # alt a revisar
+  - { arquivo: "1736124950778.jpg", alt: "18 anos de Adrian, foto 1736124950778" } # alt a revisar
+  - { arquivo: "1736125043185.jpg", alt: "18 anos de Adrian, foto 1736125043185" } # alt a revisar
+  - { arquivo: "1736125072670.jpg", alt: "18 anos de Adrian, foto 1736125072670" } # alt a revisar
+  - { arquivo: "1736125136798.jpg", alt: "18 anos de Adrian, foto 1736125136798" } # alt a revisar
+  - { arquivo: "1736125302927.jpg", alt: "18 anos de Adrian, foto 1736125302927" } # alt a revisar
+  - { arquivo: "1736125525760.jpg", alt: "18 anos de Adrian, foto 1736125525760" } # alt a revisar
+  - { arquivo: "1736125620914.jpg", alt: "18 anos de Adrian, foto 1736125620914" } # alt a revisar
+  - { arquivo: "1736125656570.jpg", alt: "18 anos de Adrian, foto 1736125656570" } # alt a revisar
+  - { arquivo: "1736125895382.jpg", alt: "18 anos de Adrian, foto 1736125895382" } # alt a revisar
+  - { arquivo: "1736126382053.jpg", alt: "18 anos de Adrian, foto 1736126382053" } # alt a revisar
+  - { arquivo: "1736126443907.jpg", alt: "18 anos de Adrian, foto 1736126443907" } # alt a revisar
+  - { arquivo: "1736126570570.jpg", alt: "18 anos de Adrian, foto 1736126570570" } # alt a revisar
+  - { arquivo: "1736126665677.jpg", alt: "18 anos de Adrian, foto 1736126665677" } # alt a revisar

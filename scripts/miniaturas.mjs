@@ -19,6 +19,10 @@ const fila = [];
 const indice = {};
 for (const [sigla, pasta] of Object.entries(pastas)) {
   const dir = path.join(ORIGINAIS, discos.get(pasta.normalize('NFC')) ?? pasta);
+  if (!existsSync(dir)) {
+    console.warn(`aviso: pasta ${sigla} não encontrada, pulada: ${pasta}`);
+    continue;
+  }
   const arquivos = (await readdir(dir)).filter((f) => /\.(jpe?g|png)$/i.test(f)).sort((a, b) => a.localeCompare(b, 'pt', { numeric: true }));
   indice[sigla] = [];
   await mkdir(path.join(SAIDA, sigla), { recursive: true });

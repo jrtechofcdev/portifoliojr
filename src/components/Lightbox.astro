@@ -34,11 +34,16 @@ const { nome } = Astro.props;
     let origem: HTMLElement | null = null;
 
     function mostrar(i: number) {
+      const lado = i < atual ? 'esq' : 'dir';
+      img.dataset.lado = lado;
+      img.classList.remove('lb-troca');
+      void img.offsetWidth;
+      img.classList.add('lb-troca');
       atual = (i + itens.length) % itens.length;
       const a = itens[atual];
       avif.srcset = a.dataset.avif!;
       webp.srcset = a.dataset.webp!;
-      img.srcset = a.dataset.jpg!;
+      img.srcset = a.dataset.webp!;
       img.src = a.href;
       img.width = Number(a.dataset.w);
       img.height = Number(a.dataset.h);
@@ -165,6 +170,20 @@ const { nome } = Astro.props;
     position: absolute;
     top: 10px;
     right: var(--margem);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lb-palco img.lb-troca {
+      animation: lb-deslizar 320ms var(--curva);
+    }
+    .lb-palco img.lb-troca[data-lado='esq'] {
+      --de: -40px;
+    }
+  }
+  @keyframes lb-deslizar {
+    from {
+      opacity: 0.2;
+      transform: translateX(var(--de, 40px)) scale(0.97);
+    }
   }
   @keyframes lb-entrar {
     from {

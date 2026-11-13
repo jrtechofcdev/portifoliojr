@@ -1,190 +1,72 @@
 ---
 import Base from '../../layouts/Base.astro';
-import CapaAlbum from '../../components/CapaAlbum.astro';
-import { capaDe, ensaiosPublicaveis } from '../../lib/fotos';
-import { CATEGORIAS, linkWhatsApp, site, type Categoria } from '../../data/site';
+import ListaAlbuns from '../../components/ListaAlbuns.astro';
+import Historias, { type Historia } from '../../components/Historias.astro';
+import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
+import { ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
+import { linkWhatsApp } from '../../data/site';
 
 const ensaios = await ensaiosPublicaveis();
-const usadas = new Set(ensaios.map((e) => e.data.categoria));
-const filtros = (Object.keys(CATEGORIAS) as Categoria[]).filter((c) => usadas.has(c));
+const historias: Historia[] = ensaios.map((e) => {
+  const fotos = fotosDoEnsaio(e);
+  const capa = fotos.find((f) => f.arquivo === e.data.capa);
+  return {
+    nome: e.data.nome,
+    legenda: [e.data.rotulo, e.data.data.slice(0, 4)].join(' · '),
+    href: `/trabalhos/${e.id}`,
+    fotos: [...(capa ? [capa] : []), ...fotos.filter((f) => f !== capa).slice(0, 7)],
+  };
+});
 ---
 
 <Base
   titulo="Trabalhos | Jr_Tech_OFC Fotografia"
-  descricao="Ensaios externos, casais, gestantes e eventos fotografados por José Renato em Imperatriz e Bacabal, MA."
+  descricao="Ensaios externos, casais, gestantes, 15 anos e eventos fotografados por José Renato em Imperatriz e Bacabal, MA."
 >
-  <section class="wrap indice">
-    <div class="indice-topo">
-      <h1 class="display-xl">Trabalhos</h1>
-      {
-        filtros.length > 1 && (
-          <div class="filtro" role="group" aria-label="Filtrar por categoria" hidden data-filtro>
-            <button type="button" aria-pressed="true" data-c="">
-              Todos
-            </button>
-            {filtros.map((c) => (
-              <button type="button" aria-pressed="false" data-c={c}>
-                {CATEGORIAS[c].nome}
-              </button>
-            ))}
-          </div>
-        )
-      }
+  <section class="indice">
+    <div class="wrap indice-topo">
+      <h1 class="display-l entra" style="--i:0">Os <em>álbuns</em></h1>
+      <p class="texto apoio entra" style="--i:1">Toque num álbum para ver todas as fotos, ou no botão de assistir para passar uma a uma.</p>
     </div>
 
-    {ensaios.length === 0 && <p class="texto">Os trabalhos entram aqui assim que as autorizações de imagem forem confirmadas.</p>}
-
-    <ul class="lista" data-lista>
-      {
-        ensaios.map((e, i) => (
-          <li data-categoria={e.data.categoria}>
-            <a href={`/trabalhos/${e.id}`} aria-label={`${e.data.nome}: ${e.data.rotulo}, ${e.data.data.slice(0, 4)}`}>
-              <span class="livro">
-                <CapaAlbum
-                  foto={capaDe(e)}
-                  titulo={e.data.nome}
-                  sobre={site.marca}
-                  rodape={[e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · ')}
-                  sizes="(min-width: 1100px) 26vw, (min-width: 640px) 44vw, 88vw"
-                  prioridade={i === 0}
-                />
-              </span>
-              <span class="legenda">{e.data.rotulo}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <p class="aviso-vazio texto" hidden data-vazio>Nenhum trabalho nesta categoria.</p>
-
-    <section class="cta couro" aria-labelledby="cta-titulo">
-      <h2 class="display-l" id="cta-titulo">Quer um ensaio <em>assim?</em></h2>
-      <a class="botao" href={linkWhatsApp()}>Chamar no WhatsApp</a>
-    </section>
+    {ensaios.length === 0 && <p class="wrap texto">Os trabalhos entram aqui assim que forem escolhidos na curadoria.</p>}
+    <ListaAlbuns ensaios={ensaios} prioridade />
   </section>
+
+  <section class="secao wrap" data-contato-ensaio aria-labelledby="cta-titulo">
+    <div class="contato couro surge">
+      <h2 class="h2" id="cta-titulo">Quer um álbum <em>assim?</em></h2>
+      <p class="texto">Me diga o tipo de ensaio ou evento, a data e a cidade. Respondo pelo WhatsApp.</p>
+      <a class="botao botao-grande" href={linkWhatsApp()}>Chamar no WhatsApp</a>
+    </div>
+  </section>
+
+  <Historias historias={historias} slot="depois" />
+  <BarraWhatsApp slot="depois" />
 </Base>
-
-<script>
-  const grupo = document.querySelector<HTMLElement>('[data-filtro]');
-  if (grupo) {
-    const botoes = [...grupo.querySelectorAll<HTMLButtonElement>('button')];
-    const itens = [...document.querySelectorAll<HTMLElement>('[data-lista] > li')];
-    const vazio = document.querySelector<HTMLElement>('[data-vazio]')!;
-    grupo.hidden = false;
-
-    function aplicar(c: string, atualizarUrl: boolean) {
-      if (!botoes.some((b) => b.dataset.c === c)) c = '';
-      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === c)));
-      let n = 0;
-      itens.forEach((li) => {
-        const mostra = !c || li.dataset.categoria === c;
-        li.hidden = !mostra;
-        if (mostra) n++;
-      });
-      vazio.hidden = n > 0;
-      if (atualizarUrl) {
-        const url = new URL(location.href);
-        c ? url.searchParams.set('c', c) : url.searchParams.delete('c');
-        history.replaceState(null, '', url);
-      }
-    }
-    botoes.forEach((b) => b.addEventListener('click', () => aplicar(b.dataset.c ?? '', true)));
-    aplicar(new URL(location.href).searchParams.get('c') ?? '', false);
-  }
-</script>
 
 <style>
   .indice {
-    padding-block: var(--s5) var(--secao);
+    padding-top: var(--s4);
   }
   .indice-topo {
     display: grid;
-    gap: var(--s4);
-    margin-bottom: var(--s6);
-  }
-  .filtro {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s1) var(--s3);
-  }
-  .filtro[hidden] {
-    display: none;
-  }
-  .filtro button {
-    min-height: 44px;
-    padding: 0 20px;
-    background: transparent;
-    border: 1.5px dashed var(--costura-suave);
-    border-radius: 999px;
-    color: var(--texto-2);
-    font: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-      color var(--t-estado),
-      border-color var(--t-estado),
-      background-color var(--t-estado);
-  }
-  .filtro button:hover {
-    color: var(--texto);
-    border-color: var(--costura);
-  }
-  .filtro button:active {
-    transform: scale(0.97);
-  }
-  .filtro button[aria-pressed='true'] {
-    color: var(--texto);
-    background: var(--painel);
-    border-style: solid;
-    border-color: var(--costura);
-  }
-  /* Estante de álbuns: cada trabalho é um álbum fechado */
-  .lista {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
-    gap: var(--s6) var(--s5);
-  }
-  .lista li[hidden] {
-    display: none;
-  }
-  .lista li {
-    min-width: 0;
-  }
-  .lista a {
-    display: grid;
     gap: var(--s2);
-    color: var(--texto);
-    text-decoration: none;
+    margin-bottom: var(--s3);
   }
-  .livro {
-    display: block;
-    aspect-ratio: 2 / 3;
-    border-radius: 4px 12px 12px 4px;
-    overflow: hidden;
-    /* Miolo do álbum aparecendo pela borda */
-    box-shadow:
-      5px 5px 0 -1px #e9e1d2,
-      6px 6px 0 -1px #cfc5b3,
-      0 30px 50px -22px rgb(0 0 0 / 0.75);
-    transition:
-      transform var(--t-estado) var(--curva),
-      box-shadow var(--t-estado);
+  .apoio {
+    color: var(--texto-2);
   }
-  .lista a:hover .livro {
-    transform: translateY(-4px);
-  }
-  .lista .legenda {
-    text-align: center;
-  }
-  .cta {
+  .contato {
     display: grid;
-    gap: var(--s4);
+    gap: var(--s3);
     justify-items: center;
     text-align: center;
-    margin-top: var(--secao);
     padding: clamp(48px, 7vw, 112px) clamp(24px, 5vw, 72px);
+  }
+  .botao-grande {
+    min-height: 56px;
+    padding-inline: 36px;
+    font-size: 18px;
   }
 </style>
