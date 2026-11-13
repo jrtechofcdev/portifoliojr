@@ -17,6 +17,16 @@ export function linkWhatsApp(mensagem: string = MENSAGEM_PADRAO): string {
   return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(mensagem)}`;
 }
 
+// Prévia de compartilhamento do portfólio (o que aparece ao enviar o link pelo WhatsApp).
+// A imagem é a capa de couro gerada por scripts/capa-compartilhamento.mjs (npm run capa).
+export const CAPA_SOCIAL = {
+  titulo: 'Além do Olhar | Jr_Tech_OFC Fotografia',
+  descricao: 'Cada fotografia guarda uma história. Abra o álbum da Jr_Tech_OFC e descubra o que existe além de cada registro.',
+  imagem: '/capa-compartilhamento.jpg',
+  imagemAlt:
+    'Álbum de couro verde-grafite com costura, gravado com a marca Jr_Tech_OFC, o título Portfólio e a frase Existem histórias que merecem ser vistas.',
+} as const;
+
 export const linkEmail = `mailto:${site.email}?subject=${encodeURIComponent('Orçamento pelo site')}`;
 export const linkInstagram = `https://www.instagram.com/${site.instagram}/`;
 

@@ -13,6 +13,8 @@ Revisão de 13/11/2026 (tarde): site publicado no GitHub e na Vercel. Refinada d
 
 Revisão de 13/11/2026 (noite): repaginada da home (DESIGN.md §0d): álbuns em capítulos por tipo de trabalho, assistente com fotos nas respostas, "Como funciona" e "Sobre" em páginas de papel creme, botão de WhatsApp que encolhe ao rolar.
 
+Revisão de 13/11/2026 (noite): prévia de compartilhamento (DESIGN.md §0e): capa de couro em `public/capa-compartilhamento.jpg`, textos em `CAPA_SOCIAL`, endereço oficial fixo em `astro.config.mjs`.
+
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
@@ -21,6 +23,7 @@ Revisão de 13/11/2026 (noite): repaginada da home (DESIGN.md §0d): álbuns em 
 - `npm run test:bloqueio`: prova que foto pendente não gera arquivo em produção.
 - Ensaios: um YAML por ensaio em `src/content/ensaios/` (esquema em `src/content.config.ts`). Siglas de pasta em `src/data/pastas.json`.
 - A primeira geração de fotos leva cerca de 20 min; depois usa `.cache/fotos/`.
+- `npm run capa`: gera a capa de compartilhamento (prévia do link no WhatsApp) com o Edge ou o Chrome da máquina. Textos no próprio script e em `CAPA_SOCIAL`.
 
 ## Skills obrigatórias (instaladas globalmente, ver `RELATORIO_SKILLS.md`)
 - Direção visual: leia `DESIGN.md` antes de qualquer interface. Ele é a direção exigida pela regra R-37 do Anti-Slop e a base da Taste Skill.

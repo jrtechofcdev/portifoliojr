@@ -7,7 +7,7 @@ import Historias, { type Historia } from '../components/Historias.astro';
 import BarraWhatsApp from '../components/BarraWhatsApp.astro';
 import Assistente from '../components/Assistente.astro';
 import { capaDe, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, type FotoEnsaio } from '../lib/fotos';
-import { linkEmail, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
+import { CAPA_SOCIAL, linkEmail, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
 
 // Home pensada para o celular (revisão de 13/11/2026): abertura em tela cheia, destaques no estilo
 // dos Stories, assistente, álbuns em capítulos por tipo de trabalho, uma foto de pausa, as páginas
@@ -77,7 +77,8 @@ const jsonld = {
 <Base
   titulo="Portfólio de José Renato | Jr_Tech_OFC Fotografia, Imperatriz e Bacabal"
   descricao="Veja o portfólio de José Renato: ensaios externos, casais, gestantes, 15 anos e eventos em Imperatriz e Bacabal, MA. Chame no WhatsApp."
-  imagem={abertura?.dados.og}
+  imagem={CAPA_SOCIAL.imagem}
+  social={CAPA_SOCIAL}
   jsonld={jsonld}
   abertura
 >

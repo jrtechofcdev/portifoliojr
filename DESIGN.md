@@ -8,6 +8,16 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0e. Revisão de 13/11/2026 (noite): prévia de compartilhamento
+
+Pedido do responsável: que o link do portfólio, ao ser enviado no WhatsApp, Instagram ou Telegram, apareça como "a capa de couro do próprio portfólio", um álbum fotográfico físico de alto padrão, e não uma foto qualquer. Escopo só da prévia: a abertura e o resto do site não mudam.
+
+- **Imagem** `public/capa-compartilhamento.jpg` (1200 x 630, JPEG, cerca de 100 KB), gerada por `scripts/capa-compartilhamento.mjs` (`npm run capa`): o álbum da abertura como objeto, pousado numa mesa escura, com lombada, costura (linha, furos e sombra), friso duplo em baixo-relevo, cantoneiras de platina, fita de cetim e a espessura das páginas. Marca `JR_TECH_OFC` e símbolo em folha verde-ciano afundados no couro; título `PORTFÓLIO` em folha de platina; frase "Existem histórias que merecem ser vistas." Mesmas fontes e mesma textura do site.
+- **Área segura:** marca, símbolo, título e frase ficam no quadrado central (o WhatsApp às vezes recorta a prévia em quadrado). O álbum fica um pouco à esquerda para isso.
+- **Textos** em `CAPA_SOCIAL` (`src/data/site.ts`): título "Além do Olhar | Jr_Tech_OFC Fotografia" e a descrição. Usados na home e em /trabalhos; cada álbum continua com a própria foto.
+- **Endereço oficial** fixo em `astro.config.mjs` (`https://portifolio.jrtechofc.com.br`): canônico, `og:url` e `og:image` absolutos nele, não no endereço .vercel.app.
+- O WhatsApp guarda a prévia de cada link por um tempo. Para ver a nova logo depois de publicar, envie o endereço com algo no fim, por exemplo `portifolio.jrtechofc.com.br/?v=2`.
+
 ## 0d. Revisão de 13/11/2026 (noite): repaginada em capítulos e páginas de papel (vale sobre §0c e o resto)
 
 Pedido do responsável: "uma repaginada inteligente". O problema da versão anterior era a home: 14 cartões iguais empilhados (cerca de 8 telas de celular) antes de chegar em como funciona, sobre e contato, e tudo no mesmo couro escuro.

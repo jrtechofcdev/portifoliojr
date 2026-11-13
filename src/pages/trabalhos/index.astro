@@ -5,7 +5,7 @@ import Historias, { type Historia } from '../../components/Historias.astro';
 import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import Assistente from '../../components/Assistente.astro';
 import { ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
-import { linkWhatsApp } from '../../data/site';
+import { CAPA_SOCIAL, linkWhatsApp } from '../../data/site';
 
 const ensaios = await ensaiosPublicaveis();
 const historias: Historia[] = ensaios.map((e) => {
@@ -23,6 +23,8 @@ const historias: Historia[] = ensaios.map((e) => {
 <Base
   titulo="Trabalhos | Jr_Tech_OFC Fotografia"
   descricao="Ensaios externos, casais, gestantes, 15 anos e eventos fotografados por José Renato em Imperatriz e Bacabal, MA."
+  imagem={CAPA_SOCIAL.imagem}
+  social={{ imagemAlt: CAPA_SOCIAL.imagemAlt }}
 >
   <section class="indice">
     <div class="wrap indice-topo">

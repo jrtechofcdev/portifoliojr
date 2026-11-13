@@ -2,12 +2,12 @@
 import { defineConfig } from 'astro/config';
 import curadoria from './scripts/curadoria-dev.mjs';
 
-// Endereço do site (canônico, sitemap, Open Graph). SITE_URL vence; na Vercel usa o domínio de produção
-// do projeto. Quando houver domínio próprio, defina SITE_URL nas variáveis de ambiente da Vercel.
+// Endereço oficial do site (canônico, sitemap, Open Graph e a imagem da prévia de compartilhamento).
+// Fixo no domínio próprio para que o link compartilhado aponte sempre para ele, e não para o
+// endereço .vercel.app. A variável SITE_URL, se existir, vence (útil para testar em outro endereço).
 /** @type {Record<string, string | undefined>} */
 const env = /** @type {any} */ (globalThis).process.env;
-const vercel = env.VERCEL_PROJECT_PRODUCTION_URL;
-const site = env.SITE_URL ?? (vercel ? `https://${vercel}` : 'https://example.invalid');
+const site = env.SITE_URL ?? 'https://portifolio.jrtechofc.com.br';
 
 export default defineConfig({
   site,
