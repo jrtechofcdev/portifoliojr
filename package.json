@@ -1,8 +1,12 @@
 {
   "name": "portfolio-jr-tech-ofc",
   "private": true,
+  "version": "1.0.0",
+  "description": "Portfólio de fotografia da Jr_Tech_OFC (José Renato Alves da Silva), Bacabal e Imperatriz, MA.",
+  "author": "José Renato Alves da Silva",
+  "license": "UNLICENSED",
+  "homepage": "https://portifolio.jrtechofc.com.br",
   "type": "module",
-  "version": "0.1.0",
   "scripts": {
     "fotos": "node scripts/fotos.mjs",
     "fotos:prod": "node scripts/fotos.mjs --producao",

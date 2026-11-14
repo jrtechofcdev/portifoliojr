@@ -1,0 +1,47 @@
+# Álbum do portfólio. As fotos aparecem na ordem da lista; a capa e a abertura ficam nos campos abaixo.
+# Depois de mudar a lista: npm run fotos:publicar (ver README.md).
+# As 7 primeiras são as fotos com 5 estrelas nos metadados (destaques do fotógrafo, 14/11/2026).
+# Ensaio infantil no estilo country do José, filho de Dalila (autorizado por ela, como responsável).
+nome: "José"
+titulo: "JOSÉ"
+categoria: ensaios
+rotulo: "Ensaio infantil country"
+cidade: null
+data: "2024-10-21"
+tema: claro
+autorizacao: sim
+pasta: DJ
+abertura: { arquivo: "Fotos Filho Dalila-25.png", foco: 50% 40% }
+capa: "Fotos Filho Dalila-25.png"
+fotos:
+  - { arquivo: "Fotos Filho Dalila-25.png", alt: "Dalila e José sentados num tronco no curral, os dois olhando para a câmera" }
+  - { arquivo: "Fotos Filho Dalila-27.png", alt: "José no colo de Dalila, que está de costas, olha por cima do ombro dela" }
+  - { arquivo: "Fotos Filho Dalila-42.png", alt: "José se apoia na borda de um cocho de madeira no terreiro" }
+  - { arquivo: "Fotos Filho Dalila-44.png", alt: "Dalila ergue José para o alto embaixo das árvores" }
+  - { arquivo: "Fotos Filho Dalila-46.png", alt: "Dalila sentada na carroceria vermelha de um caminhão, com José no colo" }
+  - { arquivo: "Fotos Filho Dalila-47.png", alt: "Dalila sorri ao lado de uma mulher de blusa amarela que segura José no colo" }
+  - { arquivo: "Fotos Filho Dalila-55.png", alt: "José sentado descalço na mureta de pedra, junto à cerca de madeira" }
+  - { arquivo: "Fotos Filho Dalila-02.png", alt: "Dalila e José sentados lado a lado no tronco, com a cerca e as palmeiras ao fundo" }
+  - { arquivo: "Fotos Filho Dalila-05.png", alt: "Dalila segura José de pé na cabine de um trator amarelo" }
+  - { arquivo: "Fotos Filho Dalila-07.png", alt: "José sentado dentro de um pneu velho no chão de terra" }
+  - { arquivo: "Fotos Filho Dalila-08.png", alt: "José descalço sentado na mureta, olhando para o lado" }
+  - { arquivo: "Fotos Filho Dalila-14.png", alt: "Dalila abraçada a uma mulher de blusa amarela que segura José" }
+  - { arquivo: "Fotos Filho Dalila-15.png", alt: "Uma vaca deitada em primeiro plano, com Dalila e José ao fundo" }
+  - { arquivo: "Fotos Filho Dalila-16.png", alt: "Dalila e José sentados numa manta clara sobre o capim" }
+  - { arquivo: "Fotos Filho Dalila-18.png", alt: "José sentado na mureta de pedra, olhando para longe" }
+  - { arquivo: "Fotos Filho Dalila-19.png", alt: "Dalila de costas, com José no colo olhando para a câmera" }
+  - { arquivo: "Fotos Filho Dalila-21.png", alt: "José no colo, olhando para a câmera, com um trator amarelo ao fundo" }
+  - { arquivo: "Fotos Filho Dalila-28.png", alt: "José sentado na mureta, com a mão apoiada na cerca de madeira" }
+  - { arquivo: "Fotos Filho Dalila-34.png", alt: "O rosto de José de perto, no colo de Dalila" }
+  - { arquivo: "Fotos Filho Dalila-37.png", alt: "José de pé no banco de uma moto vermelha" }
+  - { arquivo: "Fotos Filho Dalila-38.png", alt: "Dalila sorri para José na cabine do trator amarelo" }
+  - { arquivo: "Fotos Filho Dalila-39.png", alt: "José no colo de Dalila, que encosta o rosto na cabeça dele" }
+  - { arquivo: "Fotos Filho Dalila-40.png", alt: "Dalila e José na cabine do trator amarelo, olhando para a câmera" }
+  - { arquivo: "Fotos Filho Dalila-41.png", alt: "Dalila de costas, com José no colo apoiado no ombro dela" }
+  - { arquivo: "Fotos Filho Dalila-43.png", alt: "José sentado descalço na mureta, com o braço estendido para trás" }
+  - { arquivo: "Fotos Filho Dalila-49.png", alt: "Dalila agachada junto à cerca de arame, abraçando José" }
+  - { arquivo: "Fotos Filho Dalila-50.png", alt: "Dalila segura as mãos de José, que dá passos no gramado" }
+  - { arquivo: "Fotos Filho Dalila-51.png", alt: "José espia por cima de um cocho de madeira, com o campo ao fundo" }
+  - { arquivo: "Fotos Filho Dalila-52.png", alt: "José sentado numa manta cinza no terreiro, com uma carroça ao fundo" }
+  - { arquivo: "Fotos Filho Dalila-53.png", alt: "Dalila agachada junto à cerca, com José no colo levando a mão à boca" }
+  - { arquivo: "Fotos Filho Dalila-54.png", alt: "José caminha sozinho no terreiro, sorrindo, com um trator ao fundo" }

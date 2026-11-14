@@ -1,6 +1,6 @@
-/* Tokens e base. Fonte de verdade: DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento).
+/* Tokens e base. Fonte de verdade: docs/DESIGN.md (§2 paleta, §3 tipografia, §4 grid, §7 componentes, §8 movimento).
    Direção "álbum de couro" (08/11/2026): couro grafite-esverdeado com costura no verde da marca, cantos macios.
-   Edição de luxo (13/11/2026, DESIGN.md §0e): serifa com tamanho óptico, botões em folha metálica, brilhos ao rolar. */
+   Edição de luxo (13/11/2026, docs/DESIGN.md §0e): serifa com tamanho óptico, botões em folha metálica, brilhos ao rolar. */
 @import '@fontsource-variable/archivo/index.css'; /* só o eixo de peso: o de largura não é usado */
 @import '@fontsource-variable/fraunces/opsz.css'; /* pesos e tamanho óptico: nos títulos grandes o traço afina sozinho */
 @import '@fontsource-variable/fraunces/opsz-italic.css';
@@ -585,7 +585,7 @@ html.menu-aberto {
 }
 
 /* ------------------------------------------------------------------------------------------
-   Revisão de 13/11/2026: fotos em tela cheia, pensado para celular Android (DESIGN.md §0b).
+   Revisão de 13/11/2026: fotos em tela cheia, pensado para celular Android (docs/DESIGN.md §0b).
    O cabeçalho flutua sobre a foto de abertura; as páginas sem abertura em tela cheia
    reservam o espaço dele.
    ------------------------------------------------------------------------------------------ */
@@ -847,4 +847,43 @@ button {
 
 .papel .wrap {
   padding-inline: calc(var(--margem) + 6px);
+}
+
+/* Proteção das fotos (14/11/2026): sem "salvar imagem" no toque longo do celular, sem arrastar e sem
+   selecionar a foto. Na impressão, as fotos saem em branco. O script fica em layouts/Base.astro. */
+picture img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.aviso-protecao {
+  position: fixed;
+  z-index: 90;
+  left: 50%;
+  top: calc(var(--cab) + 12px);
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgb(18 27 24 / 0.92);
+  color: var(--papel);
+  font-size: 14px;
+  font-weight: 550;
+  text-align: center;
+  box-shadow: var(--sombra);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -8px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.aviso-protecao.visivel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media print {
+  picture,
+  .foto {
+    visibility: hidden !important;
+  }
 }

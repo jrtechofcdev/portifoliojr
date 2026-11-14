@@ -61,6 +61,7 @@ export const DESTAQUES = [
   'adrian-18-anos',
   'dalila',
   'bodas-de-ouro-nelson-e-dalvina',
+  'jose',
 ] as const;
 
 // Assistente de escolha (revisão de 13/11/2026): duas perguntas curtas que colocam primeiro

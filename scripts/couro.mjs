@@ -1,5 +1,5 @@
 // Gera public/couro.webp: textura de grão de couro em cinza neutro (média 128), sem emenda ao repetir.
-// O CSS aplica sobre as cores do couro com background-blend-mode: overlay (DESIGN.md §2).
+// O CSS aplica sobre as cores do couro com background-blend-mode: overlay (docs/DESIGN.md §2).
 // Uso: node scripts/couro.mjs   (só é preciso rodar de novo se mudar os parâmetros)
 import sharp from 'sharp';
 

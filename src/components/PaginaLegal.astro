@@ -1,0 +1,83 @@
+---
+// Página de texto legal (privacidade, direitos autorais): uma página de papel creme sobre o couro,
+// com título, data de atualização e seções numeradas. O texto vem pelo slot.
+import Base from '../layouts/Base.astro';
+
+interface Props {
+  titulo: string;
+  descricao: string;
+  sobretitulo: string;
+  /** Título visível em duas partes: a segunda vai em itálico. */
+  h1: [string, string];
+  atualizada: string;
+}
+
+const { titulo, descricao, sobretitulo, h1, atualizada } = Astro.props;
+---
+
+<Base titulo={titulo} descricao={descricao}>
+  <div class="papel tema-claro legal">
+    <article class="wrap legal-miolo">
+      <header class="legal-topo">
+        <p class="sobretitulo">{sobretitulo}</p>
+        <h1 class="display-l">{h1[0]} <em>{h1[1]}</em></h1>
+        <p class="legal-data">Atualizada em {atualizada}</p>
+      </header>
+      <div class="legal-texto">
+        <slot />
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .legal {
+    margin-top: calc(var(--cab) + var(--s3));
+    margin-bottom: var(--secao);
+  }
+  .legal-miolo {
+    max-width: 760px;
+    padding-block: var(--s6);
+  }
+  .legal-topo {
+    display: grid;
+    gap: var(--s2);
+    padding-bottom: var(--s4);
+    border-bottom: 1.5px dashed var(--costura-suave);
+  }
+  .legal-data {
+    font-size: 14px;
+    color: var(--texto-2);
+  }
+  .legal-texto {
+    counter-reset: secao;
+    font-size: 16.5px;
+    line-height: 1.7;
+  }
+  .legal-texto :global(h2) {
+    counter-increment: secao;
+    margin-top: var(--s5);
+    font-family: var(--serifa, serif);
+    font-size: clamp(21px, 2.4vw, 26px);
+    font-weight: 450;
+    line-height: 1.25;
+  }
+  .legal-texto :global(h2)::before {
+    content: counter(secao) '. ';
+    color: var(--destaque);
+  }
+  .legal-texto :global(p),
+  .legal-texto :global(ul) {
+    margin-top: var(--s2);
+    max-width: 66ch;
+  }
+  .legal-texto :global(ul) {
+    padding-left: 1.2em;
+  }
+  .legal-texto :global(li + li) {
+    margin-top: 6px;
+  }
+  .legal-texto :global(a) {
+    overflow-wrap: anywhere;
+  }
+</style>

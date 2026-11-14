@@ -45,7 +45,9 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
       )
     }
     <link rel="canonical" href={canonica} />
-    {PREVIA && <meta name="robots" content="noindex, nofollow" />}
+    {PREVIA ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="noai, noimageai" />}
+    <meta name="author" content={site.fotografo} />
+    <meta name="copyright" content={`© ${site.marca} · ${site.fotografo}. Todos os direitos reservados.`} />
     <meta name="theme-color" content={tema === 'claro' ? '#EFE6D6' : '#121B18'} />
     <!-- Ícone: álbum de capa dura em perspectiva (scripts/icones.mjs). O SVG vem por último: é o preferido. -->
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -77,5 +79,26 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
     </main>
     <slot name="depois" />
     <Rodape />
+    <p class="aviso-protecao" data-aviso-protecao role="status" aria-live="polite"></p>
+    <script>
+      // Proteção das fotos (14/11/2026): sem menu "salvar imagem" (clique direito ou toque longo) e sem
+      // arrastar a foto para fora da página. Um aviso curto explica o motivo. Não impede uma captura de
+      // tela; a proteção legal está em /direitos-autorais.
+      const aviso = document.querySelector<HTMLElement>('[data-aviso-protecao]');
+      let tempo: ReturnType<typeof setTimeout> | undefined;
+      const naFoto = (alvo: EventTarget | null) => alvo instanceof Element && alvo.closest('picture, img') !== null;
+      document.addEventListener('contextmenu', (e) => {
+        if (!naFoto(e.target)) return;
+        e.preventDefault();
+        if (!aviso) return;
+        aviso.textContent = 'As fotos são protegidas por direitos autorais.';
+        aviso.classList.add('visivel');
+        clearTimeout(tempo);
+        tempo = setTimeout(() => aviso.classList.remove('visivel'), 2600);
+      });
+      document.addEventListener('dragstart', (e) => {
+        if (naFoto(e.target)) e.preventDefault();
+      });
+    </script>
   </body>
 </html>

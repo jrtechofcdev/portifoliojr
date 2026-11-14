@@ -1,0 +1,57 @@
+---
+import PaginaLegal from '../components/PaginaLegal.astro';
+import { linkEmail, linkWhatsApp, site } from '../data/site';
+---
+
+<PaginaLegal
+  titulo="Direitos autorais | Jr_Tech_OFC Fotografia"
+  descricao="As fotografias, os textos e o código deste portfólio são protegidos por direitos autorais. Veja o que é permitido e como compartilhar."
+  sobretitulo="Direitos autorais"
+  h1={['Direitos autorais e', 'uso das imagens']}
+  atualizada="14 de novembro de 2026"
+>
+  <p class="lead">
+    Cada foto deste portfólio é um trabalho autoral, feito com pessoas reais que confiaram a própria imagem a ele. Por
+    isso, nada aqui é de uso livre.
+  </p>
+
+  <h2>O que é protegido</h2>
+  <p>
+    As fotografias, os textos, a identidade visual da {site.marca} (nome e símbolo), o design das páginas e o código do
+    site pertencem a {site.fotografo}. Todos os direitos são reservados. Fotografias e textos são protegidos pela Lei de
+    Direitos Autorais (Lei 9.610/1998), e o código do site, pela Lei do Software (Lei 9.609/1998).
+  </p>
+
+  <h2>O que não é permitido sem autorização por escrito</h2>
+  <ul>
+    <li>baixar, copiar, imprimir ou capturar a tela das fotos para usar ou publicar em outro lugar;</li>
+    <li>publicar as fotos em redes sociais, sites, anúncios ou portfólios de outras pessoas, mesmo dando o crédito;</li>
+    <li>editar, recortar ou aplicar filtros nas fotos;</li>
+    <li>usar as fotos, os textos ou o site para treinar ou alimentar inteligência artificial;</li>
+    <li>copiar o layout, os textos ou o código do site.</li>
+  </ul>
+  <p>A Lei 9.610/1998 (art. 29) exige autorização prévia e expressa do autor para qualquer uso da obra.</p>
+
+  <h2>A imagem das pessoas</h2>
+  <p>
+    Além do direito do fotógrafo, quem aparece nas fotos tem direito à própria imagem (Constituição Federal, art. 5º, X,
+    e Código Civil, art. 20). A autorização dada pelos clientes vale para este portfólio e para os canais da{' '}
+    {site.marca}, e não se estende a mais ninguém. A imagem de crianças e adolescentes tem proteção reforçada pelo
+    Estatuto da Criança e do Adolescente (art. 17).
+  </p>
+
+  <h2>Como compartilhar do jeito certo</h2>
+  <p>
+    Gostou de um trabalho? Compartilhe o link da página do álbum. Se você é cliente, suas fotos chegam pela entrega
+    combinada no orçamento. Para qualquer outro uso, como imprensa, divulgação ou parceria, peça autorização pelo e-mail{' '}
+    <a href={linkEmail}>{site.email}</a>.
+  </p>
+
+  <h2>Uso indevido</h2>
+  <p>
+    O uso sem autorização sujeita o responsável à retirada do conteúdo e à indenização prevista na Lei 9.610/1998 (arts.
+    102 a 104), além das penas do Código Penal (art. 184). Se encontrar uma foto deste portfólio publicada sem
+    autorização, avise pelo e-mail ou pelo WhatsApp <a href={linkWhatsApp()}>{site.whatsappExibicao}</a>.
+  </p>
+  <p>Sobre os seus dados ao visitar o site, veja a <a href="/privacidade">Política de privacidade</a>.</p>
+</PaginaLegal>

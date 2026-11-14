@@ -1,0 +1,9 @@
+# Fim de linha: LF no repositório; arquivos binários nunca são convertidos.
+* text=auto
+*.avif binary
+*.webp binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.ico binary
+*.woff2 binary

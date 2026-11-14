@@ -72,8 +72,13 @@ const paginas = [
 
   <div class="wrap rodape-fim">
     <p class="rodape-direitos">
-      © {ano} {site.marca} · {site.fotografo}. Fotografias reais, publicadas com autorização.
+      © {ano} {site.marca} · {site.fotografo}. Todos os direitos reservados. Fotografias reais, publicadas com
+      autorização. Proibida a cópia ou reprodução sem permissão.
     </p>
+    <ul class="rodape-legal">
+      <li><a href="/privacidade">Privacidade</a></li>
+      <li><a href="/direitos-autorais">Direitos autorais</a></li>
+    </ul>
     <a class="rodape-topo" href="#conteudo">
       <Icone nome="seta-cima" tamanho={16} />
       Voltar ao topo
@@ -202,6 +207,27 @@ const paginas = [
     font-size: 13.5px;
     line-height: 1.55;
     color: var(--texto-2);
+  }
+  .rodape-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--s3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .rodape-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 550;
+    color: var(--texto-2);
+    text-decoration: underline dashed;
+    text-underline-offset: 0.34em;
+  }
+  .rodape-legal a:hover {
+    color: var(--verde);
   }
   .rodape-topo {
     display: inline-flex;

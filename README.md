@@ -1,23 +1,65 @@
-# Portfólio Jr_Tech_OFC Fotografia
+# Jr_Tech_OFC Fotografia · Portfólio
 
-Site de portfólio de José Renato Alves da Silva, fotógrafo em Imperatriz e Bacabal, MA.
-Feito com [Astro](https://astro.build) (site estático, sem servidor). As fotos vêm direto de `Fotos Para Potifolio/`, que nunca é alterada: o site gera cópias leves de cada foto escolhida.
+Portfólio de **José Renato Alves da Silva**, fotógrafo em Bacabal e Imperatriz, MA.
+No ar em **https://portifolio.jrtechofc.com.br**.
 
-## Requisitos
+> Código fechado. Todos os direitos reservados. Veja [LICENSE](LICENSE).
 
-- Node.js 22 ou mais novo (`node --version`)
-- Na primeira vez, dentro desta pasta: `npm install`
+## O site
 
-## Os quatro comandos
+- **Álbuns de clientes reais**, um por ensaio, com abertura em tela cheia, Stories e visualização ampliada.
+- **Assistente de escolha**: duas perguntas que colocam primeiro os álbuns que combinam com o visitante.
+- **Orçamento pelo WhatsApp** em um toque, com a mensagem já escrita.
+- **Celular primeiro**: pensado para Android, leve mesmo com fotos em alta qualidade (AVIF e WebP de 480 a 2400 px).
+- **Privacidade e direitos autorais**: páginas `/privacidade` e `/direitos-autorais`, sem cookies, estatísticas ou anúncios.
+
+## Tecnologia
+
+| Parte | Escolha |
+|---|---|
+| Site | [Astro](https://astro.build) 7, estático, sem servidor |
+| Fotos | `sharp`: versões web geradas a partir dos originais, sem localização nem dados da câmera |
+| Fontes | Fraunces e Archivo, servidas pelo próprio site |
+| Hospedagem | Vercel (publica a cada push no `main`), domínio na Cloudflare |
+
+## Estrutura
+
+```
+src/
+  content/ensaios/   um arquivo YAML por álbum (fotos, capa, abertura, textos alternativos)
+  components/        partes da interface (abertura, Stories, galeria, assistente, rodapé...)
+  pages/             início, /trabalhos, página de cada álbum, privacidade, direitos autorais
+  data/              contatos, categorias, destaques e siglas das pastas de fotos
+  styles/global.css  cores, fontes e espaçamentos
+  generated/         dados das fotos gerados por scripts/fotos.mjs
+public/fotos/        versões web das fotos (vão no Git porque a Vercel não tem os originais)
+scripts/             geração de fotos, ícones, capa de compartilhamento e verificações
+docs/                plano, direção visual, inventário das fotos e relatórios
+```
+
+## Segurança
+
+- **Fotos**: sem "salvar imagem" no clique direito ou no toque longo, sem arrastar e em branco na impressão. Outros sites não conseguem exibir as fotos direto do servidor (`Cross-Origin-Resource-Policy`).
+- **Robôs de IA**: os que coletam conteúdo para treinar modelos são bloqueados no `robots.txt`, e as fotos levam `noai, noimageai`.
+- **Cabeçalhos** (`vercel.json`): política de conteúdo (CSP), proibição de abrir o site dentro de outro (`frame-ancestors 'none'`), HTTPS obrigatório (HSTS) e permissões do navegador desligadas.
+- **Código**: build minificado e sem mapas de código-fonte. O repositório deve ficar **privado** no GitHub.
+
+Nenhuma proteção técnica impede uma captura de tela. A proteção que vale contra cópia é a legal: Lei 9.610/1998, explicada em `/direitos-autorais`.
+
+## Comandos
+
+Requisitos: Node.js 22 ou mais novo e, na primeira vez, `npm install`.
 
 | Comando | Para que serve |
 |---|---|
-| `npm run dev` | Abre o site no seu computador em http://localhost:4321, **com todas as fotos**, inclusive as que ainda não têm autorização (aparecem com a etiqueta "autorização pendente"). |
-| `npm run build:previa` e depois `npm run preview` | Gera a versão completa com todas as fotos para você revisar em http://localhost:4322. Essa versão tem `noindex` e **não deve ser publicada**. |
-| `npm run build` | Gera a versão de publicação em `dist/`. **Só entram fotos com `autorizacao: sim`.** No fim, um teste confirma que nenhuma foto sem autorização foi para `dist/`. |
-| `npm run test:bloqueio` | Prova que uma foto pendente não gera arquivo na versão de publicação. |
+| `npm run dev` | Abre o site em http://localhost:4321 com todas as fotos, inclusive as sem autorização (com a etiqueta "autorização pendente"). |
+| `npm run fotos:publicar` | Gera as versões web só das fotos com `autorizacao: sim`. |
+| `npm run build` | Versão de publicação em `dist/`. No fim, confere que nenhuma foto sem autorização foi para `dist/`. |
+| `npm run build:previa` e `npm run preview` | Versão completa para revisão local, com `noindex`. Não publicar. |
+| `npm run test:bloqueio` | Prova que uma foto pendente não gera arquivo na publicação. |
+| `npm run icones` / `npm run capa` | Ícones do site e capa da prévia de link no WhatsApp. |
 
-A primeira geração de fotos numa máquina nova demora (cerca de 25 minutos para as 313 fotos atuais). Depois ela fica guardada em `.cache/fotos/` e leva segundos.
+A primeira geração de fotos numa máquina nova leva cerca de 25 minutos. Depois ela fica em `.cache/fotos/` e leva segundos.
 
 ## Mudar as fotos de um álbum
 
@@ -28,69 +70,59 @@ Cada álbum é um arquivo em `src/content/ensaios/`, por exemplo `sabrina.yaml`.
 3. Escreva o `alt` de cada foto nova: o que se vê na foto, sem "imagem de" e sem travessão.
 4. Rode `npm run fotos:publicar` e depois `npm run build`. Um álbum precisa de pelo menos 4 fotos para aparecer.
 
-## Como liberar um ensaio para publicação
+## Adicionar um álbum novo
 
-Cada ensaio tem um arquivo em `src/content/ensaios/`, por exemplo `sabrina.yaml`. Quando a pessoa autorizar o uso das fotos:
-
-1. Abra o arquivo do ensaio.
-2. Troque `autorizacao: pendente` por `autorizacao: sim`.
-3. Se só algumas fotos foram autorizadas, deixe o ensaio como `pendente` e escreva `autorizacao: sim` na linha de cada foto liberada:
-   ```yaml
-   - { arquivo: sabrina-01.png, alt: "...", autorizacao: sim }
-   ```
-4. Rode `npm run build`.
-
-Um ensaio só aparece no site quando a foto de abertura, a capa e pelo menos 4 fotos estão liberadas.
-
-## Como adicionar um ensaio novo
-
-1. Coloque a pasta do ensaio dentro de `Fotos Para Potifolio/`, como você já faz.
-2. Abra `src/data/pastas.json` e acrescente uma sigla para a pasta nova, copiando o nome da pasta exatamente:
+1. Coloque a pasta do ensaio dentro de `Fotos Para Potifolio/`. Ela nunca é alterada: o site só lê os originais.
+2. Em `src/data/pastas.json`, crie uma sigla para a pasta, copiando o nome exato:
    ```json
    "AN": "📸 Ensaio Fotográfico - Ana - 10_01_2027"
    ```
-3. Crie `src/content/ensaios/ana.yaml` (o nome do arquivo vira o endereço: `/trabalhos/ana`). Use outro ensaio como modelo:
+3. Crie `src/content/ensaios/ana.yaml`. O nome do arquivo vira o endereço `/trabalhos/ana`:
    ```yaml
    nome: Ana
    titulo: ANA
    categoria: ensaios        # ensaios, casais ou eventos
    rotulo: Ensaio externo
-   cidade: Imperatriz        # ou null se não quiser mostrar
+   cidade: Imperatriz        # ou null
    data: "2027-01-10"        # sempre entre aspas
    tema: claro               # claro (luz do dia) ou escuro (noite, eventos)
    autorizacao: pendente     # sim quando a pessoa autorizar
    pasta: AN
-   abertura: { arquivo: foto-03.jpg, foco: 50% 30% }   # foco = ponto da foto que não pode ser cortado
+   abertura: { arquivo: foto-03.jpg, foco: 50% 30% }   # foco = ponto que não pode ser cortado
    capa: foto-03.jpg
    fotos:
      - { arquivo: foto-03.jpg, alt: "Ana sentada no banco da praça, fim de tarde" }
      - { arquivo: foto-07.jpg, alt: "Ana de perfil, olhando o rio" }
-     # 10 a 16 fotos, na ordem em que devem aparecer
    ```
-4. O `alt` descreve o que está na foto para quem usa leitor de tela. Escreva o que se vê, sem "imagem de" e sem travessão.
-5. Rode `npm run dev` e confira o ensaio em http://localhost:4321/trabalhos/ana.
+4. Rode `npm run dev` e confira em http://localhost:4321/trabalhos/ana.
 
 Se um nome de arquivo estiver errado, o comando para e mostra qual foto não foi encontrada.
+
+**Autorização de imagem.** Um álbum só vai ao ar com `autorizacao: sim`. Se só algumas fotos foram liberadas, deixe o álbum `pendente` e marque `autorizacao: sim` na linha de cada foto liberada.
 
 ## Onde mudar cada coisa
 
 | O quê | Arquivo |
 |---|---|
 | WhatsApp, e-mail, Instagram, cidades, slogan | `src/data/site.ts` |
+| Álbuns em destaque e a ordem deles | `DESTAQUES` em `src/data/site.ts` |
 | Textos da página inicial | `src/pages/index.astro` |
-| Cores, fontes e espaçamentos | `src/styles/global.css` (seguindo `DESIGN.md`) |
-| Endereço definitivo do site (domínio) | `astro.config.mjs`, campo `site` |
+| Privacidade e direitos autorais | `src/pages/privacidade.astro`, `src/pages/direitos-autorais.astro` |
+| Cabeçalhos de segurança e redirecionamentos | `vercel.json` |
+| Cores, fontes e espaçamentos | `src/styles/global.css` (seguindo `docs/DESIGN.md`) |
 
 ## Publicar
 
-O site fica em https://portifolio.jrtechofc.com.br, hospedado na Vercel. A Vercel publica sozinha a cada `git push` no ramo `main`.
+A Vercel publica sozinha a cada `git push` no `main`. Antes de enviar uma mudança de fotos:
 
-A Vercel não tem os originais das fotos, por isso as versões web vão prontas no Git (`public/fotos/` e `src/generated/fotos.json`). Antes de enviar uma mudança de fotos:
+1. `npm run fotos:publicar`
+2. `npm run build`
+3. `git add -A`, `git commit` e `git push`
 
-1. `npm run fotos:publicar` gera as fotos da versão de publicação.
-2. `npm run build` confere o site inteiro (tipos, build e lista de fotos autorizadas).
-3. `git add -A`, `git commit` e `git push`.
+## Documentos
 
-## Documentos do projeto
+Em `docs/`: `PLANO_GERAL_PORTFOLIO.md` (plano), `DESIGN.md` (direção visual), `MAPA_DO_SITE_E_CONTEUDO.md` (páginas e textos), `CURADORIA_E_INVENTARIO_DE_ASSETS.md` (fotos), `ROADMAP_DE_EXECUCAO.md` (fases), `PENDENCIAS_E_DECISOES.md` (decisões) e `RELATORIO_ENTREGA.md` (testes da entrega).
 
-`PLANO_GERAL_PORTFOLIO.md` (plano), `DESIGN.md` (direção visual), `MAPA_DO_SITE_E_CONTEUDO.md` (páginas e textos), `CURADORIA_E_INVENTARIO_DE_ASSETS.md` (fotos), `ROADMAP_DE_EXECUCAO.md` (fases), `PENDENCIAS_E_DECISOES.md` (o que falta decidir), `RELATORIO_ENTREGA.md` (testes da entrega).
+---
+
+© 2026 Jr_Tech_OFC · José Renato Alves da Silva. Todos os direitos reservados.

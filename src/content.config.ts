@@ -7,7 +7,7 @@ const autorizacao = z.enum(['sim', 'nao', 'pendente']);
 
 const foto = z.object({
   arquivo: z.string().min(1),
-  // Descrição factual do que está na foto, sem "imagem de" (DESIGN.md §10).
+  // Descrição factual do que está na foto, sem "imagem de" (docs/DESIGN.md §10).
   alt: z.string().min(10),
   // Sobrepõe a autorização do ensaio só para esta foto.
   autorizacao: autorizacao.optional(),

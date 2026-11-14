@@ -1,0 +1,87 @@
+---
+import PaginaLegal from '../components/PaginaLegal.astro';
+import { linkEmail, linkWhatsApp, site } from '../data/site';
+---
+
+<PaginaLegal
+  titulo="Política de privacidade | Jr_Tech_OFC Fotografia"
+  descricao="Como o portfólio da Jr_Tech_OFC trata os seus dados: sem cadastro, sem cookies de rastreamento e sem anúncios."
+  sobretitulo="Privacidade"
+  h1={['Política de', 'privacidade']}
+  atualizada="14 de novembro de 2026"
+>
+  <p class="lead">
+    Este site é um portfólio. Ele não tem cadastro, formulário, cookies de rastreamento nem anúncios. Aqui está, em
+    linguagem simples, o pouco que acontece com os seus dados quando você o visita ou entra em contato.
+  </p>
+
+  <h2>Quem é o responsável</h2>
+  <p>
+    {site.fotografo}, fotógrafo responsável pela {site.nome}, em {site.cidades}. Para qualquer assunto sobre os seus
+    dados, fale pelo e-mail <a href={linkEmail}>{site.email}</a> ou pelo WhatsApp{' '}
+    <a href={linkWhatsApp()}>{site.whatsappExibicao}</a>.
+  </p>
+
+  <h2>O que fica guardado no seu aparelho</h2>
+  <ul>
+    <li>
+      As respostas do assistente de escolha (o tipo de trabalho e o prazo), para os álbuns continuarem na ordem que
+      combina com você quando voltar ao site.
+    </li>
+    <li>Um aviso de que a capa de abertura já foi vista, para ela não se repetir na mesma visita. Ele some ao fechar a aba.</li>
+  </ul>
+  <p>
+    Essas informações ficam só no seu navegador e não são enviadas para nós nem para ninguém. Para apagá-las, limpe os
+    dados deste site nas configurações do navegador.
+  </p>
+
+  <h2>Cookies, estatísticas e anúncios</h2>
+  <p>
+    O site não usa cookies, ferramentas de estatística, pixels de redes sociais nem anúncios. As fontes e as fotos vêm do
+    próprio site, sem chamar serviços de terceiros enquanto você navega.
+  </p>
+
+  <h2>Hospedagem</h2>
+  <p>
+    O site é hospedado na Vercel, e o domínio é administrado pela Cloudflare. Como qualquer servidor, esses provedores
+    podem registrar dados técnicos de cada acesso, como endereço IP, navegador, página visitada e horário, para entregar o
+    site e protegê-lo contra abusos. Esses registros seguem as políticas de privacidade dessas empresas e não são usados
+    por nós para identificar visitantes.
+  </p>
+
+  <h2>Quando você entra em contato</h2>
+  <p>
+    Os botões de orçamento abrem o WhatsApp, o e-mail ou o Instagram com uma mensagem pronta, que você pode mudar antes de
+    enviar. Nada sai do site sem a sua ação. O que você enviar (nome, telefone, mensagem, data e cidade) é usado só para
+    responder, preparar o orçamento e, se o serviço for contratado, combinar e entregar o trabalho. Seus dados não são
+    vendidos nem repassados. WhatsApp e Instagram são serviços da Meta e seguem as políticas dela.
+  </p>
+
+  <h2>Pessoas nas fotos</h2>
+  <p>
+    As fotos do portfólio são de clientes reais e só são publicadas com a autorização de uso de imagem de quem aparece
+    nelas. Para crianças e adolescentes, a autorização é dada pela mãe, pelo pai ou pelo responsável legal. Os arquivos
+    publicados não levam localização nem dados da câmera.
+  </p>
+  <p>
+    Se você aparece em alguma foto e quer revê-la ou retirá-la do site, peça pelos contatos acima. A foto sai do
+    portfólio assim que confirmarmos que o pedido é seu ou do seu responsável.
+  </p>
+
+  <h2>Seus direitos</h2>
+  <p>Pela Lei Geral de Proteção de Dados (Lei 13.709/2018, art. 18), você pode pedir a qualquer momento:</p>
+  <ul>
+    <li>a confirmação de que temos dados seus e o acesso a eles;</li>
+    <li>a correção de dados incompletos ou errados;</li>
+    <li>a eliminação dos dados e a retirada do consentimento, inclusive da autorização de uso de imagem;</li>
+    <li>a informação sobre com quem os dados foram compartilhados.</li>
+  </ul>
+  <p>
+    Basta pedir pelo e-mail ou pelo WhatsApp. Se achar que o seu pedido não foi atendido, você também pode procurar a
+    Autoridade Nacional de Proteção de Dados (ANPD).
+  </p>
+
+  <h2>Mudanças nesta política</h2>
+  <p>Se esta política mudar, a nova versão aparece nesta página, com a data de atualização no topo.</p>
+  <p>Sobre o uso das fotos e do conteúdo do site, veja também <a href="/direitos-autorais">Direitos autorais</a>.</p>
+</PaginaLegal>

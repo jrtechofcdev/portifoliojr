@@ -13,6 +13,8 @@ export default defineConfig({
   trailingSlash: 'ignore',
   build: { format: 'directory' },
   vite: {
+    // Código fechado: o build sai minificado e sem mapas de código-fonte (source maps).
+    build: { sourcemap: false, minify: true, cssMinify: true },
     // Os originais e os clones antigos ficam fora do que o Vite observa.
     server: { watch: { ignored: ['**/Fotos Para Potifolio/**', '**/taste-skill/**', '**/anti-slop/**', '**/.cache/**'] } },
   },
