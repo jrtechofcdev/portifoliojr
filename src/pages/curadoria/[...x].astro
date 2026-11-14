@@ -18,6 +18,7 @@ export function getStaticPaths() {
         <li><span class="ic ic-on" aria-hidden="true">★</span> <strong>Estrela:</strong> a foto entra no álbum da amostra.</li>
         <li><span class="ic ic-on" aria-hidden="true">⌂</span> <strong>Casinha:</strong> a capa da amostra. Uma por amostra.</li>
         <li>Cada amostra aparece no site com 1 capa e pelo menos <span data-minimo>4</span> estrelas.</li>
+        <li><strong>Escolha da modelo:</strong> "Buscar escolhas das modelos" traz o que cada uma marcou no link dela (etiqueta embaixo da foto). "Usar a escolha da modelo" passa as marcas dela para as estrelas: destaques abrem o álbum na ordem dela, "não quero" perde a estrela. Depois confira e clique em "Aplicar no site".</li>
         <li>Clique na foto para ver grande. No modo grande: <kbd>E</kbd> estrela, <kbd>C</kbd> casinha, <kbd>←</kbd> <kbd>→</kbd> trocar de foto.</li>
       </ul>
     </header>
@@ -30,6 +31,11 @@ export function getStaticPaths() {
         <button type="button" aria-pressed="false" data-filtro="estrela">Só com estrela</button>
       </div>
       <p class="cur-resumo" data-resumo aria-live="polite"></p>
+      <div class="cur-modelo">
+        <button type="button" class="cur-ver-nav" data-buscar>Buscar escolhas das modelos</button>
+        <button type="button" class="cur-ver-nav" data-usar hidden>Usar a escolha da modelo</button>
+        <p class="legenda" data-modelo-info aria-live="polite"></p>
+      </div>
       <div class="cur-aplicar">
         <button type="button" class="botao" data-aplicar>Aplicar no site</button>
         <p class="legenda" data-status aria-live="polite"></p>
@@ -58,8 +64,10 @@ export function getStaticPaths() {
 <script>
   type Foto = { arquivo: string; mini: string; w?: number; h?: number };
   type Amostra = { sigla: string; nome: string; slug?: string; fotos: Foto[] };
-  type Sel = { estrelas: string[]; casa: string | null };
-  type Estado = { amostras: Amostra[]; selecao: Record<string, Sel>; minimo: number };
+  type Sel = { estrelas: string[]; casa: string | null; destaques?: string[] };
+  type EscolhaModelo = { arquivo: string; estado: '' | 'album' | 'destaque' | 'nao'; quando: number; origem: 'site' | 'modelo' };
+  type Modelos = { baixado: string; albuns: Record<string, { nome: string; concluido: string | null; escolhas: EscolhaModelo[] }> } | null;
+  type Estado = { amostras: Amostra[]; selecao: Record<string, Sel>; minimo: number; modelos: Modelos };
 
   const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
   const grade = $('[data-grade]');
@@ -78,6 +86,31 @@ export function getStaticPaths() {
   const sel = (sigla = atual): Sel => estado.selecao[sigla] ?? { estrelas: [], casa: null };
   const amostra = () => estado.amostras.find((a) => a.sigla === atual)!;
   const visiveis = () => amostra().fotos.filter((f) => filtro === 'todas' || sel().estrelas.includes(f.arquivo));
+  const daModelo = (sigla = atual) => estado.modelos?.albuns?.[sigla];
+  const tocouModelo = (sigla = atual) => !!daModelo(sigla)?.escolhas.some((e) => e.origem === 'modelo');
+  function marcaModelo(arquivo: string) {
+    const m = daModelo();
+    if (!m || !tocouModelo()) return '';
+    const e = m.escolhas.find((x) => x.arquivo.normalize('NFC') === arquivo.normalize('NFC'));
+    if (!e?.estado) return '<span class="modelo-tag">Modelo: sem marca</span>';
+    if (e.estado === 'destaque') {
+      const ordem = m.escolhas.filter((x) => x.estado === 'destaque').sort((a, b) => a.quando - b.quando).indexOf(e) + 1;
+      return `<span class="modelo-tag m-destaque">Modelo: ★ destaque ${ordem}</span>`;
+    }
+    return e.estado === 'album' ? '<span class="modelo-tag m-album">Modelo: ✓ álbum</span>' : '<span class="modelo-tag m-nao">Modelo: ✕ não quero</span>';
+  }
+  function desenharModelo() {
+    const info = $('[data-modelo-info]');
+    const usar = $<HTMLButtonElement>('[data-usar]');
+    const m = daModelo();
+    usar.hidden = !tocouModelo();
+    if (!estado.modelos) info.textContent = 'Ainda não buscou as escolhas das modelos.';
+    else if (!m || !tocouModelo()) info.textContent = 'A modelo deste ensaio ainda não marcou nada.';
+    else {
+      const c = (x: string) => m.escolhas.filter((e) => e.estado === x).length;
+      info.textContent = `Modelo: ${c('destaque')} destaques, ${c('album')} álbum, ${c('nao')} não quero${m.concluido ? ' · terminou' : ' · ainda escolhendo'}. Buscado em ${new Date(estado.modelos.baixado).toLocaleString('pt-BR')}.`;
+    }
+  }
   const miniUrl = (f: Foto) => `/__curadoria/mini/${atual}/${encodeURIComponent(f.mini)}`;
 
   function desenharAmostras() {
@@ -89,7 +122,8 @@ export function getStaticPaths() {
         b.type = 'button';
         b.className = 'amostra-btn';
         b.setAttribute('aria-pressed', String(a.sigla === atual));
-        b.innerHTML = `<span class="amostra-nome"></span><span class="amostra-conta">${s.estrelas.length} ★ ${s.casa ? '· ⌂' : ''}</span><span class="amostra-ok ${ok ? 'sim' : ''}">${ok ? 'no site' : 'fora do site'}</span>`;
+        const mod = tocouModelo(a.sigla) ? (daModelo(a.sigla)?.concluido ? ' · modelo terminou' : ' · modelo escolhendo') : '';
+        b.innerHTML = `<span class="amostra-nome"></span><span class="amostra-conta">${s.estrelas.length} ★ ${s.casa ? '· ⌂' : ''}${mod}</span><span class="amostra-ok ${ok ? 'sim' : ''}">${ok ? 'no site' : 'fora do site'}</span>`;
         b.querySelector('.amostra-nome')!.textContent = a.nome;
         b.addEventListener('click', () => {
           atual = a.sigla;
@@ -111,7 +145,8 @@ export function getStaticPaths() {
     li.innerHTML = `
       <button type="button" class="cartao-foto" aria-label="Ver grande: ${f.arquivo}">
         <img loading="lazy" decoding="async" alt="" ${f.w ? `width="${f.w}" height="${f.h}"` : ''}>
-        ${casa ? '<span class="selo">Capa</span>' : ''}
+        ${casa ? '<span class="selo">Capa</span>' : (s.destaques ?? []).includes(f.arquivo) ? `<span class="selo selo-d">Destaque ${(s.destaques ?? []).filter((a) => a !== s.casa).indexOf(f.arquivo) + 1}</span>` : ''}
+        ${marcaModelo(f.arquivo)}
       </button>
       <div class="cartao-acoes">
         <button type="button" class="marca-btn" data-tipo="estrela" aria-pressed="${estrela}" aria-label="Estrela: ${f.arquivo}" title="Estrela (entra no álbum)">★</button>
@@ -136,13 +171,40 @@ export function getStaticPaths() {
   function desenharTudo() {
     desenharAmostras();
     desenharGrade();
+    desenharModelo();
   }
+
+  $('[data-buscar]').addEventListener('click', async () => {
+    const info = $('[data-modelo-info]');
+    info.textContent = 'Buscando…';
+    try {
+      const r = await fetch('/__curadoria/buscar-modelos', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.erro);
+      estado.modelos = d.modelos;
+      desenharTudo();
+    } catch (e) {
+      info.textContent = `Não buscou: ${(e as Error).message}`;
+    }
+  });
+  $('[data-usar]').addEventListener('click', async () => {
+    try {
+      const r = await fetch('/__curadoria/usar-modelo', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ sigla: atual }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.erro);
+      estado.selecao[d.sigla] = d.selecao;
+      desenharTudo();
+      statusEl.textContent = 'Escolha da modelo passada para as estrelas. Confira e clique em "Aplicar no site".';
+    } catch (e) {
+      statusEl.textContent = `Não usou: ${(e as Error).message}`;
+    }
+  });
 
   async function marcar(arquivo: string, tipo: 'estrela' | 'casa') {
     const s = sel();
     const valor = tipo === 'casa' ? s.casa !== arquivo : !s.estrelas.includes(arquivo);
     // Mostra na hora; o servidor confirma em seguida.
-    const novo: Sel = { estrelas: [...s.estrelas], casa: s.casa };
+    const novo: Sel = { estrelas: [...s.estrelas], casa: s.casa, destaques: s.destaques };
     if (tipo === 'casa') {
       novo.casa = valor ? arquivo : null;
       if (valor && !novo.estrelas.includes(arquivo)) novo.estrelas.push(arquivo);
@@ -369,6 +431,38 @@ export function getStaticPaths() {
   .cur-resumo {
     flex: 1 1 260px;
     font-weight: 550;
+  }
+  .cur-modelo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 100%;
+  }
+  .cur-modelo .legenda {
+    flex: 1 1 260px;
+  }
+  .cur-grade :global(.selo-d) {
+    background: var(--papel);
+  }
+  .cur-grade :global(.modelo-tag) {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: rgb(11 17 15 / 0.85);
+    color: #f2eee6;
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .cur-grade :global(.modelo-tag.m-destaque) {
+    background: linear-gradient(100deg, #00fca8, #22d8ff);
+    color: #0d1512;
+  }
+  .cur-grade :global(.modelo-tag.m-nao) {
+    background: #5a2219;
+    color: #ffe1da;
   }
   .cur-aplicar {
     display: grid;

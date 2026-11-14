@@ -21,6 +21,7 @@ Revisão de 13/11/2026 (noite): plano de melhorias (DESIGN.md §0g): foto do liv
 
 ## Comandos
 - `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
+- Escolha pelas modelos (14/11/2026): um link secreto por ensaio em `https://escolha.jrtechofc.com.br/a/<token>` (Worker e banco D1 do Cloudflare, pasta `escolha/`). A modelo vê todas as fotos do ensaio e marca Destaque (até 7, abrem o álbum e os Stories), Álbum ou Não quero; a página explica com prints do site (`escolha/publico/explica/`). Links em `ESCOLHA_LINKS.txt` (fora do Git, não publicar). Na `/curadoria`: "Buscar escolhas das modelos" e "Usar a escolha da modelo", depois "Aplicar no site". `npm run escolha:montar` reenvia prévias e cadastro e publica o Worker (precisa de `npx wrangler login`); `npm run escolha:baixar` baixa as escolhas. Chave e endereço no `.env` (`ESCOLHA_CHAVE`, `ESCOLHA_URL`).
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
 - `npm run build`: fotos só com `autorizacao: sim`, `astro check`, build e `scripts/verificar-dist.mjs`.
 - `npm run build:previa`: site completo com fotos pendentes e `noindex`, só para revisão local (`npm run preview`).

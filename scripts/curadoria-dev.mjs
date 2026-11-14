@@ -5,7 +5,7 @@ import { createReadStream, existsSync } from 'node:fs';
 import { mkdir, readdir, readFile } from 'node:fs/promises';
 import sharp from 'sharp';
 import path from 'node:path';
-import { aplicar, lerManifestos, lerSelecao, marcar, MINIMO, NOVAS, RAIZ } from './curadoria-lib.mjs';
+import { aplicar, baixarEscolhas, lerEscolhas, lerManifestos, lerSelecao, marcar, MINIMO, NOVAS, RAIZ, usarEscolha } from './curadoria-lib.mjs';
 
 const MINI = path.join(RAIZ, '.cache/miniaturas');
 const status = { rodando: false, etapa: '', log: '', fim: null };
@@ -53,7 +53,7 @@ export default function curadoria() {
               slug: manifestos[sigla]?.slug ?? NOVAS[sigla]?.slug,
               fotos: indice[sigla] ?? [],
             }));
-            return json(res, { amostras, selecao: await lerSelecao(), minimo: MINIMO, status });
+            return json(res, { amostras, selecao: await lerSelecao(), minimo: MINIMO, status, modelos: await lerEscolhas() });
           }
           if (req.method === 'GET' && url.pathname.startsWith('/mini/')) {
             const [, , sigla, nome] = url.pathname.split('/').map(decodeURIComponent);
@@ -104,6 +104,15 @@ export default function curadoria() {
               }
             })();
             return json(res, { status });
+          }
+          if (req.method === 'POST' && url.pathname === '/buscar-modelos') {
+            await baixarEscolhas();
+            return json(res, { modelos: await lerEscolhas() });
+          }
+          if (req.method === 'POST' && url.pathname === '/usar-modelo') {
+            const { sigla } = await corpo(req);
+            if (!/^[A-Z]+$/.test(sigla)) return json(res, { erro: 'pedido inválido' }, 400);
+            return json(res, { sigla, selecao: await usarEscolha(sigla) });
           }
           if (req.method === 'GET' && url.pathname === '/status') return json(res, { status });
           json(res, { erro: 'rota desconhecida' }, 404);

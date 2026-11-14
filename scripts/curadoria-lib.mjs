@@ -9,6 +9,8 @@ import YAML from 'yaml';
 export const RAIZ = path.resolve(import.meta.dirname, '..');
 export const MANIFESTOS = path.join(RAIZ, 'src/content/ensaios');
 export const SELECAO = path.join(RAIZ, 'src/data/curadoria.json');
+// Escolhas feitas pelas modelos no link do Cloudflare (escolha/), baixadas por baixarEscolhas().
+export const ESCOLHAS_MODELOS = path.join(RAIZ, '.cache/escolhas-modelos.json');
 export const MINIMO = 4;
 
 // Dados de cada pasta que ainda não tem manifesto. Datas vêm do nome da pasta.
@@ -53,9 +55,12 @@ export async function lerSelecao() {
 export async function gravarSelecao(sel) {
   const ordenada = {};
   for (const k of Object.keys(sel).sort()) {
-    const { estrelas = [], casa = null } = sel[k];
+    const { estrelas = [], casa = null, destaques = [] } = sel[k];
     if (!estrelas.length && !casa) continue;
     ordenada[k] = { estrelas: [...new Set(estrelas)].sort(ordemNatural), casa };
+    // Destaques: fotos que abrem o álbum (e os Stories), na ordem escolhida. Sempre com estrela.
+    const d = [...new Set(destaques)].filter((a) => estrelas.includes(a));
+    if (d.length) ordenada[k].destaques = d;
   }
   await writeFile(SELECAO, JSON.stringify(ordenada, null, 2) + '\n');
   await gravarLista(ordenada);
@@ -147,7 +152,9 @@ export async function aplicar() {
     }
     const alts = new Map((atual?.m.fotos ?? []).map((f) => [f.arquivo.normalize('NFC'), f.alt]));
     const provisorio = (arquivo) => `${base.nome}, foto ${arquivo.replace(/\.[^.]+$/, '')}`;
-    const fotos = [s.casa, ...s.estrelas.filter((a) => a !== s.casa)].map((arquivo) => {
+    const destaques = (s.destaques ?? []).filter((a) => a !== s.casa);
+    const ordem = [s.casa, ...destaques, ...s.estrelas.filter((a) => a !== s.casa && !destaques.includes(a))];
+    const fotos = ordem.map((arquivo) => {
       const alt = alts.get(arquivo) ?? provisorio(arquivo);
       return { arquivo, alt, rascunho: alt === provisorio(arquivo) };
     });
@@ -161,4 +168,57 @@ export async function aplicar() {
     resumo.push({ sigla, slug, publicada: true, estrelas: fotos.length, rascunhos: fotos.filter((f) => f.rascunho).length });
   }
   return resumo;
+}
+
+// --- Escolha pelas modelos (Worker em escolha/, banco D1 no Cloudflare) ---
+
+async function lerEnv() {
+  const env = {};
+  const arq = path.join(RAIZ, '.env');
+  if (existsSync(arq)) for (const l of (await readFile(arq, 'utf8')).split(/\r?\n/)) {
+    const m = l.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+    if (m) env[m[1]] = m[2];
+  }
+  return env;
+}
+
+/** Baixa do Worker o que cada modelo marcou e guarda em .cache/escolhas-modelos.json. */
+export async function baixarEscolhas() {
+  const env = await lerEnv();
+  if (!env.ESCOLHA_URL || !env.ESCOLHA_CHAVE) throw new Error('Falta montar o link das modelos: node scripts/escolha-montar.mjs');
+  const r = await fetch(env.ESCOLHA_URL + '/admin/escolhas', { headers: { authorization: 'Bearer ' + env.ESCOLHA_CHAVE } });
+  if (!r.ok) throw new Error('O servidor das escolhas respondeu ' + r.status);
+  const porSigla = {};
+  for (const a of await r.json()) porSigla[a.sigla] = a;
+  await writeFile(ESCOLHAS_MODELOS, JSON.stringify({ baixado: new Date().toISOString(), albuns: porSigla }, null, 2));
+  return porSigla;
+}
+
+export async function lerEscolhas() {
+  if (!existsSync(ESCOLHAS_MODELOS)) return null;
+  return JSON.parse(await readFile(ESCOLHAS_MODELOS, 'utf8'));
+}
+
+/**
+ * Passa a escolha da modelo para a seleção da /curadoria: Destaque e Álbum ganham estrela,
+ * Não quero perde a estrela, sem marca fica como estava. Os destaques abrem o álbum na ordem dela.
+ * A capa continua a mesma se ainda tiver estrela; senão vira o primeiro destaque.
+ */
+export async function usarEscolha(sigla) {
+  const dados = await lerEscolhas();
+  const m = dados?.albuns?.[sigla];
+  if (!m) throw new Error('Nenhuma escolha baixada para ' + sigla);
+  const sel = await lerSelecao();
+  const s = (sel[sigla] ??= { estrelas: [], casa: null });
+  const estrelas = new Set(s.estrelas);
+  for (const e of m.escolhas) {
+    const a = e.arquivo.normalize('NFC');
+    if (e.estado === 'album' || e.estado === 'destaque') estrelas.add(a);
+    else if (e.estado === 'nao') estrelas.delete(a);
+  }
+  const destaques = m.escolhas.filter((e) => e.estado === 'destaque').sort((a, b) => a.quando - b.quando).map((e) => e.arquivo.normalize('NFC'));
+  s.estrelas = [...estrelas];
+  s.destaques = destaques;
+  if (!s.casa || !estrelas.has(s.casa)) s.casa = destaques[0] ?? s.estrelas.sort(ordemNatural)[0] ?? null;
+  return (await gravarSelecao(sel))[sigla] ?? { estrelas: [], casa: null };
 }

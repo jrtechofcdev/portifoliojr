@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["scripts", "dist", "node_modules", "Fotos Para Potifolio", "taste-skill", "anti-slop", ".cache", "public"],
+  "exclude": ["scripts", "dist", "node_modules", "Fotos Para Potifolio", "taste-skill", "anti-slop", ".cache", "public", "escolha"],
   "compilerOptions": {
     "resolveJsonModule": true
   }

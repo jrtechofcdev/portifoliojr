@@ -24,3 +24,10 @@ dist/
 # Configuração local do Claude Code
 .claude/settings.local.json
 shots/
+
+# Escolha pelas modelos (Worker em escolha/): prévias de todas as fotos, links secretos e estado local do wrangler
+escolha/publico/f/
+escolha/.semente.sql
+escolha/.wrangler/
+escolha/.dev.vars
+ESCOLHA_LINKS.txt

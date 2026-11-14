@@ -15,7 +15,9 @@
     "build:vercel": "node scripts/verificar-fotos-prontas.mjs && astro build",
     "fotos:publicar": "node scripts/fotos.mjs --producao",
     "icones": "node scripts/icones.mjs",
-    "capa": "node scripts/capa-compartilhamento.mjs"
+    "capa": "node scripts/capa-compartilhamento.mjs",
+    "escolha:montar": "node scripts/escolha-montar.mjs",
+    "escolha:baixar": "node -e \"import('./scripts/curadoria-lib.mjs').then(m=>m.baixarEscolhas()).then(a=>console.log(Object.keys(a).length+' ensaios baixados'))\""
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
