@@ -1,5 +1,5 @@
-# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
-# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+# Álbum do portfólio. As fotos aparecem na ordem da lista; a capa e a abertura ficam nos campos abaixo.
+# Depois de mudar a lista: npm run fotos:publicar (ver README.md).
 nome: "Sara & Yasmin"
 titulo: "SARA & YASMIN"
 categoria: ensaios

@@ -3,7 +3,7 @@
 Portfólio de fotografia de José Renato Alves da Silva (Jr_Tech_OFC Fotografia, "Nossa Arte, Seu Sucesso!"), Imperatriz e Bacabal, MA.
 
 ## Estado atual
-Fases 0 a 6 concluídas na parte do desenvolvimento em 08/11/2026 (ver `RELATORIO_ENTREGA.md`). Falta o que depende do responsável: escolher as fotos em `/curadoria`, logo, domínio, teste em celular e publicação. Nada de `git push`, deploy ou publicação sem ele. Documento principal: `PLANO_GERAL_PORTFOLIO.md`. Manutenção: `README.md`. Dúvidas em aberto: `PENDENCIAS_E_DECISOES.md`.
+Fases 0 a 6 concluídas na parte do desenvolvimento em 08/11/2026 (ver `RELATORIO_ENTREGA.md`). Site em produção em https://portifolio.jrtechofc.com.br (Vercel publica a cada push no `main`). Nada de `git push`, deploy ou publicação sem ele. Documento principal: `PLANO_GERAL_PORTFOLIO.md`. Manutenção: `README.md`. Dúvidas em aberto: `PENDENCIAS_E_DECISOES.md`.
 
 Revisão de 09/11/2026: visual "álbum de couro" (DESIGN.md §0) e curadoria pelo fotógrafo em `/curadoria`. Autorizações de imagem confirmadas pelo responsável em 09/11/2026.
 
@@ -21,9 +21,10 @@ Revisão de 13/11/2026 (noite): plano de melhorias (DESIGN.md §0g): foto do liv
 
 Revisão de 14/11/2026: versão final escolhida pelas modelos (13 álbuns, 313 fotos). Cada álbum tem só o que a modelo marcou como Destaque ou Álbum; foto sem marca fica fora. Saíram "Dalila & Maria" e "Feira de Ciências". "Tia Josiana" corrigido para "Tia Josina" (`/trabalhos/tia-josina`, redirect no `vercel.json`; a pasta dos originais mantém o nome antigo). Fotos em qualidade mais alta: 480 a 2400 px, AVIF 62 e WebP 82 (`scripts/fotos.mjs`).
 
+Revisão de 14/11/2026 (tarde): curadoria encerrada e retirada do projeto. Saíram a página `/curadoria`, a escolha pelas modelos (pasta `escolha/`, Worker e banco D1 do Cloudflare apagados, endereço `/escolha` desligado) e os scripts ligados a elas. Os álbuns agora são mantidos direto nos manifestos (`src/content/ensaios/*.yaml`).
+
 ## Comandos
-- `/curadoria` (só no `npm run dev`): estrela = foto no álbum, casinha = capa. Grava `src/data/curadoria.json` e `FOTOS_ESCOLHIDAS.txt`; "Aplicar no site" reescreve os manifestos (`scripts/curadoria-lib.mjs`). Miniaturas: `node scripts/miniaturas.mjs`.
-- Escolha pelas modelos (14/11/2026): extensão do portfólio, um link secreto por ensaio em `https://portifolio.jrtechofc.com.br/escolha/<token>` (a Vercel repassa `/escolha/*` ao Worker do Cloudflare em escolha.jrtechofc.com.br, com banco D1; pasta `escolha/`). A modelo vê todas as fotos do ensaio e marca Destaque (até 7, abrem o álbum e os Stories; destaque já entra no álbum), Álbum ou Não quero; a página explica com prints do site (`escolha/publico/explica/`). Links em `ESCOLHA_LINKS.txt` (fora do Git, não publicar). Na `/curadoria`: "Buscar escolhas das modelos" e "Usar a escolha da modelo", depois "Aplicar no site". `npm run escolha:montar` reenvia prévias e cadastro e publica o Worker (precisa de `npx wrangler login`); `npm run escolha:baixar` baixa as escolhas. Versão final: `npm run escolha:aplicar` mostra quem terminou; `npm run escolha:aplicar -- --aplicar` aplica nos álbuns das que terminaram (ou `-- --aplicar SAB`), depois textos alternativos das fotos novas, build e commit. Chave e endereço no `.env` (`ESCOLHA_CHAVE`, `ESCOLHA_URL`).
+- Mudar as fotos de um álbum: editar o YAML do ensaio (lista `fotos` na ordem do álbum, `capa`, `abertura`, `alt` de cada foto), depois `npm run fotos:publicar` e `npm run build`. Passo a passo no `README.md`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
 - `npm run build`: fotos só com `autorizacao: sim`, `astro check`, build e `scripts/verificar-dist.mjs`.
 - `npm run build:previa`: site completo com fotos pendentes e `noindex`, só para revisão local (`npm run preview`).

@@ -17,19 +17,16 @@ Feito com [Astro](https://astro.build) (site estático, sem servidor). As fotos 
 | `npm run build` | Gera a versão de publicação em `dist/`. **Só entram fotos com `autorizacao: sim`.** No fim, um teste confirma que nenhuma foto sem autorização foi para `dist/`. |
 | `npm run test:bloqueio` | Prova que uma foto pendente não gera arquivo na versão de publicação. |
 
-A primeira geração de fotos demora (cerca de 20 minutos para as 85 fotos atuais). Depois ela fica guardada em `.cache/fotos/` e leva segundos.
+A primeira geração de fotos numa máquina nova demora (cerca de 25 minutos para as 313 fotos atuais). Depois ela fica guardada em `.cache/fotos/` e leva segundos.
 
-## Escolher as fotos: estrela e casinha
+## Mudar as fotos de um álbum
 
-1. Rode `npm run dev` e abra http://localhost:4321/curadoria (essa página só existe no seu computador, nunca vai para o site publicado).
-2. Escolha a amostra (pasta) no alto. Aparecem **todas** as fotos da pasta.
-3. **★ Estrela:** a foto entra no álbum daquela amostra. **⌂ Casinha:** a capa da amostra (uma por amostra).
-4. Clique na foto para ver grande. No modo grande: `E` marca estrela, `C` marca casinha, `←` e `→` trocam de foto.
-5. Cada clique fica salvo na hora em `src/data/curadoria.json` e, em texto fácil de ler, em `FOTOS_ESCOLHIDAS.txt`.
-6. Clique em **Aplicar no site**. A amostra aparece no portfólio quando tem 1 casinha e pelo menos 4 estrelas.
+Cada álbum é um arquivo em `src/content/ensaios/`, por exemplo `sabrina.yaml`.
 
-As fotos novas entram com um texto alternativo provisório (marcado `# alt a revisar` no arquivo do ensaio); depois ele é trocado por uma descrição de verdade.
-Na primeira vez numa máquina nova, gere as miniaturas: `node scripts/miniaturas.mjs` (cerca de 5 minutos).
+1. Na lista `fotos`, acrescente, tire ou reordene as linhas. O álbum mostra as fotos na ordem da lista, e as primeiras também abrem os Stories.
+2. `capa` é a foto do cartão do álbum e `abertura` é a foto do topo da página. As duas precisam estar na lista `fotos`.
+3. Escreva o `alt` de cada foto nova: o que se vê na foto, sem "imagem de" e sem travessão.
+4. Rode `npm run fotos:publicar` e depois `npm run build`. Um álbum precisa de pelo menos 4 fotos para aparecer.
 
 ## Como liberar um ensaio para publicação
 
@@ -86,11 +83,13 @@ Se um nome de arquivo estiver errado, o comando para e mostra qual foto não foi
 
 ## Publicar
 
-O conteúdo de `dist/` depois de `npm run build` pode ir para qualquer hospedagem estática (Cloudflare Pages, Netlify ou Vercel, todas com plano gratuito). Antes de publicar:
+O site fica em https://portifolio.jrtechofc.com.br, hospedado na Vercel. A Vercel publica sozinha a cada `git push` no ramo `main`.
 
-1. Troque `site: 'https://example.invalid'` em `astro.config.mjs` pelo domínio real.
-2. Confirme as autorizações de imagem (`PENDENCIAS_E_DECISOES.md`).
-3. Teste o botão do WhatsApp num celular.
+A Vercel não tem os originais das fotos, por isso as versões web vão prontas no Git (`public/fotos/` e `src/generated/fotos.json`). Antes de enviar uma mudança de fotos:
+
+1. `npm run fotos:publicar` gera as fotos da versão de publicação.
+2. `npm run build` confere o site inteiro (tipos, build e lista de fotos autorizadas).
+3. `git add -A`, `git commit` e `git push`.
 
 ## Documentos do projeto
 

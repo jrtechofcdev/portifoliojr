@@ -37,7 +37,7 @@ export function fotosDoEnsaio(e: Ensaio): FotoEnsaio[] {
 }
 
 /** Uma foto específica de um ensaio, com o texto alternativo do manifesto.
- *  Devolve null se o ensaio ou a foto saíram da seleção (página /curadoria) ou não entram neste build. */
+ *  Devolve null se o ensaio ou a foto não estão no manifesto ou não entram neste build. */
 export async function fotoDe(slug: string, arquivo: string): Promise<FotoEnsaio | null> {
   const e = await getEntry('ensaios', slug);
   const f = e?.data.fotos.find((x) => x.arquivo === arquivo);
