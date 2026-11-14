@@ -45,7 +45,7 @@ Dados do próprio Instagram, uso interno: 60,4% mulheres, 68,7% entre 18 e 34 an
 1. **Jovens (principalmente mulheres de 18 a 34)** que querem um ensaio externo só seu. É o público principal, e o ensaio mais visto (Sabrina) é desse tipo.
 2. **Casais e gestantes.**
 3. **Congregações e famílias** que organizam cultos, confraternizações, aniversários e bodas.
-4. Secundário: pessoas e pequenos negócios que precisam de retrato para divulgação (exemplo: Tia Josiana).
+4. Secundário: pessoas e pequenos negócios que precisam de retrato para divulgação (exemplo: Tia Josina).
 
 ## 5. Posicionamento e mensagem
 

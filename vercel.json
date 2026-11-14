@@ -20,6 +20,26 @@
       "source": "/trabalhos/dalia/",
       "destination": "/trabalhos/dalila",
       "permanent": true
+    },
+    {
+      "source": "/trabalhos/tia-josiana",
+      "destination": "/trabalhos/tia-josina",
+      "permanent": true
+    },
+    {
+      "source": "/trabalhos/tia-josiana/",
+      "destination": "/trabalhos/tia-josina",
+      "permanent": true
+    },
+    {
+      "source": "/trabalhos/dalila-e-maria",
+      "destination": "/trabalhos",
+      "permanent": false
+    },
+    {
+      "source": "/trabalhos/dalila-e-maria/",
+      "destination": "/trabalhos",
+      "permanent": false
     }
   ],
   "headers": [

@@ -19,7 +19,7 @@ export const NOVAS = {
   IR: { slug: 'aniversario-de-irenilde', nome: 'Aniversário de Irenilde', categoria: 'eventos', rotulo: 'Aniversário', cidade: null, data: '2024-03-09', tema: 'escuro' },
   AD: { slug: 'adrian-18-anos', nome: '18 anos de Adrian', categoria: 'eventos', rotulo: 'Aniversário', cidade: null, data: '2025-01-05', tema: 'escuro' },
   VE: { slug: 'vitoria-emanuela-15-anos', nome: '15 anos de Vitória Emanuela', categoria: 'eventos', rotulo: 'Festa de 15 anos', cidade: null, data: '2024-02-17', tema: 'escuro' },
-  TJ: { slug: 'tia-josiana', nome: 'Tia Josiana', categoria: 'ensaios', rotulo: 'Retrato para cartaz', cidade: null, data: '2024-12-05', tema: 'claro' },
+  TJ: { slug: 'tia-josina', nome: 'Tia Josina', categoria: 'ensaios', rotulo: 'Retrato para cartaz', cidade: null, data: '2024-12-05', tema: 'claro' },
   BM: { slug: 'bombeiro-mirim-bacabal', nome: 'Desfile do Bombeiro Mirim', categoria: 'eventos', rotulo: 'Desfile cívico', cidade: 'Bacabal', data: '2025-04-17', tema: 'claro' },
   FC: { slug: 'feira-de-ciencias', nome: 'Feira de Ciências', categoria: 'eventos', rotulo: 'Evento escolar', cidade: null, data: '2024-10-20', tema: 'claro' },
   VT: { slug: 'victor-e-tamires', nome: 'Victor & Tamires', categoria: 'casais', rotulo: 'Ensaio gestante', cidade: null, data: '2024-03-01', tema: 'escuro' },
@@ -200,8 +200,9 @@ export async function lerEscolhas() {
 }
 
 /**
- * Passa a escolha da modelo para a seleção da /curadoria: Destaque e Álbum ganham estrela,
- * Não quero perde a estrela, sem marca fica como estava. Os destaques abrem o álbum na ordem dela.
+ * Passa a escolha da modelo para a seleção da /curadoria. O álbum fica exatamente com o que ela
+ * marcou: Destaque e Álbum têm estrela; Não quero e sem marca ficam fora (decisão de 14/11/2026).
+ * Os destaques abrem o álbum na ordem dela.
  * A capa continua a mesma se ainda tiver estrela; senão vira o primeiro destaque.
  */
 export async function usarEscolha(sigla) {
@@ -210,12 +211,7 @@ export async function usarEscolha(sigla) {
   if (!m) throw new Error('Nenhuma escolha baixada para ' + sigla);
   const sel = await lerSelecao();
   const s = (sel[sigla] ??= { estrelas: [], casa: null });
-  const estrelas = new Set(s.estrelas);
-  for (const e of m.escolhas) {
-    const a = e.arquivo.normalize('NFC');
-    if (e.estado === 'album' || e.estado === 'destaque') estrelas.add(a);
-    else if (e.estado === 'nao') estrelas.delete(a);
-  }
+  const estrelas = new Set(m.escolhas.filter((e) => e.estado === 'album' || e.estado === 'destaque').map((e) => e.arquivo.normalize('NFC')));
   const destaques = m.escolhas.filter((e) => e.estado === 'destaque').sort((a, b) => a.quando - b.quando).map((e) => e.arquivo.normalize('NFC'));
   s.estrelas = [...estrelas];
   s.destaques = destaques;

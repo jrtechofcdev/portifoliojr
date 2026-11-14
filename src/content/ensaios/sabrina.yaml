@@ -13,16 +13,15 @@ abertura: { arquivo: "sabrina-44.png", foco: 50% 35% }
 capa: "sabrina-44.png"
 fotos:
   - { arquivo: "sabrina-44.png", alt: "Sabrina segura o livro azul “Um caminho para a liberdade” à frente do rosto" }
-  - { arquivo: "sabrina-01.png", alt: "Sabrina de corpo inteiro com vestido laranja sob céu azul" }
-  - { arquivo: "sabrina-02.png", alt: "Sabrina em close, olhando para a câmera" }
-  - { arquivo: "sabrina-04.png", alt: "Sabrina de blusa laranja, de perfil contra o céu azul" }
-  - { arquivo: "sabrina-05.png", alt: "Sabrina de vestido laranja, mão no cabelo, céu azul ao fundo" }
-  - { arquivo: "sabrina-07.png", alt: "Sabrina de vestido laranja de um ombro só, olhando para o lado" }
   - { arquivo: "sabrina-08.png", alt: "Sabrina olha por cima do ombro, entre os eucaliptos" }
-  - { arquivo: "sabrina-09.png", alt: "Sabrina de vestido laranja sentada, com a mão no cabelo cacheado" }
-  - { arquivo: "sabrina-10.png", alt: "Sabrina de vestido laranja olha para a câmera entre as árvores" }
+  - { arquivo: "sabrina-49.png", alt: "Sabrina sobre o calçamento da rua" }
+  - { arquivo: "sabrina-05.png", alt: "Sabrina de vestido laranja, mão no cabelo, céu azul ao fundo" }
+  - { arquivo: "sabrina-46.png", alt: "Sabrina abaixa os óculos escuros e olha para a câmera" }
+  - { arquivo: "sabrina-31.png", alt: "Sabrina sorri encostada no tronco, com uma flor na mão" }
+  - { arquivo: "sabrina-33.png", alt: "Sabrina sentada num bloco de madeira, de vestido laranja" }
+  - { arquivo: "sabrina-02.png", alt: "Sabrina em close, olhando para a câmera" }
+  - { arquivo: "sabrina-07.png", alt: "Sabrina de vestido laranja de um ombro só, olhando para o lado" }
   - { arquivo: "sabrina-11.png", alt: "Sabrina sentada, de vestido laranja, com o cabelo cacheado solto" }
-  - { arquivo: "sabrina-12.png", alt: "Retrato de Sabrina em preto e branco" }
   - { arquivo: "sabrina-13.png", alt: "Sabrina sentada abraçando os joelhos, olhando para a câmera" }
   - { arquivo: "sabrina-16.png", alt: "Sabrina sentada, mão perto do rosto, olhando para a câmera" }
   - { arquivo: "sabrina-17.png", alt: "Sabrina sentada com as mãos juntas perto do rosto" }
@@ -36,16 +35,9 @@ fotos:
   - { arquivo: "sabrina-27.png", alt: "Sabrina de cabelo preso segura uma flor perto do rosto" }
   - { arquivo: "sabrina-29.png", alt: "Sabrina segurando uma flor junto ao tronco de uma árvore" }
   - { arquivo: "sabrina-30.png", alt: "Sabrina encostada numa árvore, segurando uma flor" }
-  - { arquivo: "sabrina-31.png", alt: "Sabrina sorri encostada no tronco, com uma flor na mão" }
-  - { arquivo: "sabrina-33.png", alt: "Sabrina sentada num bloco de madeira, de vestido laranja" }
   - { arquivo: "sabrina-34.png", alt: "Sabrina olha por cima do ombro ao entardecer" }
   - { arquivo: "sabrina-36.png", alt: "Rosto de Sabrina iluminado pela luz dourada do fim da tarde" }
   - { arquivo: "sabrina-40.png", alt: "Sabrina de óculos, vista de baixo para cima" }
-  - { arquivo: "sabrina-41.png", alt: "Sabrina de óculos escuros, vista de baixo contra o céu" }
-  - { arquivo: "sabrina-42.png", alt: "Sabrina lê um livro sentada, de vestido laranja" }
   - { arquivo: "sabrina-43.png", alt: "Sabrina lendo um livro" }
-  - { arquivo: "sabrina-46.png", alt: "Sabrina abaixa os óculos escuros e olha para a câmera" }
-  - { arquivo: "sabrina-49.png", alt: "Sabrina sobre o calçamento da rua" }
   - { arquivo: "sabrina-50.png", alt: "Sabrina sorri de cabelo preso e vestido laranja" }
   - { arquivo: "sabrina-52.png", alt: "Sabrina sentada num banco amarelo da praça" }
-  - { arquivo: "sabrina-53.png", alt: "Sabrina de costas, com prédios ao fundo" }

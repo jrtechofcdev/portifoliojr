@@ -13,28 +13,19 @@ abertura: { arquivo: "IMG_1210.jpg", foco: 50% 35% }
 capa: "IMG_1210.jpg"
 fotos:
   - { arquivo: "IMG_1210.jpg", alt: "Mesa comprida posta com pratos brancos, taças e jogos americanos azuis" }
-  - { arquivo: "IMG_1205.jpg", alt: "Mesa posta com taças" }
-  - { arquivo: "IMG_1206.jpg", alt: "Detalhe das taças e dos pratos na mesa posta, com guardanapos azuis" }
-  - { arquivo: "IMG_1216.jpg", alt: "Painel com a palavra Gratidão e o símbolo da juventude" }
+  - { arquivo: "IMG_1276.jpg", alt: "Jovem de óculos e vestido verde sorri sentada à mesa" }
+  - { arquivo: "IMG_1379.jpg", alt: "Foto de grupo dos jovens da confraternização diante do painel de balões" }
+  - { arquivo: "IMG_1438.jpg", alt: "Vista da mesa comprida cheia de jovens jantando" }
+  - { arquivo: "IMG_1434.jpg", alt: "Dois rapazes sentados à mesa, um deles olhando o celular" }
+  - { arquivo: "IMG_1431.jpg", alt: "Detalhe do prato com arroz, salada e carne ao lado de uma taça" }
+  - { arquivo: "IMG_1420.jpg", alt: "Homem sorri e faz sinal de positivo segurando um prato de comida" }
   - { arquivo: "IMG_1232.jpg", alt: "Jovens sentados à mesa comprida durante a confraternização" }
   - { arquivo: "IMG_1236.jpg", alt: "Jovem de vestido verde posa diante do painel “Gratidão”" }
   - { arquivo: "IMG_1243.jpg", alt: "Homem de camisa azul e jovem de vestido verde diante do painel de balões" }
-  - { arquivo: "IMG_1276.jpg", alt: "Jovem de óculos e vestido verde sorri sentada à mesa" }
-  - { arquivo: "IMG_1292.jpg", alt: "Rapaz de camisa branca posa com expressão divertida" }
-  - { arquivo: "IMG_1365.jpg", alt: "Homem de camisa azul e jovem de vestido azul seguram um presente" }
-  - { arquivo: "IMG_1379.jpg", alt: "Foto de grupo dos jovens da confraternização diante do painel de balões" }
-  - { arquivo: "IMG_1381.jpg", alt: "Duas jovens posam diante do painel “Gratidão”" }
   - { arquivo: "IMG_1383.jpg", alt: "Jovem de vestido verde e jovem de vestido azul diante dos balões" }
-  - { arquivo: "IMG_1388.jpg", alt: "Amigas juntas na confraternização" }
   - { arquivo: "IMG_1396.jpg", alt: "Detalhe de uma rosa azul" }
   - { arquivo: "IMG_1404.jpg", alt: "Mesa decorada da confraternização" }
-  - { arquivo: "IMG_1420.jpg", alt: "Homem sorri e faz sinal de positivo segurando um prato de comida" }
   - { arquivo: "IMG_1423.jpg", alt: "Jovem de óculos e vestido verde sorri segurando o prato" }
   - { arquivo: "IMG_1426.jpg", alt: "Rapaz de camisa branca sorri com o prato na mão" }
   - { arquivo: "IMG_1428.jpg", alt: "Jovens jantam à mesa comprida com jogos americanos azuis" }
   - { arquivo: "IMG_1429.jpg", alt: "Jovens conversam e comem à mesa durante a confraternização" }
-  - { arquivo: "IMG_1431.jpg", alt: "Detalhe do prato com arroz, salada e carne ao lado de uma taça" }
-  - { arquivo: "IMG_1434.jpg", alt: "Dois rapazes sentados à mesa, um deles olhando o celular" }
-  - { arquivo: "IMG_1438.jpg", alt: "Vista da mesa comprida cheia de jovens jantando" }
-  - { arquivo: "IMG_1440.jpg", alt: "Jovens sorriem sentados à mesa, com os balões azuis ao fundo" }
-  - { arquivo: "IMG_1442.jpg", alt: "Jovens à mesa com os pratos servidos e garrafas de refrigerante" }

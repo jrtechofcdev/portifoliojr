@@ -84,7 +84,7 @@ Pedido do responsável: o site estava "muito sem vida"; tem que ser "voltado par
 - **Home:** abertura, fileira de destaques (círculos com costura verde), álbuns em cartões grandes 4:5 com botão de assistir, foto horizontal de pausa que se abre ao entrar, "Como funciona" em cartões que se deslizam, sobre, contato. **Botão flutuante de WhatsApp** no celular, escondido sobre a abertura e perto do contato.
 - **Página do álbum:** abertura em tela cheia com "Assistir" e "Ver todas as fotos"; grade em duas colunas no celular; visualização ampliada com deslize; próximo álbum em cartão de foto.
 - **Movimento ao rolar só com CSS** (`animation-timeline: view()`, classes `.surge`, `.surge-lado`, `.revela`): roda fora da thread principal no Chrome do Android, sem JavaScript; sem suporte, tudo aparece parado. Continua proibido: parallax, scroll-jacking, cursor customizado, carrossel automático na página. Com `prefers-reduced-motion` nada se move.
-- **Desempenho:** fotos em 480, 800, 1200 e 1800 px, AVIF e WebP (JPEG só de reserva em 800 e 1200); só a abertura carrega com prioridade, o resto com `loading="lazy"`.
+- **Desempenho:** fotos em 480, 800, 1200, 1800 e 2400 px (ou o tamanho original, se for menor), AVIF qualidade 62 e WebP qualidade 82, desde 14/11/2026; o navegador baixa só a largura que a tela pede; só a abertura carrega com prioridade, o resto com `loading="lazy"`.
 - Deixam de valer: §0 "a home abre com o álbum fechado" e a virada de página; §8 "reveal de cada bloco ao rolar" (agora permitido, só com CSS).
 
 ## 0. Revisão de 09/11/2026: álbum de couro (vale sobre qualquer item abaixo que a contradiga)

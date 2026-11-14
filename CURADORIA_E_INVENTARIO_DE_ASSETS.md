@@ -51,7 +51,7 @@ Legenda de uso: **H** = imagem principal (hero) · **D** = destaque ou capa de c
 | JEL, Confra Juventude Estrela de Luz (16/12/2024) | Evento gospel / jovens | ★★☆ | galeria de evento, sem o pedido | A (**pedido de namoro: cena íntima**) |
 | BO, Bodas de Ouro Nelson & Dalvina (19/10/2024) | Celebração com culto | ★★☆ | estudo de caso de celebração | A (família, crianças) |
 | KI, 15 Anos de Kiara (31/01/2026) | Celebração | ★★☆ | galeria complementar | **A (menor de idade)** |
-| TJ, Tia Josiana (05/12/2024) | Retrato para divulgação | ★★☆ | exemplo de "retrato para cartaz" | A |
+| TJ, Tia Josina (05/12/2024) | Retrato para divulgação | ★★☆ | exemplo de "retrato para cartaz" | A |
 | IR, Irenilde 40 anos (09/03/2024) | Celebração | ★☆☆ | no máximo 1 foto | A |
 | AD, Adrian 18 anos (05/01/2025) | Celebração | ★☆☆ | X (exceto detalhe de bolo) | A (crianças) |
 | VE, Vitória Emanuela 15 anos (17/02/2024) | Celebração | ☆☆☆ | **X** (celular, repetitivo) | menor |

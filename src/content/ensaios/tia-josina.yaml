@@ -1,0 +1,24 @@
+# Fotos escolhidas pelo fotógrafo na página /curadoria (estrela = álbum, casinha = capa).
+# Para mudar a seleção, use a página /curadoria; os textos alternativos (alt) podem ser editados aqui.
+nome: "Tia Josina"
+titulo: "Tia Josina"
+categoria: ensaios
+rotulo: "Retrato para cartaz"
+cidade: null
+data: "2024-12-05"
+tema: claro
+autorizacao: sim
+pasta: TJ
+abertura: { arquivo: "1733428524120.jpg", foco: 50% 35% }
+capa: "1733428524120.jpg"
+fotos:
+  - { arquivo: "1733428524120.jpg", alt: "Tia Josina de vestido verde sorri segurando a Bíblia aberta" }
+  - { arquivo: "1733428336732.jpg", alt: "Tia Josina sorri com a Bíblia aberta nas mãos" }
+  - { arquivo: "1733428401829.jpg", alt: "Tia Josina sorri de braços cruzados, de vestido verde" }
+  - { arquivo: "1733428496935.jpg", alt: "Tia Josina lê a Bíblia aberta, sorrindo" }
+  - { arquivo: "1733428555824.jpg", alt: "Tia Josina inclina a cabeça sorrindo, com a Bíblia aberta" }
+  - { arquivo: "1733428620136.jpg", alt: "Tia Josina ri segurando a Bíblia vermelha" }
+  - { arquivo: "1733428591943.jpg", alt: "Tia Josina segura a Bíblia vermelha junto ao peito" }
+  - { arquivo: "1733428366958.jpg", alt: "Tia Josina sorri com a Bíblia aberta estendida à frente" }
+  - { arquivo: "1733428436666.jpg", alt: "Tia Josina sorri com as mãos junto ao rosto" }
+  - { arquivo: "1733428466477.jpg", alt: "Tia Josina sorri com a mão no queixo e a outra na cintura" }

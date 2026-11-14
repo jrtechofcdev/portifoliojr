@@ -13,15 +13,15 @@ abertura: { arquivo: "Dalila (10).jpg", foco: 50% 35% }
 capa: "Dalila (10).jpg"
 fotos:
   - { arquivo: "Dalila (10).jpg", alt: "Dalila, de camiseta branca, de perfil à beira da estrada" }
-  - { arquivo: "Dalila (1).jpg", alt: "De costas, caminhando na estrada" }
-  - { arquivo: "Dalila (2).jpg", alt: "Dalila de camiseta branca e calça jeans posa diante de um caminhão na estrada" }
-  - { arquivo: "Dalila (3).jpg", alt: "Na estrada, com um caminhão ao fundo" }
-  - { arquivo: "Dalila (8).jpg", alt: "Dalila de costas no meio da estrada, olhando para trás" }
-  - { arquivo: "Dalila (9).jpg", alt: "De perfil, com a mão apoiada na cerca" }
-  - { arquivo: "Dalila (11).jpg", alt: "De camiseta branca e jeans, de pé no meio da estrada" }
-  - { arquivo: "Dalila (12).jpg", alt: "Ajoelhada na estrada, de costas, olhando para o lado" }
-  - { arquivo: "Dalila (13).jpg", alt: "Dalila sentada na cerca à beira da estrada" }
-  - { arquivo: "Dalila (15).jpg", alt: "Dalila posa com a mão na cintura junto à cerca, entre o capim alto" }
+  - { arquivo: "Dalila (19).jpg", alt: "Dalila caminha pela estrada, mexendo no cabelo e olhando para o lado" }
   - { arquivo: "Dalila (16).jpg", alt: "Em meio ao capim seco" }
+  - { arquivo: "Dalila (13).jpg", alt: "Dalila sentada na cerca à beira da estrada" }
+  - { arquivo: "Dalila (12).jpg", alt: "Ajoelhada na estrada, de costas, olhando para o lado" }
+  - { arquivo: "Dalila (11).jpg", alt: "De camiseta branca e jeans, de pé no meio da estrada" }
+  - { arquivo: "Dalila (8).jpg", alt: "Dalila de costas no meio da estrada, olhando para trás" }
+  - { arquivo: "Dalila (1).jpg", alt: "De costas, caminhando na estrada" }
+  - { arquivo: "Dalila (3).jpg", alt: "Na estrada, com um caminhão ao fundo" }
+  - { arquivo: "Dalila (5).jpg", alt: "Dalila de pé no meio da estrada, com as mãos nos bolsos" }
+  - { arquivo: "Dalila (9).jpg", alt: "De perfil, com a mão apoiada na cerca" }
   - { arquivo: "Dalila (17).jpg", alt: "Dalila na estrada olhando para trás, com a pista e as árvores ao fundo" }
-  - { arquivo: "Dalila (21).jpg", alt: "Dalila caminha pela estrada com a mão no cabelo" }
+  - { arquivo: "Dalila (20).jpg", alt: "Dalila caminha pela estrada, olhando para o lado" }

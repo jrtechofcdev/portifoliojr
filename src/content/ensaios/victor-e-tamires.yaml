@@ -13,7 +13,11 @@ abertura: { arquivo: "Edição Jr_Tech_OFC-04.jpg", foco: 50% 35% }
 capa: "Edição Jr_Tech_OFC-04.jpg"
 fotos:
   - { arquivo: "Edição Jr_Tech_OFC-04.jpg", alt: "Victor e Tamires de testas encostadas, com as mãos na barriga dela" }
-  - { arquivo: "Edição Jr_Tech_OFC-06.jpg", alt: "Victor e Tamires de pé no jardim à noite, entre palmeiras iluminadas" }
+  - { arquivo: "Edição Jr_Tech_OFC-14.jpg", alt: "Victor e Tamires sentados na grama, de costas um para o outro, mostram sapatinhos de bebê" }
+  - { arquivo: "Edição Jr_Tech_OFC-13.jpg", alt: "Victor e Tamires de costas um para o outro, estendendo as mãos com sapatinhos de bebê" }
+  - { arquivo: "Edição Jr_Tech_OFC-12.jpg", alt: "Victor e Tamires na grama, de costas um para o outro, diante das palmeiras iluminadas" }
   - { arquivo: "Edição Jr_Tech_OFC-08.jpg", alt: "Victor abraça Tamires por trás, com as mãos na barriga dela" }
-  - { arquivo: "Edição Jr_Tech_OFC-10.jpg", alt: "Victor e Tamires sentados na grama do jardim, abraçados" }
+  - { arquivo: "Edição Jr_Tech_OFC-02.jpg", alt: "Tamires de vestido vermelho sentada na grama, com a mão na barriga" }
   - { arquivo: "Edição Jr_Tech_OFC-11.jpg", alt: "Victor e Tamires sentados na grama, com as palmeiras iluminadas ao fundo" }
+  - { arquivo: "Edição Jr_Tech_OFC-06.jpg", alt: "Victor e Tamires de pé no jardim à noite, entre palmeiras iluminadas" }
+  - { arquivo: "Edição Jr_Tech_OFC-10.jpg", alt: "Victor e Tamires sentados na grama do jardim, abraçados" }

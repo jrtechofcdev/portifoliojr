@@ -25,12 +25,13 @@ const CACHE = path.join(RAIZ, '.cache/fotos');
 const PUBLICO = process.env.FOTOS_PUBLICO ?? path.join(RAIZ, 'public/fotos');
 const SAIDA_JSON = process.env.FOTOS_JSON ?? path.join(RAIZ, 'src/generated/fotos.json');
 
-// Pensado para celular Android: 1800 px cobre a tela cheia de qualquer aparelho com folga.
+// Qualidade máxima sem pesar (14/11/2026): o navegador baixa só a largura que a tela pede (srcset),
+// então o celular continua leve e a tela grande recebe até 2400 px ou o tamanho original da foto.
 // Só AVIF e WebP: todo navegador atual lê os dois, e o repositório fica menor (as fotos vão no Git para a Vercel).
-const LARGURAS = [480, 800, 1200, 1800];
+const LARGURAS = [480, 800, 1200, 1800, 2400];
 const FORMATOS = {
-  avif: (img) => img.avif({ quality: 52, effort: 3 }),
-  webp: (img) => img.webp({ quality: 74 }),
+  avif: (img) => img.avif({ quality: 62, effort: 3 }),
+  webp: (img) => img.webp({ quality: 82, smartSubsample: true }),
 };
 
 const producao = process.argv.includes('--producao');
@@ -101,7 +102,7 @@ console.log(
 async function processar(e) {
   const info = await stat(e.origem);
   const id = createHash('sha1')
-    .update(`${e.origem.normalize('NFC')}|${info.size}|${info.mtimeMs}|${JSON.stringify(LARGURAS)}|v2`)
+    .update(`${e.origem.normalize('NFC')}|${info.size}|${info.mtimeMs}|${JSON.stringify(LARGURAS)}|v3`)
     .digest('hex')
     .slice(0, 12);
   const dirCache = path.join(CACHE, id);

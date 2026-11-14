@@ -13,22 +13,23 @@ abertura: { arquivo: "IMG_1081.jpg", foco: 50% 25% }
 capa: "IMG_1081.jpg"
 fotos:
   - { arquivo: "IMG_1081.jpg", alt: "Retrato noturno com flash sob céu de tempestade, olhar direto para a câmera" }
-  - { arquivo: "IMG_0724.jpg", alt: "Jovem de cabelo bem comprido e macacão floral vermelho sob as palmeiras" }
-  - { arquivo: "IMG_0725.jpg", alt: "Sorriso na luz de fim de tarde" }
+  - { arquivo: "IMG_1082.jpg", alt: "Jovem de vestido tomara que caia preto olha para o lado ao anoitecer" }
+  - { arquivo: "IMG_1079.jpg", alt: "Jovem de vestido preto olha por cima do ombro, sob céu escuro ao anoitecer" }
+  - { arquivo: "IMG_1072.jpg", alt: "Corpo inteiro de vestido preto, descalça no asfalto molhado, céu escuro" }
+  - { arquivo: "IMG_1050.jpg", alt: "Sorriso por cima do ombro, vestido de flores vermelhas" }
+  - { arquivo: "IMG_1046.jpg", alt: "Jovem de macacão floral vermelho sorri, com o cabelo longo para o lado" }
+  - { arquivo: "IMG_1044.jpg", alt: "Jovem de macacão floral vermelho ri de olhos fechados ao anoitecer" }
+  - { arquivo: "IMG_1040.jpg", alt: "Jovem de vestido preto sorri à noite, com o cabelo longo solto" }
   - { arquivo: "IMG_0742.jpg", alt: "Jovem de macacão floral vermelho caminha sorrindo entre as palmeiras" }
   - { arquivo: "IMG_0767.jpg", alt: "Jovem de macacão floral vermelho sorri com o cabelo longo sobre o ombro" }
   - { arquivo: "IMG_0787.jpg", alt: "De costas, com vestido floral" }
   - { arquivo: "IMG_0808.jpg", alt: "Vestido preto contra o céu" }
   - { arquivo: "IMG_0818.jpg", alt: "Jovem de vestido preto olha por cima do ombro contra o céu" }
-  - { arquivo: "IMG_0820.jpg", alt: "Jovem de vestido preto, de lado, com a mão no cabelo" }
   - { arquivo: "IMG_0866.jpg", alt: "Retrato diante de um muro branco" }
   - { arquivo: "IMG_0906.jpg", alt: "Sorriso de lado diante de uma parede branca, vestido preto" }
   - { arquivo: "IMG_0914.jpg", alt: "Sentada, sorrindo, vestido preto de um ombro só" }
-  - { arquivo: "IMG_0923 (1).jpg", alt: "Jovem de macacão floral vermelho deitada de lado na grama, sorrindo" }
-  - { arquivo: "IMG_0940.jpg", alt: "Jovem de macacão floral vermelho sentada na grama do jardim" }
-  - { arquivo: "IMG_0943.jpg", alt: "Jovem de macacão floral vermelho sentada na grama, olhando para o lado" }
   - { arquivo: "IMG_0945.jpg", alt: "Jovem de macacão floral vermelho sorri sentada no jardim" }
-  - { arquivo: "IMG_0946.jpg", alt: "Jovem de macacão floral vermelho sorri com as mãos nos joelhos" }
+  - { arquivo: "IMG_0948.jpg", alt: "Jovem de vestido de flores vermelhas sorri sentada, com flores ao fundo" }
   - { arquivo: "IMG_0957.jpg", alt: "Deitada no gramado, cabelo aberto em leque com pétalas, vista de cima" }
   - { arquivo: "IMG_0987.jpg", alt: "Jovem de vestido preto deitada na grama entre flores brancas, sorrindo" }
   - { arquivo: "IMG_0990.jpg", alt: "Close da jovem de vestido preto deitada na grama, sorrindo" }
@@ -36,21 +37,11 @@ fotos:
   - { arquivo: "IMG_0994.jpg", alt: "Cabelo arrumado em forma de coração" }
   - { arquivo: "IMG_1031.jpg", alt: "Vestido preto ao entardecer, cabelo longo sobre o ombro" }
   - { arquivo: "IMG_1032.jpg", alt: "Sorriso largo com vestido estampado de flores vermelhas, fim de tarde" }
-  - { arquivo: "IMG_1033.jpg", alt: "Jovem de macacão floral vermelho sorri ao pôr do sol" }
   - { arquivo: "IMG_1034.jpg", alt: "Jovem de vestido preto de um ombro só, à noite, com a mão no cabelo" }
-  - { arquivo: "IMG_1035.jpg", alt: "Jovem de vestido preto com a mão na cabeça, encostada numa coluna" }
-  - { arquivo: "IMG_1040.jpg", alt: "Jovem de vestido preto sorri à noite, com o cabelo longo solto" }
-  - { arquivo: "IMG_1043.jpg", alt: "Jovem de macacão floral vermelho sorri à noite sob as árvores" }
-  - { arquivo: "IMG_1044.jpg", alt: "Jovem de macacão floral vermelho ri de olhos fechados ao anoitecer" }
-  - { arquivo: "IMG_1045.jpg", alt: "Jovem de macacão floral vermelho sorri ao anoitecer" }
-  - { arquivo: "IMG_1046.jpg", alt: "Jovem de macacão floral vermelho sorri, com o cabelo longo para o lado" }
-  - { arquivo: "IMG_1050.jpg", alt: "Sorriso por cima do ombro, vestido de flores vermelhas" }
   - { arquivo: "IMG_1057.jpg", alt: "Olhar por cima do ombro" }
   - { arquivo: "IMG_1066.jpg", alt: "Jovem de macacão floral vermelho sorri com o céu nublado ao fundo" }
-  - { arquivo: "IMG_1072.jpg", alt: "Corpo inteiro de vestido preto, descalça no asfalto molhado, céu escuro" }
   - { arquivo: "IMG_1077.jpg", alt: "De costas, olhando por cima do ombro, vestido preto com saia transparente" }
   - { arquivo: "IMG_1078.jpg", alt: "Jovem de vestido preto de perfil sob o céu escuro" }
-  - { arquivo: "IMG_1082.jpg", alt: "Jovem de vestido tomara que caia preto olha para o lado ao anoitecer" }
   - { arquivo: "IMG_1084.jpg", alt: "Retrato noturno com flash sob céu escuro" }
   - { arquivo: "IMG_1085.jpg", alt: "Jovem de vestido preto caminha descalça na quadra molhada" }
   - { arquivo: "IMG_1086.jpg", alt: "Jovem de vestido preto descalça na quadra, com árvores e céu nublado ao fundo" }
