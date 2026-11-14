@@ -17,6 +17,7 @@
     "icones": "node scripts/icones.mjs",
     "capa": "node scripts/capa-compartilhamento.mjs",
     "escolha:montar": "node scripts/escolha-montar.mjs",
+    "escolha:aplicar": "node scripts/escolha-aplicar.mjs",
     "escolha:baixar": "node -e \"import('./scripts/curadoria-lib.mjs').then(m=>m.baixarEscolhas()).then(a=>console.log(Object.keys(a).length+' ensaios baixados'))\""
   },
   "dependencies": {

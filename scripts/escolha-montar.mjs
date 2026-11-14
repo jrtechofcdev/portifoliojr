@@ -138,7 +138,8 @@ const linhas = [
   'LINKS DA ESCOLHA DAS FOTOS (um por ensaio). Não publique: quem tem o link vê todas as fotos do ensaio.',
   `Atualizado em ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Fortaleza' })}`,
   '',
-  ...albuns.map((a) => `${a.nome} (${a.fotos} fotos, ${a.noSite} já no site)\n   ${base}/a/${a.token}\n`),
+  // Endereço dentro do portfólio (vercel.json repassa /escolha/* ao Worker). Reserva direto no Worker.
+  ...albuns.map((a) => `${a.nome} (${a.fotos} fotos, ${a.noSite} já no site)\n   https://portifolio.jrtechofc.com.br/escolha/${a.token}\n   reserva: ${base}/a/${a.token}\n`),
 ];
 await writeFile(path.join(RAIZ, 'ESCOLHA_LINKS.txt'), linhas.join('\n'));
 console.log(`\nPublicado em ${base}. Links em ESCOLHA_LINKS.txt.`);

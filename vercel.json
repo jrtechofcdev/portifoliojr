@@ -4,6 +4,12 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/escolha/:caminho*",
+      "destination": "https://escolha.jrtechofc.com.br/escolha/:caminho*"
+    }
+  ],
   "redirects": [
     {
       "source": "/trabalhos/dalia",

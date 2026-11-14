@@ -4,8 +4,13 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 
 export const WHATSAPP = '5599982785958';
 
-export function pagina({ nome, limite }) {
+const SIMBOLO = '<svg class="simbolo" viewBox="44 34 412 432" width="26" height="26" aria-hidden="true"><defs><linearGradient id="sg" gradientUnits="userSpaceOnUse" x1="120" y1="40" x2="380" y2="470"><stop offset="0" stop-color="#00FCA8"/><stop offset="1" stop-color="#22D8FF"/></linearGradient></defs><g fill="url(#sg)"><path d="M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z"/><path d="M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z"/><path d="M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z"/><path d="M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z"/></g></svg>';
+const PORTFOLIO = 'https://portifolio.jrtechofc.com.br';
+
+export function pagina({ nome, limite, prefixo = '' }) {
   const n = esc(nome);
+  // Pela Vercel (/escolha/...) a página está dentro do portfólio: links relativos. Direto no Worker, endereço completo.
+  const inicio = prefixo ? '/' : PORTFOLIO + '/';
   return `<!doctype html>
 <html lang="pt-BR">
 <head>
@@ -13,7 +18,9 @@ export function pagina({ nome, limite }) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#121b18">
-<title>Escolha das fotos · ${n}</title>
+<title>Escolha das fotos · ${n} | Jr_Tech_OFC Fotografia</title>
+<link rel="icon" href="${inicio}favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="${inicio}favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;650&family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&display=swap" rel="stylesheet">
@@ -33,8 +40,12 @@ button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--verde); outline-offset: 2px; }
 .wrap { width: min(1100px, 100%); margin: 0 auto; padding: 0 16px; }
 
+.cab { border-bottom: 1px solid var(--linha); background: var(--fundo); }
+.cab .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+.marca { display: inline-flex; align-items: center; gap: 10px; color: var(--papel); text-decoration: none; font: 500 19px/1 var(--serifa); }
+.voltar { color: rgb(242 238 230 / .8); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
 .topo { padding-top: 28px; padding-bottom: 20px; }
-.marca { margin: 0 0 14px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: rgb(242 238 230 / .7); }
+.sobre { margin: 0 0 12px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--verde); }
 h1 { margin: 0; font: 500 clamp(30px, 8vw, 46px)/1.08 var(--serifa); letter-spacing: -.01em; }
 h1 em { font-style: italic; font-weight: 400; color: var(--verde); }
 .ensaio { margin: 10px 0 0; color: rgb(242 238 230 / .8); }
@@ -117,8 +128,12 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
 </style>
 </head>
 <body>
+<header class="cab"><div class="wrap">
+  <a class="marca" href="${inicio}">${SIMBOLO}Jr_Tech_OFC</a>
+  <a class="voltar" href="${inicio}">Ver o portfólio</a>
+</div></header>
 <header class="topo wrap">
-  <p class="marca">Jr_Tech_OFC Fotografia</p>
+  <p class="sobre">Curadoria do seu álbum</p>
   <h1>Escolha as fotos do <em>seu álbum</em></h1>
   <p class="ensaio">${n}</p>
 </header>
@@ -126,21 +141,21 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
 <main class="wrap">
   <details class="papel" data-explica open>
     <summary><h2>Como funciona</h2></summary>
-    <p>Aqui estão todas as fotos do seu ensaio, inclusive as que ainda não estão no portfólio. Embaixo de cada foto há três botões:</p>
+    <p>Aqui estão todas as fotos do seu ensaio, inclusive as que ainda não estão no portfólio. Você escolhe o que entra no seu álbum. Embaixo de cada foto há três botões:</p>
     <ul class="tipos">
       <li class="tipo">
         <h3><span class="ic ic-destaque" aria-hidden="true">★</span> Destaque</h3>
-        <p>As fotos que abrem o seu álbum. Elas aparecem primeiro nos Stories: na bolinha "Em destaque" da página inicial do portfólio e no botão de play do cartão do seu álbum. Escolha até ${limite}, na ordem em que quer que apareçam.</p>
+        <p>As preferidas, que abrem o seu álbum. Elas aparecem primeiro nos Stories: na bolinha "Em destaque" da página inicial do portfólio e no botão de play do cartão do seu álbum. Toda foto de destaque já entra no álbum sozinha. Escolha até ${limite}, na ordem em que quer que apareçam.</p>
         <div class="prints">
-          <figure><img src="/explica/destaques.webp" alt="Página inicial do portfólio com a fileira de bolinhas Em destaque" loading="lazy" width="412" height="520"><figcaption>A bolinha "Em destaque" na página inicial.</figcaption></figure>
-          <figure><img src="/explica/stories.webp" alt="Stories abertos em tela cheia, mostrando a primeira foto de um álbum" loading="lazy" width="412" height="733"><figcaption>Ao tocar, abrem os Stories com os destaques.</figcaption></figure>
+          <figure><img src="${prefixo}/explica/destaques.webp" alt="Página inicial do portfólio com a fileira de bolinhas Em destaque" loading="lazy" width="412" height="520"><figcaption>A bolinha "Em destaque" na página inicial.</figcaption></figure>
+          <figure><img src="${prefixo}/explica/stories.webp" alt="Stories abertos em tela cheia, mostrando a primeira foto de um álbum" loading="lazy" width="412" height="733"><figcaption>Ao tocar, abrem os Stories com os destaques.</figcaption></figure>
         </div>
       </li>
       <li class="tipo">
         <h3><span class="ic ic-album" aria-hidden="true">✓</span> Álbum</h3>
-        <p>A foto entra na página do seu álbum no portfólio, junto com os destaques. Qualquer pessoa que abrir o portfólio pode ver.</p>
+        <p>A foto entra na página do seu álbum no portfólio. Nem toda foto do álbum precisa ser destaque. Qualquer pessoa que abrir o portfólio pode ver.</p>
         <div class="prints">
-          <figure><img src="/explica/album.webp" alt="Página de um álbum no portfólio, com as fotos em grade" loading="lazy" width="412" height="733"><figcaption>A página do álbum, com todas as fotos escolhidas.</figcaption></figure>
+          <figure><img src="${prefixo}/explica/album.webp" alt="Página de um álbum no portfólio, com as fotos em grade" loading="lazy" width="412" height="733"><figcaption>A página do álbum, com todas as fotos escolhidas.</figcaption></figure>
         </div>
       </li>
       <li class="tipo">
@@ -148,7 +163,7 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
         <p>A foto não aparece em lugar nenhum do portfólio.</p>
       </li>
     </ul>
-    <p class="nota">As fotos que já estão no portfólio vêm marcadas como Álbum. Pode trocar à vontade. Foto sem marca fica para o José Renato decidir.</p>
+    <p class="nota">As fotos que já estão no portfólio vêm marcadas como Álbum. Pode trocar à vontade. Foto sem marca fica para o José Renato decidir. Depois que você terminar, ele monta a versão final do seu álbum no portfólio com a sua escolha.</p>
     <p class="nota">Cada toque fica salvo na hora. Pode fechar e continuar depois pelo mesmo link. Para ver uma foto inteira, toque nela.</p>
     <button type="button" class="entendi" data-entendi>Entendi, mostrar as fotos</button>
   </details>
@@ -219,24 +234,27 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
   });
 
   const conta = (e) => estados.filter((x) => x[0] === e).length;
-  const visiveis = () => fotos.map((_, i) => i).filter((i) => filtro === 'todas' || (filtro === 'sem' ? !estados[i][0] : estados[i][0] === filtro));
+  const noAlbum = (i) => estados[i][0] === 'album' || estados[i][0] === 'destaque';
+  const visiveis = () => fotos.map((_, i) => i).filter((i) => filtro === 'todas' || (filtro === 'sem' ? !estados[i][0] : filtro === 'album' ? noAlbum(i) : estados[i][0] === filtro));
   const ordemDestaque = (i) => estados.map((x, j) => [x, j]).filter(([x]) => x[0] === 'destaque').sort((a, b) => a[0][1] - b[0][1]).findIndex(([, j]) => j === i) + 1;
 
   function botoes(i) {
-    return ['destaque', 'album', 'nao'].map((m) => '<button type="button" data-m="' + m + '" aria-pressed="' + (estados[i][0] === m) + '" aria-label="' + ROTULO[m] + ', foto ' + (i + 1) + '"><b aria-hidden="true">' + ICONE[m] + '</b>' + ROTULO[m] + '</button>').join('');
+    const e = estados[i][0];
+    const ligado = { destaque: e === 'destaque', album: e === 'album' || e === 'destaque', nao: e === 'nao' };
+    return ['destaque', 'album', 'nao'].map((m) => '<button type="button" data-m="' + m + '" aria-pressed="' + ligado[m] + '" aria-label="' + ROTULO[m] + ', foto ' + (i + 1) + '"><b aria-hidden="true">' + ICONE[m] + '</b>' + ROTULO[m] + '</button>').join('');
   }
 
   function selo(i) {
     const e = estados[i][0];
     if (!e) return '';
-    return '<span class="selo">' + (e === 'destaque' ? '★ Destaque ' + ordemDestaque(i) : ROTULO[e]) + '</span>';
+    return '<span class="selo">' + (e === 'destaque' ? '★ Destaque ' + ordemDestaque(i) + ' · Álbum' : ROTULO[e]) + '</span>';
   }
 
   function desenharFiltros() {
-    const itens = [['todas', 'Todas', fotos.length], ['destaque', '★ Destaque', conta('destaque') + ' de ' + limite], ['album', '✓ Álbum', conta('album')], ['nao', '✕ Não quero', conta('nao')], ['sem', 'Sem marca', estados.filter((x) => !x[0]).length]];
+    const itens = [['todas', 'Todas', fotos.length], ['destaque', '★ Destaque', conta('destaque') + ' de ' + limite], ['album', '✓ Álbum', conta('album') + conta('destaque')], ['nao', '✕ Não quero', conta('nao')], ['sem', 'Sem marca', estados.filter((x) => !x[0]).length]];
     $('[data-filtros]').innerHTML = itens.map(([k, t, c]) => '<button type="button" data-filtro="' + k + '" aria-pressed="' + (filtro === k) + '">' + t + ' (' + c + ')</button>').join('');
     const d = conta('destaque'), a = conta('album'), n = conta('nao');
-    $('[data-resumo]').innerHTML = '<strong>' + (d + a) + ' no álbum</strong>, ' + d + ' em destaque<br>' + n + ' não quero · ' + estados.filter((x) => !x[0]).length + ' sem marca';
+    $('[data-resumo]').innerHTML = '<strong>' + (d + a) + ' no álbum</strong>, sendo ' + d + ' em destaque<br>' + n + ' não quero · ' + estados.filter((x) => !x[0]).length + ' sem marca';
   }
 
   function cartao(i) {
@@ -270,7 +288,9 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
 
   async function marcar(i, m) {
     const antes = estados[i];
-    const novo = antes[0] === m ? '' : m;
+    // Destaque já está no álbum. Tirar o destaque deixa a foto no álbum; tirar do álbum tira também o destaque.
+    const e = antes[0];
+    const novo = m === 'destaque' ? (e === 'destaque' ? 'album' : 'destaque') : m === 'album' ? (e === 'album' || e === 'destaque' ? '' : 'album') : e === 'nao' ? '' : 'nao';
     if (novo === 'destaque' && conta('destaque') >= limite) return avisar('Já são ' + limite + ' destaques. Tire um antes de escolher outro.');
     estados[i] = [novo, Date.now()];
     atualizarCartao(i);
@@ -314,7 +334,7 @@ dialog::backdrop { background: rgb(5 8 7 / .94); }
     const img = $('[data-ver-img]');
     img.src = base + '/f/' + aberta;
     img.alt = 'Foto ' + (aberta + 1) + ' de ' + fotos.length;
-    $('[data-ver-num]').textContent = 'Foto ' + (aberta + 1) + ' de ' + fotos.length + (estados[aberta][0] ? ' · ' + ROTULO[estados[aberta][0]] : '');
+    $('[data-ver-num]').textContent = 'Foto ' + (aberta + 1) + ' de ' + fotos.length + (estados[aberta][0] === 'destaque' ? ' · Destaque e Álbum' : estados[aberta][0] ? ' · ' + ROTULO[estados[aberta][0]] : '');
     $('[data-ver-marcas]').innerHTML = botoes(aberta);
   }
   function abrir(i) {

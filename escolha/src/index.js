@@ -61,7 +61,15 @@ async function admin(req, env, rota) {
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
-    const partes = url.pathname.split('/').filter(Boolean);
+    let partes = url.pathname.split('/').filter(Boolean);
+    // Endereço oficial: portifolio.jrtechofc.com.br/escolha/<token>. A Vercel repassa /escolha/* para cá
+    // (vercel.json, rewrites), então a página fica dentro do portfólio. /a/<token> continua valendo.
+    let prefixo = '';
+    if (partes[0] === 'escolha') {
+      prefixo = '/escolha';
+      partes = partes.slice(1);
+      if (partes[0] && partes[0] !== 'explica') partes = ['a', ...partes];
+    }
 
     if (url.pathname === '/robots.txt') return new Response('User-agent: *\nDisallow: /\n', { headers: { 'content-type': 'text/plain' } });
     // Prints do portfólio público que explicam onde cada foto aparece.
@@ -77,7 +85,7 @@ export default {
     const acao = partes[2] ?? '';
 
     if (acao === '' && req.method === 'GET') {
-      return new Response(pagina({ nome: a.nome, limite: LIMITE_DESTAQUES }), {
+      return new Response(pagina({ nome: a.nome, limite: LIMITE_DESTAQUES, prefixo }), {
         headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', ...SEM_ROBOS },
       });
     }
