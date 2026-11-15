@@ -8,8 +8,10 @@ No ar em **https://portifolio.jrtechofc.com.br**.
 ## O site
 
 - **Álbuns de clientes reais**, um por ensaio, com abertura em tela cheia, Stories e visualização ampliada.
-- **Assistente de escolha**: duas perguntas que colocam primeiro os álbuns que combinam com o visitante.
+- **Assistente de atendimento**: um botão flutuante de couro com uma sineta abre a conversa em qualquer página. Ele entende o que a pessoa procura (até quatro perguntas, ou uma frase escrita, mesmo com erro de digitação), indica os álbuns certos, tira dúvidas e leva ao WhatsApp com nome e assunto. Funciona só no aparelho, sem IA e sem servidor.
+- **Páginas próprias**: Portfólio, Serviços, Como funciona, Sobre e Contato. Os botões abrem a página na mesma janela, sem rolar a tela.
 - **Orçamento pelo WhatsApp** em um toque, com a mensagem já escrita.
+- **Botões de couro costurado** com disparo de câmera ao tocar, e troca de página como um obturador.
 - **Celular primeiro**: pensado para Android, leve mesmo com fotos em alta qualidade (AVIF e WebP de 480 a 2400 px).
 - **Privacidade e direitos autorais**: páginas `/privacidade` e `/direitos-autorais`, sem cookies, estatísticas ou anúncios.
 
@@ -28,8 +30,9 @@ No ar em **https://portifolio.jrtechofc.com.br**.
 src/
   content/ensaios/   um arquivo YAML por álbum (fotos, capa, abertura, textos alternativos)
   components/        partes da interface (abertura, Stories, galeria, assistente, rodapé...)
-  pages/             início, /trabalhos, página de cada álbum, privacidade, direitos autorais
-  data/              contatos, categorias, destaques e siglas das pastas de fotos
+  pages/             início, /trabalhos, cada álbum, serviços, como funciona, sobre, contato, privacidade, direitos autorais
+  data/              contatos, categorias, destaques, siglas das pastas e o roteiro do assistente (assistente.ts)
+  lib/entender.ts    como o assistente entende o que a pessoa escreve (erros de digitação, abreviações)
   styles/global.css  cores, fontes e espaçamentos
   generated/         dados das fotos gerados por scripts/fotos.mjs
 public/fotos/        versões web das fotos (vão no Git porque a Vercel não tem os originais)
@@ -57,6 +60,7 @@ Requisitos: Node.js 22 ou mais novo e, na primeira vez, `npm install`.
 | `npm run build` | Versão de publicação em `dist/`. No fim, confere que nenhuma foto sem autorização foi para `dist/`. |
 | `npm run build:previa` e `npm run preview` | Versão completa para revisão local, com `noindex`. Não publicar. |
 | `npm run test:bloqueio` | Prova que uma foto pendente não gera arquivo na publicação. |
+| `npm run test:assistente` | Confere se o assistente entende frases reais, com erro de digitação ("jestante em bacabau", "qto custa"). |
 | `npm run icones` / `npm run capa` | Ícones do site e capa da prévia de link no WhatsApp. |
 
 A primeira geração de fotos numa máquina nova leva cerca de 25 minutos. Depois ela fica em `.cache/fotos/` e leva segundos.
@@ -100,6 +104,15 @@ Se um nome de arquivo estiver errado, o comando para e mostra qual foto não foi
 
 **Autorização de imagem.** Um álbum só vai ao ar com `autorizacao: sim`. Se só algumas fotos foram liberadas, deixe o álbum `pendente` e marque `autorizacao: sim` na linha de cada foto liberada.
 
+## Mudar o assistente
+
+Tudo o que o assistente pergunta e responde está em `src/data/assistente.ts`, em texto comum.
+
+- **Perguntas do guia**: `TIPOS` (o que registrar), a `segunda` pergunta de cada tipo, `PRAZOS` e `CIDADES`. Em `albuns` ficam os álbuns indicados para cada escolha (nome do arquivo em `src/content/ensaios`).
+- **Dúvidas**: `DUVIDAS`. Cada uma tem o texto do botão, a resposta, links para páginas do site e se mostra o botão de falar com o fotógrafo.
+- **Palavras que a pessoa pode escrever**: o campo `chaves` de cada opção. Não precisa escrever as versões com erro: o assistente já entende falta de acento, letra trocada e abreviações. `palavra*` vale como começo de palavra.
+- Sem preço, prazo ou número inventado nas respostas. Depois de mudar, rode `npm run test:assistente` e `npm run build` (o build para se algum álbum citado não existir).
+
 ## Onde mudar cada coisa
 
 | O quê | Arquivo |
@@ -107,6 +120,8 @@ Se um nome de arquivo estiver errado, o comando para e mostra qual foto não foi
 | WhatsApp, e-mail, Instagram, cidades, slogan | `src/data/site.ts` |
 | Álbuns em destaque e a ordem deles | `DESTAQUES` em `src/data/site.ts` |
 | Textos da página inicial | `src/pages/index.astro` |
+| Serviços, Como funciona e Sobre | `src/components/SecaoServicos.astro`, `SecaoComoFunciona.astro`, `SecaoSobre.astro` (as etapas ficam em `PASSOS`, em `src/data/site.ts`) |
+| Perguntas e respostas do assistente | `src/data/assistente.ts` |
 | Privacidade e direitos autorais | `src/pages/privacidade.astro`, `src/pages/direitos-autorais.astro` |
 | Cabeçalhos de segurança e redirecionamentos | `vercel.json` |
 | Cores, fontes e espaçamentos | `src/styles/global.css` (seguindo `docs/DESIGN.md`) |

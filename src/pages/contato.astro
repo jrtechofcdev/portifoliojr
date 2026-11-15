@@ -1,0 +1,151 @@
+---
+// Contato (página própria desde 14/11/2026): os três canais, onde atendo e o assistente.
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import { CHAMADA, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+---
+
+<Base
+  titulo="Contato | Jr_Tech_OFC Fotografia"
+  descricao="Fale com José Renato pelo WhatsApp, e-mail ou Instagram. Atendimento em Bacabal e Imperatriz, MA; outras cidades, sob consulta."
+>
+  <div class="papel tema-claro pagina-papel">
+    <section class="secao contato wrap" aria-labelledby="contato-titulo">
+      <div class="contato-topo surge">
+        <p class="sobretitulo">Contato</p>
+        <h1 class="display-l" id="contato-titulo">Vamos conversar sobre <em>suas fotos?</em></h1>
+        <p class="lead">
+          Me conte qual é a ocasião, a data e a cidade. Com essas informações, consigo entender o que você precisa e preparar
+          um orçamento adequado.
+        </p>
+      </div>
+
+      <div class="contato-grade">
+        <div class="contato-canais surge">
+          <a class="botao contato-principal" href={linkWhatsApp()} data-wa-auto>
+            <Icone nome="whatsapp" tamanho={22} />
+            {CHAMADA}
+            <span class="visualmente-oculto"> pelo WhatsApp</span>
+          </a>
+          <ul class="contato-lista">
+            <li>
+              <a class="botao-fantasma" href={linkWhatsApp()}>
+                <Icone nome="whatsapp" tamanho={20} />
+                <span class="visualmente-oculto">WhatsApp: </span>{site.whatsappExibicao}
+              </a>
+            </li>
+            <li>
+              <a class="botao-fantasma" href={linkEmail}>
+                <Icone nome="email" tamanho={20} />
+                <span class="visualmente-oculto">E-mail: </span>{site.email}
+              </a>
+            </li>
+            <li>
+              <a class="botao-fantasma" href={linkInstagram}>
+                <Icone nome="instagram" tamanho={20} />
+                <span class="visualmente-oculto">Instagram: </span>@{site.instagram}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="contato-lado surge">
+          <div class="contato-bloco">
+            <span class="medalha"><Icone nome="local" tamanho={22} /></span>
+            <div>
+              <h2 class="titulo">Onde atendo</h2>
+              <p class="contato-texto">Bacabal e Imperatriz, Maranhão. Outras cidades, sob consulta.</p>
+            </div>
+          </div>
+          <div class="contato-bloco">
+            <span class="medalha"><Icone nome="sineta" tamanho={22} /></span>
+            <div>
+              <h2 class="titulo">Ainda com dúvidas?</h2>
+              <p class="contato-texto">O assistente do site responde na hora como funciona, onde atendo e como se preparar.</p>
+              <button type="button" class="botao-fantasma contato-assistente" data-abrir-assistente data-modo="duvidas">
+                <Icone nome="conversa" tamanho={19} />
+                Tirar dúvidas com o assistente
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .contato {
+    display: grid;
+    gap: var(--s5);
+  }
+  .contato-topo {
+    display: grid;
+    gap: var(--s2);
+    justify-items: start;
+  }
+  .contato-topo .lead {
+    max-width: 48ch;
+  }
+  .contato-grade {
+    display: grid;
+    gap: var(--s5);
+  }
+  .contato-canais {
+    display: grid;
+    gap: var(--s3);
+    justify-items: start;
+  }
+  .contato-principal {
+    min-height: 56px;
+    font-size: 17px;
+  }
+  .contato-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .contato-lista a {
+    overflow-wrap: anywhere;
+  }
+  .contato-lista :global(svg) {
+    color: var(--destaque);
+  }
+  .contato-lado {
+    display: grid;
+    gap: var(--s4);
+  }
+  .contato-bloco {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: var(--s2);
+    align-items: start;
+  }
+  .contato-bloco > div {
+    display: grid;
+    gap: 6px;
+    justify-items: start;
+    padding-top: 6px;
+  }
+  .contato-bloco .titulo {
+    font-size: clamp(22px, 5.6vw, 28px);
+  }
+  .contato-texto {
+    max-width: 40ch;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--texto-2);
+  }
+  .contato-assistente {
+    margin-top: 8px;
+    font-size: 15px;
+  }
+  @media (min-width: 900px) {
+    .contato-grade {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s6);
+    }
+  }
+</style>

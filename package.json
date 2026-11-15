@@ -15,6 +15,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "test:bloqueio": "node scripts/testar-bloqueio.mjs",
+    "test:assistente": "node scripts/testar-assistente.mjs",
     "build:previa": "node scripts/fotos.mjs && astro check && astro build",
     "build:vercel": "node scripts/verificar-fotos-prontas.mjs && astro build",
     "fotos:publicar": "node scripts/fotos.mjs --producao",

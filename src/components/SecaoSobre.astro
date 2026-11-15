@@ -1,0 +1,138 @@
+---
+// Sobre: título e selo de um lado, texto do outro (página /sobre; resumo na home). Sem foto: não há
+// retrato do fotógrafo no acervo, e uma foto de cliente ao lado do nome dele confundiria.
+import Icone from './Icone.astro';
+import Selo from './Selo.astro';
+import { linkInstagram, site } from '../data/site';
+
+interface Props {
+  /** Só o primeiro parágrafo e o botão "Conhecer o fotógrafo" (home). */
+  resumo?: boolean;
+}
+const { resumo = false } = Astro.props;
+const Titulo = resumo ? 'h2' : 'h1';
+---
+
+<section class="secao sobre" aria-labelledby="sobre-titulo">
+  <div class="wrap sobre-grade">
+    <header class="sobre-topo surge">
+      <div class="sobre-cabeca">
+        <p class="sobretitulo">Sobre</p>
+        <Titulo class="h2 sobre-titulo" id="sobre-titulo">Prazer, sou <em>José Renato.</em></Titulo>
+      </div>
+      <Selo class="sobre-selo" />
+    </header>
+    <div class="sobre-texto surge">
+      <p class="texto sobre-lead capitular">
+        Sou José Renato Alves da Silva, fotógrafo e responsável pela {site.marca}. Atendo em Bacabal e Imperatriz,
+        realizando ensaios externos e coberturas de aniversários, festas de 15 anos e eventos.
+      </p>
+      {
+        resumo ? (
+          <a class="botao-fantasma" href="/sobre">
+            Conhecer o fotógrafo
+            <Icone nome="seta-direita" tamanho={18} />
+          </a>
+        ) : (
+          <>
+            <p class="texto">
+              Meu trabalho combina direção de poses, atenção à luz e aos detalhes com espaço para registrar o que acontece
+              de forma espontânea. Quero que você se sinta à vontade diante da câmera e receba fotografias que façam sentido
+              para você.
+            </p>
+            <blockquote class="citacao serifa">
+              “Prefiro fotografias naturais: com direção quando é preciso e liberdade para registrar o que acontece de
+              verdade.”
+            </blockquote>
+            <a class="botao-fantasma" href={linkInstagram}>
+              <Icone nome="instagram" tamanho={20} />
+              Acompanhe meu trabalho no Instagram
+            </a>
+          </>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre-grade {
+    display: grid;
+    gap: var(--s4);
+  }
+  .sobre-grade > * {
+    min-width: 0;
+  }
+  .sobre-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--s2);
+  }
+  .sobre-cabeca {
+    display: grid;
+    gap: var(--s2);
+    justify-items: start;
+  }
+  .sobre-titulo {
+    font-size: clamp(40px, 10.4vw, 84px);
+    text-wrap: balance;
+  }
+  .sobre-topo :global(.sobre-selo) {
+    width: 92px;
+    margin-top: 4px;
+  }
+  .sobre-texto {
+    display: grid;
+    gap: var(--s2);
+    justify-items: start;
+  }
+  .sobre-texto .botao-fantasma {
+    font-size: 15px;
+  }
+  .sobre-lead {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  /* Letra capitular: a primeira letra do texto, grande e em itálico */
+  .capitular::first-letter {
+    float: left;
+    margin: 0.06em 0.1em 0 0;
+    font-family: var(--serifa);
+    font-size: 3.5em;
+    font-style: italic;
+    font-weight: 360;
+    line-height: 0.82;
+    color: var(--destaque);
+  }
+  .citacao {
+    margin-block: var(--s1);
+    padding-left: 20px;
+    border-left: 1.5px dashed var(--costura);
+    font-size: clamp(22px, 5.4vw, 30px);
+    font-style: italic;
+    font-weight: 360;
+    line-height: 1.25;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+  @media (min-width: 900px) {
+    .sobre-grade {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--s6);
+      align-items: start;
+    }
+    .sobre-topo {
+      position: sticky;
+      top: calc(var(--cab) + var(--s4));
+      flex-direction: column;
+      gap: var(--s4);
+    }
+    .sobre-topo :global(.sobre-selo) {
+      width: 136px;
+    }
+    .sobre-texto {
+      padding-top: 38px;
+    }
+  }
+</style>

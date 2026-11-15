@@ -4,18 +4,18 @@ import Foto from '../components/Foto.astro';
 import Heroi, { type Quadro } from '../components/Heroi.astro';
 import Capitulos from '../components/Capitulos.astro';
 import Historias, { type Historia } from '../components/Historias.astro';
-import BarraWhatsApp from '../components/BarraWhatsApp.astro';
-import Assistente from '../components/Assistente.astro';
 import ChamadaFinal from '../components/ChamadaFinal.astro';
-import Icone, { type NomeIcone } from '../components/Icone.astro';
-import Selo from '../components/Selo.astro';
+import Icone from '../components/Icone.astro';
 import Capa from '../components/Capa.astro';
+import SecaoServicos from '../components/SecaoServicos.astro';
+import SecaoSobre from '../components/SecaoSobre.astro';
 import { capaDe, capasDe, emDestaque, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, maisRecente, type Ensaio, type FotoEnsaio } from '../lib/fotos';
-import { CAPA_SOCIAL, CHAMADA, SERVICOS, linkInstagram, linkWhatsApp, mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
+import { CAPA_SOCIAL, CHAMADA, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
 
 // Home pensada para o celular: abertura com a foto no alto e o botão de orçamento, destaques no
-// estilo dos Stories, assistente, álbuns em capítulos por tipo de trabalho, uma foto de pausa, as
-// páginas de papel creme (serviços, como funciona e sobre), a chamada final e o rodapé.
+// estilo dos Stories, álbuns em capítulos por tipo de trabalho, uma foto de pausa, a página de
+// papel creme com o resumo de Serviços e Sobre (cada um com a página completa, desde 14/11/2026),
+// a chamada final e o rodapé. O assistente abre pelo botão flutuante (layouts/Base.astro).
 // As fotos vêm dos manifestos em src/content/ensaios; a ordem dos álbuns, de DESTAQUES (site.ts).
 const ensaios = await ensaiosPublicaveis();
 
@@ -69,18 +69,6 @@ for (const [s, a] of candidatasPausa) {
 if (!pausa) {
   pausa = ensaios.flatMap((e) => fotosDoEnsaio(e)).find((f) => f.dados.width > f.dados.height * 1.2) ?? null;
 }
-
-const passos: [NomeIcone, string, string][] = [
-  ['conversa', 'Primeiro contato', 'Você me conta o tipo de trabalho, a data, a cidade e o que deseja registrar.'],
-  ['calendario', 'Planejamento', 'Alinhamos a proposta, o local, os horários, as referências e os detalhes do serviço.'],
-  [
-    'camera',
-    'Dia das fotografias',
-    'Durante o ensaio ou evento, conduzo os retratos quando necessário e fico atento aos momentos espontâneos.',
-  ],
-  ['edicao', 'Seleção e edição', 'Faço a seleção das imagens e o tratamento cuidadoso das fotografias que serão entregues.'],
-  ['album', 'Entrega', 'Você recebe as fotografias finalizadas pelo meio e no prazo definidos no orçamento.'],
-];
 
 const descricao =
   'Ensaios externos, casais, gestantes, aniversários, festas de 15 anos e cobertura de eventos em Bacabal e Imperatriz. Conheça os álbuns da Jr_Tech_OFC e solicite um orçamento.';
@@ -136,7 +124,7 @@ const jsonld = {
         <Icone nome="whatsapp" tamanho={20} />
         {CHAMADA}
       </a>
-      <a class="botao-fantasma" href="#trabalhos">
+      <a class="botao-fantasma" href="/trabalhos">
         <Icone nome="grade" tamanho={18} />
         Explorar portfólio
       </a>
@@ -173,8 +161,6 @@ const jsonld = {
     )
   }
 
-  <Assistente />
-
   <section class="secao trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
     <div class="wrap secao-topo surge">
       <p class="sobretitulo">Portfólio</p>
@@ -204,104 +190,13 @@ const jsonld = {
   }
 
   <div class="papel tema-claro">
-    <section class="secao servicos" id="servicos" aria-labelledby="servicos-titulo">
-      <div class="wrap secao-topo surge">
-        <p class="sobretitulo">Serviços</p>
-        <h2 class="h2" id="servicos-titulo">O que eu <em>fotografo</em></h2>
-        <p class="lead servicos-lead">
-          Cada trabalho começa com uma conversa para entender a ocasião, o estilo e o que você espera receber. Escolha o serviço
-          e fale comigo para solicitar um orçamento.
-        </p>
-      </div>
-      <ul class="wrap servicos-lista">
-        {
-          SERVICOS.map((s) => (
-            <li class="servico surge">
-              <span class="medalha">
-                <Icone nome={s.icone} tamanho={22} />
-              </span>
-              <div class="servico-texto">
-                <h3 class="titulo">{s.nome}</h3>
-                <p class="servico-descricao">{s.texto}</p>
-                <p class="servico-acoes">
-                  <a class="botao-fantasma servico-pedir" href={linkWhatsApp(mensagemOrcamento(s.pedido, s.completar))}>
-                    <Icone nome="whatsapp" tamanho={18} />
-                    {CHAMADA}
-                    <span class="visualmente-oculto">: {s.nome.toLowerCase()}</span>
-                  </a>
-                  <a class="servico-ver" href={`#capitulo-${s.capitulo}`}>
-                    Ver álbuns
-                    <span class="visualmente-oculto">: {s.nome.toLowerCase()}</span>
-                  </a>
-                </p>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="secao como" id="como-funciona" aria-labelledby="como-titulo">
-      <div class="wrap secao-topo surge">
-        <p class="sobretitulo">Como funciona</p>
-        <h2 class="h2" id="como-titulo">Do planejamento à <em>entrega</em></h2>
-        <p class="lead">Um processo simples, com os detalhes alinhados desde o primeiro contato.</p>
-      </div>
-      <ol class="wrap passos">
-        {
-          passos.map(([icone, nome, texto], i) => (
-            <li class="passo surge">
-              <span class="passo-topo">
-                <span class="medalha">
-                  <Icone nome={icone} tamanho={22} />
-                </span>
-                <span class="passo-fio" aria-hidden="true" />
-              </span>
-              <div class="passo-texto">
-                <p class="passo-num">Etapa {i + 1}</p>
-                <h3 class="titulo">{nome}</h3>
-                <p class="passo-descricao">{texto}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
-
-    <section class="secao sobre" id="sobre" aria-labelledby="sobre-titulo">
-      <div class="wrap sobre-grade">
-        <header class="sobre-topo surge">
-          <div class="sobre-cabeca">
-            <p class="sobretitulo">Sobre</p>
-            <h2 class="h2 sobre-titulo" id="sobre-titulo">Prazer, sou <em>José Renato.</em></h2>
-          </div>
-          <Selo class="sobre-selo" />
-        </header>
-        <div class="sobre-texto surge">
-          <p class="texto sobre-lead capitular">
-            Sou José Renato Alves da Silva, fotógrafo e responsável pela {site.marca}. Atendo em Bacabal e Imperatriz,
-            realizando ensaios externos e coberturas de aniversários, festas de 15 anos e eventos.
-          </p>
-          <p class="texto">
-            Meu trabalho combina direção de poses, atenção à luz e aos detalhes com espaço para registrar o que acontece de forma
-            espontânea. Quero que você se sinta à vontade diante da câmera e receba fotografias que façam sentido para você.
-          </p>
-          <blockquote class="citacao serifa">
-            “Prefiro fotografias naturais: com direção quando é preciso e liberdade para registrar o que acontece de verdade.”
-          </blockquote>
-          <a class="botao-fantasma" href={linkInstagram}>
-            <Icone nome="instagram" tamanho={20} />
-            Acompanhe meu trabalho no Instagram
-          </a>
-        </div>
-      </div>
-    </section>
+    <SecaoServicos resumo />
+    <SecaoSobre resumo />
   </div>
 
   <ChamadaFinal auto />
 
   <Historias historias={historias} slot="depois" />
-  <BarraWhatsApp slot="depois" auto />
 </Base>
 
 <style>
@@ -468,244 +363,5 @@ const jsonld = {
   /* Páginas de papel: respiro entre a foto de pausa e a chamada final */
   .papel {
     margin-block: var(--s4) var(--s5);
-  }
-
-  /* Serviços: lista com ícone, descrição curta e o botão de orçamento de cada um */
-  .servicos-lead {
-    max-width: 46ch;
-  }
-  .servicos-lista {
-    list-style: none;
-    margin: 0;
-    display: grid;
-    gap: 20px;
-  }
-  .servico {
-    display: grid;
-    grid-template-columns: 48px minmax(0, 1fr);
-    gap: var(--s2);
-    align-items: start;
-    padding-bottom: 20px;
-    border-bottom: 1.5px dashed var(--costura-suave);
-  }
-  .servico:last-child {
-    padding-bottom: 0;
-    border-bottom: 0;
-  }
-  .servico-texto {
-    display: grid;
-    gap: 4px;
-    padding-top: 6px;
-  }
-  .servico-descricao {
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--texto-2);
-  }
-  .servico-acoes {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 18px;
-    margin-top: 8px;
-  }
-  .servico-pedir {
-    min-height: 44px;
-    padding-inline: 16px 18px;
-    font-size: 15px;
-  }
-  .servico-ver {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 15px;
-    font-weight: 550;
-    color: var(--texto);
-    text-decoration-style: dashed;
-    text-decoration-color: var(--costura);
-    text-underline-offset: 0.32em;
-  }
-  @media (min-width: 900px) {
-    .servicos-lista {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--s4) var(--s6);
-    }
-    .servico:nth-last-child(-n + 2):nth-child(odd),
-    .servico:last-child {
-      padding-bottom: 0;
-      border-bottom: 0;
-    }
-  }
-
-  /* Como funciona: linha do tempo costurada, com um ícone por etapa. No celular, compacta (ícone
-     menor, texto ao lado); a partir de 640 px, duas colunas; no computador, cinco. */
-  .passos {
-    list-style: none;
-    margin: 0;
-    display: grid;
-    gap: var(--s3);
-  }
-  .passo {
-    position: relative;
-    display: grid;
-    grid-template-columns: 40px minmax(0, 1fr);
-    gap: 14px;
-    align-items: start;
-    align-content: start;
-  }
-  .passo .medalha {
-    width: 40px;
-    height: 40px;
-  }
-  .passo-topo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .passo-fio {
-    display: none;
-  }
-  .passo:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    left: 19px;
-    top: 48px;
-    bottom: calc(var(--s3) * -1 + 6px);
-    border-left: 1.5px dashed var(--costura-suave);
-  }
-  .passo-texto {
-    display: grid;
-    gap: 2px;
-  }
-  .passo-num {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    color: var(--destaque);
-  }
-  .passo .titulo {
-    font-size: clamp(22px, 5.6vw, 28px);
-  }
-  .passo-descricao {
-    margin-top: 2px;
-    font-size: 16px;
-    line-height: 1.5;
-    color: var(--texto-2);
-  }
-  @media (min-width: 640px) and (max-width: 999px) {
-    .passos {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--s4) var(--s5);
-    }
-    .passo::before {
-      display: none;
-    }
-  }
-  @media (min-width: 1000px) {
-    .passos {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: var(--s4);
-    }
-    .passo {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .passo .medalha {
-      width: 48px;
-      height: 48px;
-    }
-    .passo::before {
-      display: none;
-    }
-    .passo-fio {
-      display: block;
-      flex: 1;
-      border-top: 1.5px dashed var(--costura-suave);
-    }
-    .passo:last-child .passo-fio {
-      display: none;
-    }
-  }
-
-  /* Sobre: título e selo de um lado, texto do outro. Sem foto: não há retrato do fotógrafo no
-     acervo, e uma foto de cliente ao lado do nome dele confundiria. */
-  .sobre-grade {
-    display: grid;
-    gap: var(--s4);
-  }
-  .sobre-grade > * {
-    min-width: 0;
-  }
-  .sobre-topo {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--s2);
-  }
-  .sobre-cabeca {
-    display: grid;
-    gap: var(--s2);
-    justify-items: start;
-  }
-  .sobre-titulo {
-    font-size: clamp(40px, 10.4vw, 84px);
-    text-wrap: balance;
-  }
-  .sobre-topo :global(.sobre-selo) {
-    width: 92px;
-    margin-top: 4px;
-  }
-  .sobre-texto {
-    display: grid;
-    gap: var(--s2);
-    justify-items: start;
-  }
-  .sobre-texto .botao-fantasma {
-    font-size: 15px;
-  }
-  .sobre-lead {
-    font-size: 18px;
-    line-height: 1.6;
-  }
-  /* Letra capitular: a primeira letra do texto, grande e em itálico */
-  .capitular::first-letter {
-    float: left;
-    margin: 0.06em 0.1em 0 0;
-    font-family: var(--serifa);
-    font-size: 3.5em;
-    font-style: italic;
-    font-weight: 360;
-    line-height: 0.82;
-    color: var(--destaque);
-  }
-  .citacao {
-    margin-block: var(--s1);
-    padding-left: 20px;
-    border-left: 1.5px dashed var(--costura);
-    font-size: clamp(22px, 5.4vw, 30px);
-    font-style: italic;
-    font-weight: 360;
-    line-height: 1.25;
-    letter-spacing: -0.012em;
-    text-wrap: balance;
-  }
-  @media (min-width: 900px) {
-    .sobre-grade {
-      grid-template-columns: 5fr 6fr;
-      gap: var(--s6);
-      align-items: start;
-    }
-    .sobre-topo {
-      position: sticky;
-      top: calc(var(--cab) + var(--s4));
-      flex-direction: column;
-      gap: var(--s4);
-    }
-    .sobre-topo :global(.sobre-selo) {
-      width: 136px;
-    }
-    .sobre-texto {
-      padding-top: 38px;
-    }
   }
 </style>

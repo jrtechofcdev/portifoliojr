@@ -4,7 +4,6 @@ import Capa from '../../components/Capa.astro';
 import Heroi from '../../components/Heroi.astro';
 import Galeria from '../../components/Galeria.astro';
 import Historias from '../../components/Historias.astro';
-import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
 import Icone from '../../components/Icone.astro';
 import ChamadaFinal from '../../components/ChamadaFinal.astro';
 import { capaDe, ensaiosPublicaveis, fotosDoEnsaio, mesAno, type Ensaio } from '../../lib/fotos';
@@ -51,7 +50,6 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
           <Icone nome="play" tamanho={18} />
           Assistir ao álbum
         </button>
-        <a class="botao-sec" href="#fotos">Ver todas as fotos</a>
       </div>
     </Heroi>
 
@@ -91,7 +89,6 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
   <ChamadaFinal titulo={pergunta} mensagem={mensagem} />
 
   <Historias historias={[{ nome: d.nome, legenda: [d.rotulo, d.cidade, d.data.slice(0, 4)].filter(Boolean).join(' · '), fotos }]} slot="depois" />
-  <BarraWhatsApp mensagem={mensagem} slot="depois" />
 </Base>
 
 <style>

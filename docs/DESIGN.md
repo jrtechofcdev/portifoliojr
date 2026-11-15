@@ -8,6 +8,21 @@ A energia vem das fotografias e da escala do tipo, não de efeitos. O ritmo alte
 
 ---
 
+## 0h. Revisão de 14/11/2026 (noite): assistente de atendimento, páginas próprias e botões de couro (vale sobre §0g e o resto)
+
+Pedido do responsável: um assistente que entenda o que o cliente quer de verdade, faça mais perguntas sem abusar, tire dúvidas e leve a uma pessoa; que entenda erro de digitação; que não pareça robô nem IA. Nenhum botão deve rolar a tela: cada parte é uma página. Botões de couro costurado com disparo de câmera.
+
+- **Assistente (`AssistenteChat.astro`, em todas as páginas pelo `Base.astro`):** abre por um botão flutuante redondo de couro grafite com costura verde e uma **sineta de balcão** em folha verde-ciano (atendimento, não robô). O botão aparece no topo da página e enquanto a pessoa rola para baixo; ao rolar para cima ele se fecha como um **obturador** (lâminas que giram e fecham, com um clarão) e some. Some também quando o rodapé está na tela. "Posso ajudar?" aparece ao lado dele só na primeira visita.
+- **Conversa:** janela de couro (folha que sobe no celular, janela de 410 px no canto no computador), `<dialog>` com Esc, foco preso e volta do foco. Três modos:
+  - **Guia:** até quatro perguntas (o que registrar com fotos de capa, uma pergunta própria do tipo, para quando, cidade). Pula o que a pessoa já disse escrevendo. No fim, 1 a 3 álbuns que combinam, o resumo do pedido e o botão "Solicitar orçamento" com a mensagem pronta.
+  - **Tirar dúvidas:** assuntos por opção (como funciona, serviços, valores, entrega, onde atende, como se preparar, quem pode participar, privacidade). Respostas só com o que o site já diz; valores, prazo e pagamento sempre "definidos no orçamento", sem número.
+  - **Falar com José Renato:** sempre à vista na base da janela. Pede nome e assunto e abre o WhatsApp na mesma janela.
+- **Texto livre:** o campo "Escreva o que procura ou sua dúvida" passa por `src/lib/entender.ts` (sem acento, letras trocadas, sons iguais, abreviações). Quando corrige, mostra "Entendi: gestante, Bacabal" sob a mensagem; quando fica em dúvida, pergunta "Você quis dizer:". Roteiro e textos em `src/data/assistente.ts`.
+- **Páginas próprias:** `/servicos`, `/como-funciona`, `/sobre`, `/contato`, além de `/trabalhos`. Menu e rodapé apontam para elas (`PAGINAS` em `site.ts`); "Explorar portfólio" abre `/trabalhos`, "Ver álbuns" de cada serviço abre `/trabalhos?c=tipo`. A home mantém a abertura, "Em destaque" (sem mudança), os capítulos, a foto de pausa e um resumo de Serviços e Sobre com botão para a página. Menu completo no computador a partir de 1060 px.
+- **Botões de couro:** `.botao` em couro verde-esmeralda com costura clara e texto creme; `.botao-fantasma` e `.chip` em couro grafite (creme nas páginas claras). O degradê verde-ciano fica só no símbolo e na sineta.
+- **Disparo de câmera:** ao tocar, o botão afunda, se fecha um instante como obturador e um clarão sai do ponto tocado (script curto no `Base.astro`). A troca de página fecha e abre a tela numa linha horizontal, como uma cortina de obturador. Tudo desligado com movimento reduzido.
+- **Deixa de valer:** o assistente embutido na home e em /trabalhos (§0c, §0d) e o botão flutuante do WhatsApp (§7); o botão principal em folha metálica verde-ciano (§0f).
+
 ## 0g. Revisão de 13/11/2026 (noite): plano de melhorias (vale sobre §0f e o resto)
 
 Pedido do responsável (arquivo "Plano de melhorias, Portfólio Jr_Tech_OFC"): mais unidade, linguagem de fotógrafo conversando com o cliente, a foto do livro da Sabrina na abertura, um encerramento claro e um ícone de álbum.

@@ -1,15 +1,12 @@
 ---
-import { CHAMADA, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+import { CHAMADA, PAGINAS, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
 import Simbolo from './Simbolo.astro';
 import Icone from './Icone.astro';
 
-const atual = Astro.url.pathname;
-const links = [
-  { href: '/trabalhos', texto: 'Álbuns' },
-  { href: '/#servicos', texto: 'Serviços' },
-  { href: '/#sobre', texto: 'Sobre' },
-  { href: '/#contato', texto: 'Contato' },
-];
+// Cada parte do site tem página própria (14/11/2026): os links abrem a página, não rolam a tela.
+const atual = Astro.url.pathname.replace(/\/$/, '') || '/';
+const eAtual = (href: string) => (href === '/' ? atual === '/' : atual === href || atual.startsWith(href + '/'));
+const links = PAGINAS.filter((p) => p.href !== '/');
 ---
 
 <header class="cabecalho nav">
@@ -23,7 +20,7 @@ const links = [
         {
           links.map((l) => (
             <li>
-              <a href={l.href} aria-current={atual.startsWith(l.href) && l.href === '/trabalhos' ? 'page' : undefined}>
+              <a href={l.href} aria-current={eAtual(l.href) ? 'page' : undefined}>
                 {l.texto}
               </a>
             </li>
@@ -51,9 +48,9 @@ const links = [
     <nav class="wrap menu-lista" aria-label="Principal">
       <ul>
         {
-          [{ href: '/', texto: 'Início' }, ...links].map((l, i) => (
+          PAGINAS.map((l, i) => (
             <li>
-              <a class="serifa" href={l.href}>
+              <a class="serifa" href={l.href} aria-current={eAtual(l.href) ? 'page' : undefined}>
                 <span class="menu-num" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -326,7 +323,7 @@ const links = [
     text-transform: uppercase;
     color: var(--texto-2);
   }
-  @media (min-width: 900px) {
+  @media (min-width: 1060px) {
     .menu-abrir,
     .menu-movel {
       display: none !important;
@@ -350,6 +347,7 @@ const links = [
       align-items: center;
       min-height: 44px;
       font-weight: 550;
+      white-space: nowrap;
     }
     .nav-desktop ul a:hover,
     .nav-desktop ul a[aria-current] {
@@ -363,8 +361,8 @@ const links = [
       white-space: nowrap;
     }
   }
-  /* Entre 900 e 1200 px o botão "Solicitar orçamento" precisa do espaço do subtítulo */
-  @media (min-width: 900px) and (max-width: 1199px) {
+  /* Entre 1060 e 1200 px o botão "Solicitar orçamento" precisa do espaço do subtítulo */
+  @media (min-width: 1060px) and (max-width: 1199px) {
     .marca-sub {
       display: none;
     }

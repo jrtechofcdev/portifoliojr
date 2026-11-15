@@ -5,6 +5,10 @@ export const GET: APIRoute = async ({ site }) => {
   const caminhos = [
     '/',
     '/trabalhos',
+    '/servicos',
+    '/como-funciona',
+    '/sobre',
+    '/contato',
     ...(await ensaiosPublicaveis()).map((e) => `/trabalhos/${e.id}`),
     '/privacidade',
     '/direitos-autorais',

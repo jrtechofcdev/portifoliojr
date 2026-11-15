@@ -2,8 +2,6 @@
 import Base from '../../layouts/Base.astro';
 import ListaAlbuns from '../../components/ListaAlbuns.astro';
 import Historias, { type Historia } from '../../components/Historias.astro';
-import BarraWhatsApp from '../../components/BarraWhatsApp.astro';
-import Assistente from '../../components/Assistente.astro';
 import { capasDe, ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
 import ChamadaFinal from '../../components/ChamadaFinal.astro';
 import { CAPA_SOCIAL } from '../../data/site';
@@ -34,8 +32,6 @@ const historias: Historia[] = ensaios.map((e) => {
       <p class="lead entra" style="--i:2">Ensaios, casais, gestantes, aniversários, festas de 15 anos e eventos em Bacabal e Imperatriz.</p>
     </div>
 
-    <Assistente variante="indice" alvo="#lista" />
-    <span id="lista"></span>
 
     {ensaios.length === 0 && <p class="wrap texto">Os trabalhos entram aqui em breve.</p>}
     <ListaAlbuns ensaios={ensaios} prioridade />
@@ -44,7 +40,6 @@ const historias: Historia[] = ensaios.map((e) => {
   <ChamadaFinal auto />
 
   <Historias historias={historias} slot="depois" />
-  <BarraWhatsApp slot="depois" auto />
 </Base>
 
 <style>

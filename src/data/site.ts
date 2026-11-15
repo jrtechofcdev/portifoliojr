@@ -176,3 +176,35 @@ export const SERVICOS = [
     capitulo: 'evento',
   },
 ] as const;
+
+// Etapas de um trabalho ("Como funciona"). Usadas na página /como-funciona e nas respostas do
+// assistente; o texto é o mesmo nos dois lugares.
+export const PASSOS = [
+  { icone: 'conversa', nome: 'Primeiro contato', texto: 'Você me conta o tipo de trabalho, a data, a cidade e o que deseja registrar.' },
+  {
+    icone: 'calendario',
+    nome: 'Planejamento',
+    texto: 'Alinhamos a proposta, o local, os horários, as referências e os detalhes do serviço.',
+  },
+  {
+    icone: 'camera',
+    nome: 'Dia das fotografias',
+    texto: 'Durante o ensaio ou evento, conduzo os retratos quando necessário e fico atento aos momentos espontâneos.',
+  },
+  {
+    icone: 'edicao',
+    nome: 'Seleção e edição',
+    texto: 'Faço a seleção das imagens e o tratamento cuidadoso das fotografias que serão entregues.',
+  },
+  { icone: 'album', nome: 'Entrega', texto: 'Você recebe as fotografias finalizadas pelo meio e no prazo definidos no orçamento.' },
+] as const;
+
+// Páginas do site, na ordem do menu e do rodapé (desde 14/11/2026 cada parte tem página própria).
+export const PAGINAS = [
+  { href: '/', texto: 'Início' },
+  { href: '/trabalhos', texto: 'Portfólio' },
+  { href: '/servicos', texto: 'Serviços' },
+  { href: '/como-funciona', texto: 'Como funciona' },
+  { href: '/sobre', texto: 'Sobre' },
+  { href: '/contato', texto: 'Contato' },
+] as const;

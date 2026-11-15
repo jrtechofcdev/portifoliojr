@@ -1,0 +1,178 @@
+---
+// Serviços (plano comercial de 13/11/2026; página própria desde 14/11/2026). Completa em /servicos,
+// com a descrição e o orçamento de cada um; em resumo na home, só os nomes e o botão para a página.
+import Icone, { type NomeIcone } from './Icone.astro';
+import { CHAMADA, SERVICOS, linkWhatsApp, mensagemOrcamento } from '../data/site';
+
+interface Props {
+  /** Só os nomes e o botão "Ver todos os serviços" (home). */
+  resumo?: boolean;
+}
+const { resumo = false } = Astro.props;
+const Titulo = resumo ? 'h2' : 'h1';
+---
+
+<section class:list={['secao servicos', { 'servicos-resumo': resumo }]} aria-labelledby="servicos-titulo">
+  <div class="wrap secao-topo surge">
+    <p class="sobretitulo">Serviços</p>
+    <Titulo class:list={[resumo ? 'h2' : 'display-l']} id="servicos-titulo">O que eu <em>fotografo</em></Titulo>
+    <p class="lead servicos-lead">
+      Cada trabalho começa com uma conversa para entender a ocasião, o estilo e o que você espera receber.
+      {!resumo && ' Escolha o serviço e fale comigo para solicitar um orçamento.'}
+    </p>
+  </div>
+  {
+    resumo ? (
+      <div class="wrap">
+        <ul class="servicos-nomes surge">
+          {SERVICOS.map((s) => (
+            <li>
+              <span class="medalha medalha-p">
+                <Icone nome={s.icone as NomeIcone} tamanho={18} />
+              </span>
+              {s.nome}
+            </li>
+          ))}
+        </ul>
+        <p class="servicos-mais surge">
+          <a class="botao-fantasma" href="/servicos">
+            Ver todos os serviços
+            <Icone nome="seta-direita" tamanho={18} />
+          </a>
+        </p>
+      </div>
+    ) : (
+      <ul class="wrap servicos-lista">
+        {SERVICOS.map((s) => (
+          <li class="servico surge">
+            <span class="medalha">
+              <Icone nome={s.icone as NomeIcone} tamanho={22} />
+            </span>
+            <div class="servico-texto">
+              <h2 class="titulo">{s.nome}</h2>
+              <p class="servico-descricao">{s.texto}</p>
+              <p class="servico-acoes">
+                <a class="botao-fantasma servico-pedir" href={linkWhatsApp(mensagemOrcamento(s.pedido, s.completar))}>
+                  <Icone nome="whatsapp" tamanho={18} />
+                  {CHAMADA}
+                  <span class="visualmente-oculto">: {s.nome.toLowerCase()}</span>
+                </a>
+                <a class="servico-ver" href={`/trabalhos?c=${s.capitulo}`}>
+                  Ver álbuns
+                  <span class="visualmente-oculto">: {s.nome.toLowerCase()}</span>
+                </a>
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</section>
+
+<style>
+  .secao-topo {
+    justify-items: start;
+  }
+  .servicos-lead {
+    max-width: 46ch;
+  }
+  .servicos-lista {
+    list-style: none;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+  }
+  .servico {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: var(--s2);
+    align-items: start;
+    padding-bottom: 20px;
+    border-bottom: 1.5px dashed var(--costura-suave);
+  }
+  .servico:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .servico-texto {
+    display: grid;
+    gap: 4px;
+    padding-top: 6px;
+  }
+  .servico .titulo {
+    font-size: clamp(22px, 5.6vw, 28px);
+  }
+  .servico-descricao {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--texto-2);
+  }
+  .servico-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 18px;
+    margin-top: 8px;
+  }
+  .servico-pedir {
+    min-height: 44px;
+    padding-inline: 16px 18px;
+    font-size: 15px;
+  }
+  .servico-ver {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 550;
+    color: var(--texto);
+    text-decoration-style: dashed;
+    text-decoration-color: var(--costura);
+    text-underline-offset: 0.32em;
+  }
+  @media (min-width: 900px) {
+    .servicos-lista {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--s4) var(--s6);
+    }
+    .servico:nth-last-child(-n + 2):nth-child(odd),
+    .servico:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+
+  /* Resumo da home: os nomes em duas colunas, com o ícone numa medalha pequena */
+  .servicos-nomes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px 20px;
+  }
+  .servicos-nomes li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16.5px;
+    font-weight: 550;
+  }
+  .medalha-p {
+    width: 38px;
+    height: 38px;
+  }
+  .servicos-mais {
+    margin-top: var(--s4);
+  }
+  @media (min-width: 640px) {
+    .servicos-nomes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1000px) {
+    .servicos-nomes {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

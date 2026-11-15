@@ -3,7 +3,7 @@
 // repetir o texto dela: marca, contato, atendimento e navegação. Colunas no computador, blocos
 // empilhados no celular (atendimento e navegação lado a lado). Uma linha fina e um couro um pouco
 // mais escuro o separam da faixa de cima.
-import { linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
+import { PAGINAS, linkEmail, linkInstagram, linkWhatsApp, site } from '../data/site';
 import Simbolo from './Simbolo.astro';
 import Icone, { type NomeIcone } from './Icone.astro';
 
@@ -14,13 +14,7 @@ const contatos: { icone: NomeIcone; rotulo: string; valor: string; href: string 
   { icone: 'email', rotulo: 'E-mail', valor: site.email, href: linkEmail },
   { icone: 'instagram', rotulo: 'Instagram', valor: `@${site.instagram}`, href: linkInstagram },
 ];
-const paginas = [
-  { href: '/', texto: 'Início' },
-  { href: '/trabalhos', texto: 'Todos os álbuns' },
-  { href: '/#servicos', texto: 'Serviços' },
-  { href: '/#sobre', texto: 'Sobre' },
-  { href: '/#contato', texto: 'Contato' },
-];
+const paginas = PAGINAS;
 ---
 
 <footer class="rodape" data-rodape>

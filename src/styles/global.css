@@ -364,7 +364,8 @@ a:hover {
   color: var(--destaque);
 }
 
-/* Botões (§7): folha metálica nas cores do símbolo, com costura fina por dentro */
+/* Botões (§0h, 14/11/2026): couro verde-esmeralda costurado, com relevo de peça acolchoada.
+   O degradê verde-ciano da marca fica só no símbolo e na sineta do assistente. */
 .botao {
   position: relative;
   isolation: isolate;
@@ -376,32 +377,37 @@ a:hover {
   padding: 0 26px;
   border: 0;
   border-radius: var(--raio);
-  background: var(--verde) linear-gradient(115deg, #00fca8 0%, #10efc0 55%, #22d8ff 100%);
-  color: #06241b;
+  background-color: #0d6449;
+  background-image: var(--textura), linear-gradient(180deg, #12795a 0%, #0c5e45 58%, #094d39 100%);
+  background-blend-mode: overlay, normal;
+  color: #f4f0e8;
   font: inherit;
   font-weight: 650;
   letter-spacing: 0.008em;
   text-decoration: none;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 0.35);
   cursor: pointer;
   overflow: hidden;
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.55),
-    inset 0 -2px 6px rgb(0 70 52 / 0.22),
-    0 12px 26px -12px rgb(0 252 168 / 0.55),
-    0 2px 5px rgb(0 0 0 / 0.35);
+    inset 0 1px 0 rgb(255 255 255 / 0.26),
+    inset 0 -3px 6px rgb(0 0 0 / 0.32),
+    0 12px 24px -12px rgb(0 0 0 / 0.75),
+    0 2px 4px rgb(0 0 0 / 0.35);
   transition:
     transform var(--t-estado) var(--curva),
     filter var(--t-estado),
     box-shadow var(--t-estado);
 }
 
+/* Costura clara por dentro, com sombra de 1 px: linha passando pelo couro */
 .botao::before {
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px dashed rgb(6 36 27 / 0.4);
+  border: 1.5px dashed rgb(242 238 230 / 0.55);
   border-radius: inherit;
   pointer-events: none;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.45));
 }
 
 /* Reflexo que atravessa a folha quando o botão recebe atenção */
@@ -416,9 +422,9 @@ a:hover {
 }
 
 .botao:hover {
-  color: #06241b;
+  color: #f4f0e8;
   transform: translateY(-2px);
-  filter: brightness(1.05);
+  filter: brightness(1.1);
 }
 
 .botao:hover::after,
@@ -433,15 +439,11 @@ a:hover {
 }
 
 .tema-claro .botao {
-  background: var(--verde-escuro) linear-gradient(115deg, #00815a, #006e58);
-  color: var(--papel);
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.25),
-    0 10px 22px -12px rgb(0 80 55 / 0.6),
-    0 2px 4px rgb(70 48 20 / 0.2);
-}
-.tema-claro .botao::before {
-  border-color: rgb(242 238 230 / 0.5);
+    inset 0 1px 0 rgb(255 255 255 / 0.24),
+    inset 0 -3px 6px rgb(0 0 0 / 0.3),
+    0 10px 22px -12px rgb(40 30 10 / 0.55),
+    0 2px 4px rgb(70 48 20 / 0.22);
 }
 .tema-claro .botao::after {
   background: linear-gradient(105deg, rgb(255 255 255 / 0) 32%, rgb(255 255 255 / 0.28) 50%, rgb(255 255 255 / 0) 68%);
@@ -472,33 +474,128 @@ a:hover {
   text-decoration-color: currentColor;
 }
 
-/* Botão discreto: pílula costurada, com ícone */
+/* Botão discreto: pílula de couro grafite costurada (couro creme nas páginas claras), com ícone */
 .botao-fantasma {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   min-height: var(--alvo);
   padding: 0 20px;
-  border: 1.5px dashed var(--costura);
+  border: 0;
   border-radius: var(--raio);
-  background: transparent;
+  background-color: #1b2622;
+  background-image: var(--textura), linear-gradient(180deg, #25342f 0%, #1a2522 60%, #141d1a 100%);
+  background-blend-mode: overlay, normal;
   color: var(--texto);
   font: inherit;
   font-size: 15.5px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 -3px 6px rgb(0 0 0 / 0.35),
+    0 10px 20px -12px rgb(0 0 0 / 0.7);
   transition:
     color var(--t-estado),
-    border-color var(--t-estado),
+    filter var(--t-estado),
     transform var(--t-estado) var(--curva);
+}
+.botao-fantasma::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1.5px dashed var(--costura);
+  border-radius: inherit;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.5));
+  transition: border-color var(--t-estado);
 }
 .botao-fantasma:hover {
   color: var(--link-hover);
-  border-style: solid;
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.botao-fantasma:hover::before {
+  border-color: var(--verde);
 }
 .botao-fantasma:active {
   transform: scale(0.97);
+}
+.tema-claro .botao-fantasma {
+  background-color: #e8dcc6;
+  background-image: var(--textura), linear-gradient(180deg, #f2e9da 0%, #e6d9c2 60%, #dccdb2 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    inset 0 -3px 6px rgb(90 64 30 / 0.16),
+    0 8px 18px -12px rgb(70 48 20 / 0.5);
+}
+.tema-claro .botao-fantasma::before {
+  border-color: rgb(0 122 85 / 0.55);
+  filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.7));
+}
+.tema-claro .botao-fantasma:hover::before {
+  border-color: var(--verde-escuro);
+}
+
+/* Disparo de câmera ao tocar (script em layouts/Base.astro): o botão afunda e se fecha um
+   instante como um obturador, e um clarão sai do ponto tocado. */
+.disparo {
+  animation: disparo 330ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes disparo {
+  0% {
+    clip-path: inset(0 round 999px);
+  }
+  28% {
+    transform: scale(0.955);
+    clip-path: inset(7% 3% round 999px);
+    filter: brightness(1.45);
+  }
+  100% {
+    clip-path: inset(0 round 999px);
+  }
+}
+.chat-foto.disparo {
+  animation-name: disparo-foto;
+}
+@keyframes disparo-foto {
+  28% {
+    transform: scale(0.96);
+    filter: brightness(1.5);
+  }
+}
+.botao.disparo::after,
+.botao-fantasma.disparo::after,
+.chip.disparo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: none;
+  background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgb(255 255 255 / 0.95), rgb(255 255 255 / 0) 65%);
+  animation: disparo-clarao 330ms ease-out forwards;
+  pointer-events: none;
+}
+@keyframes disparo-clarao {
+  0% {
+    opacity: 0;
+  }
+  22% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .disparo,
+  .disparo::after {
+    animation: none !important;
+  }
 }
 
 .link-alvo {
@@ -770,9 +867,23 @@ body:has(.heroi) main {
   animation-duration: 480ms;
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-::view-transition-old(root),
+/* Troca de página como o obturador de uma câmera (14/11/2026): a página atual se fecha numa linha
+   de cima e de baixo, e a nova se abre do mesmo jeito. */
+::view-transition-old(root) {
+  animation: obturador-fecha 230ms cubic-bezier(0.55, 0, 0.75, 0.2) both;
+}
 ::view-transition-new(root) {
-  animation-duration: 320ms;
+  animation: obturador-abre 360ms 140ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes obturador-fecha {
+  to {
+    clip-path: inset(50% 0 50% 0);
+  }
+}
+@keyframes obturador-abre {
+  from {
+    clip-path: inset(50% 0 50% 0);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   @view-transition {
@@ -785,15 +896,22 @@ body:has(.heroi) main {
   }
 }
 
-/* Chips (filtros): pílulas com costura, a ativa em verde */
+/* Chips (filtros, respostas do assistente): pílulas de couro costuradas, a ativa em verde */
 .chip {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding: 0 20px;
   border-radius: 999px;
   border: 1.5px dashed var(--costura);
-  background: var(--painel);
+  background: var(--painel) var(--textura);
+  background-blend-mode: overlay;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 6px 14px -10px rgb(0 0 0 / 0.7);
   color: var(--texto);
   font: inherit;
   font-size: 15px;
@@ -808,14 +926,14 @@ body:has(.heroi) main {
 .chip:active {
   transform: scale(0.95);
 }
-.chip[aria-pressed='true'] {
-  background: var(--verde);
-  border-color: transparent;
-  color: #0d1512;
+.chip:hover {
+  border-style: solid;
 }
-.tema-claro .chip[aria-pressed='true'] {
-  background: var(--verde-escuro);
-  color: var(--papel);
+.chip[aria-pressed='true'] {
+  background: #0d6449 var(--textura);
+  background-blend-mode: overlay;
+  border-color: rgb(242 238 230 / 0.55);
+  color: #f4f0e8;
 }
 
 /* Toque no celular: sem o flash azul do Android, e resposta imediata */
@@ -847,6 +965,12 @@ button {
 
 .papel .wrap {
   padding-inline: calc(var(--margem) + 6px);
+}
+/* Página própria (Serviços, Como funciona, Sobre, Contato): a página de papel começa logo
+   abaixo do cabeçalho. */
+.pagina-papel {
+  margin-top: calc(var(--cab) + var(--s3));
+  margin-bottom: var(--s5);
 }
 
 /* Proteção das fotos (14/11/2026): sem "salvar imagem" no toque longo do celular, sem arrastar e sem

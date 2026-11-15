@@ -1,0 +1,1530 @@
+---
+// Assistente de atendimento (14/11/2026). Um botão flutuante de couro com uma sineta de balcão
+// abre a conversa, em todas as páginas.
+//  - Guia: até quatro perguntas (o que registrar, estilo, para quando, cidade) e no fim os álbuns
+//    que combinam, com o orçamento pronto para o WhatsApp. Pula o que a pessoa já disse escrevendo.
+//  - Tirar dúvidas: assuntos por opção, com respostas tiradas só do que o site já diz.
+//  - Falar com José Renato: sempre à vista; pede nome e assunto e abre o WhatsApp.
+// A pessoa pode escrever com erro (src/lib/entender.ts); roteiro e textos em src/data/assistente.ts.
+// Tudo roda no aparelho de quem visita. Não se apresenta como IA.
+// O botão aparece no topo da página e enquanto a pessoa rola para baixo; ao rolar para cima ele se
+// fecha como o obturador de uma câmera.
+import Foto from './Foto.astro';
+import Icone from './Icone.astro';
+import { capaDe, ensaiosPublicaveis } from '../lib/fotos';
+import { DUVIDAS, TIPOS, TEXTOS } from '../data/assistente';
+import { mensagemOrcamento, site, tipoDoEnsaio } from '../data/site';
+
+const ensaios = await ensaiosPublicaveis();
+const existentes = new Set(ensaios.map((e) => e.id));
+
+// Todo álbum citado no roteiro precisa existir: um nome errado para o build.
+const citados = new Set<string>();
+for (const t of TIPOS) {
+  citados.add(t.mini);
+  t.albuns?.forEach((a) => citados.add(a));
+  t.segunda.opcoes.forEach((o) => o.albuns?.forEach((a) => citados.add(a)));
+}
+for (const d of DUVIDAS) d.links?.forEach((l) => l.href.startsWith('/trabalhos/') && citados.add(l.href.slice(11)));
+const faltando = [...citados].filter((s) => !existentes.has(s));
+if (faltando.length) throw new Error(`Assistente: álbum citado em src/data/assistente.ts não existe: ${faltando.join(', ')}`);
+
+const albuns = Object.fromEntries(
+  ensaios.map((e) => [e.id, { nome: e.data.nome, rotulo: e.data.rotulo, capitulo: tipoDoEnsaio(e.data.categoria, e.data.rotulo) }]),
+);
+const minis = ensaios.flatMap((e) => {
+  const capa = capaDe(e);
+  return capa ? [{ id: e.id, capa, foco: e.data.capa === e.data.abertura.arquivo ? e.data.abertura.foco : '50% 30%' }] : [];
+});
+const config = {
+  albuns,
+  whatsapp: site.whatsapp,
+  fotografo: site.fotografo.split(' ').slice(0, 2).join(' '),
+  modelo: mensagemOrcamento('{pedido}', '{completar}'),
+};
+const gradiente = 'sineta-folha';
+---
+
+<svg width="0" height="0" class="sineta-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id={gradiente} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00fca8"></stop>
+      <stop offset="1" stop-color="#22d8ff"></stop>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="fab" data-fab hidden>
+  <span class="fab-chamada" aria-hidden="true" data-fab-chamada>{TEXTOS.chamadaFab}</span>
+  <button type="button" class="fab-botao" aria-haspopup="dialog" aria-controls="chat" data-abrir-assistente>
+    <svg class="sineta" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+      <g fill="none" stroke={`url(#${gradiente})`} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 16.5a7 7 0 0 1 14 0M3.5 16.5h17v1.2a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1ZM12 9.5V7.6M10.2 6.6h3.6M8.3 13.6a4 4 0 0 1 2.2-2.1"></path>
+      </g>
+    </svg>
+    <span class="fab-obturador" aria-hidden="true"></span>
+    <span class="fab-clarao" aria-hidden="true"></span>
+    <span class="visualmente-oculto">Abrir o assistente: escolher o ensaio ou tirar dúvidas</span>
+  </button>
+</div>
+
+<dialog class="chat" id="chat" aria-labelledby="chat-titulo" data-chat>
+  <div class="chat-caixa">
+    <header class="chat-topo">
+      <span class="chat-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <g fill="none" stroke={`url(#${gradiente})`} stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 16.5a7 7 0 0 1 14 0M3.5 16.5h17v1.2a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1ZM12 9.5V7.6M10.2 6.6h3.6M8.3 13.6a4 4 0 0 1 2.2-2.1"></path>
+          </g>
+        </svg>
+      </span>
+      <div class="chat-quem">
+        <h2 class="chat-titulo" id="chat-titulo">{TEXTOS.nome}</h2>
+        <p class="chat-sub">{TEXTOS.sub}</p>
+      </div>
+      <button type="button" class="chat-fechar" data-fechar>
+        <Icone nome="fechar" tamanho={18} />
+        <span class="visualmente-oculto">Fechar o assistente</span>
+      </button>
+    </header>
+
+    <div class="chat-rolo" data-rolo>
+      <ol class="chat-conversa" aria-live="polite" data-conversa></ol>
+      <div class="chat-opcoes" data-opcoes></div>
+    </div>
+
+    <form class="chat-escrever" data-escrever>
+      <label class="visualmente-oculto" for="chat-texto">Escreva sua mensagem</label>
+      <input
+        id="chat-texto"
+        name="texto"
+        type="text"
+        maxlength="300"
+        autocomplete="off"
+        enterkeyhint="send"
+        spellcheck="true"
+        placeholder="Escreva o que procura ou sua dúvida"
+      />
+      <button type="submit" class="chat-enviar">
+        <Icone nome="enviar" tamanho={20} />
+        <span class="visualmente-oculto">Enviar</span>
+      </button>
+    </form>
+
+    <div class="chat-base">
+      <button type="button" class="chat-modo" data-modo-botao>
+        <Icone nome="conversa" tamanho={17} />
+        <span data-modo-texto>Tirar dúvidas</span>
+      </button>
+      <button type="button" class="chat-humano" data-falar>
+        <Icone nome="whatsapp" tamanho={18} />
+        Falar com {config.fotografo}
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<template data-minis>
+  {
+    minis.map((m) => (
+      <span class="chat-mini" data-mini={m.id}>
+        <Foto slug={m.capa.slug} arquivo={m.capa.arquivo} alt="" sizes="(min-width: 700px) 180px, 46vw" recorte={m.foco} />
+      </span>
+    ))
+  }
+</template>
+<script type="application/json" id="assistente-config" set:html={JSON.stringify(config)} />
+
+<script>
+  import { entender, extrair, type Correcao, type Intencao } from '../lib/entender';
+  import {
+    ASSUNTOS,
+    CIDADES,
+    DUVIDAS,
+    ESPECIAIS,
+    MENU_DUVIDAS,
+    NAO_SEI,
+    PERGUNTAS,
+    PRAZOS,
+    TEXTOS,
+    TIPOS,
+    type OpcaoGuia,
+    type TipoGuia,
+  } from '../data/assistente';
+  import { CAPITULOS, type TipoAssistente } from '../data/site';
+
+  type Config = {
+    albuns: Record<string, { nome: string; rotulo: string; capitulo: TipoAssistente }>;
+    whatsapp: string;
+    fotografo: string;
+    modelo: string;
+  };
+  type Estado = { tipo?: string; estilo?: string; prazo?: string; cidade?: string; cidadeTexto?: string };
+  type Etapa = 'tipo' | 'naosei' | 'segunda' | 'prazo' | 'cidade' | null;
+  type Opcao = {
+    rotulo: string;
+    acao?: () => void;
+    href?: string;
+    classe?: string;
+    mini?: string;
+    icone?: 'whatsapp' | 'seta';
+  };
+
+  const fab = document.querySelector<HTMLElement>('[data-fab]');
+  const chat = document.querySelector<HTMLDialogElement>('[data-chat]');
+  const fonte = document.getElementById('assistente-config');
+
+  if (fab && chat && fonte) {
+    const cfg: Config = JSON.parse(fonte.textContent || '{}');
+    const conversa = chat.querySelector<HTMLElement>('[data-conversa]')!;
+    const opcoes = chat.querySelector<HTMLElement>('[data-opcoes]')!;
+    const rolo = chat.querySelector<HTMLElement>('[data-rolo]')!;
+    const escrever = chat.querySelector<HTMLFormElement>('[data-escrever]')!;
+    const campo = escrever.querySelector<HTMLInputElement>('input')!;
+    const modoBotao = chat.querySelector<HTMLButtonElement>('[data-modo-botao]')!;
+    const modoTexto = chat.querySelector<HTMLElement>('[data-modo-texto]')!;
+    const minis = document.querySelector<HTMLTemplateElement>('[data-minis]')!;
+    const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const CHAVE = 'assistente-escolha';
+    const CHAVE_NOME = 'assistente-nome';
+    const CHAVE_CHAMADA = 'assistente-chamada';
+
+    const espera = (ms: number) => new Promise((r) => setTimeout(r, calmo ? 0 : ms));
+    const guardar = (k: string, v: unknown) => {
+      try {
+        v === null ? localStorage.removeItem(k) : localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v));
+      } catch {}
+    };
+    const lerGuardado = (k: string) => {
+      try {
+        return localStorage.getItem(k);
+      } catch {
+        return null;
+      }
+    };
+
+    // ---- Estado da conversa ------------------------------------------------------------------
+    const ANTIGOS: Record<string, string> = { ensaio: 'individual', festa: 'aniversario' };
+    function lerEstado(): Estado {
+      try {
+        const v = JSON.parse(lerGuardado(CHAVE) || 'null');
+        if (!v || typeof v !== 'object') return {};
+        // Escolha guardada pela versão anterior do assistente ({ tipo: 'ensaio', prazo })
+        if (v.tipo && !TIPOS.some((t) => t.id === v.tipo)) v.tipo = ANTIGOS[v.tipo] ?? (TIPOS.some((t) => t.id === v.tipo) ? v.tipo : undefined);
+        return v;
+      } catch {
+        return {};
+      }
+    }
+    let estado: Estado = lerEstado();
+    let modo: 'guia' | 'duvidas' = 'guia';
+    let etapa: Etapa = null;
+    let iniciado = false;
+    let ultimaDuvida: string | null = null;
+    let reexibir: () => void = () => {};
+
+    const tipo = () => TIPOS.find((t) => t.id === estado.tipo);
+    const estilo = () => tipo()?.segunda.opcoes.find((o) => o.id === estado.estilo);
+    const prazo = () => PRAZOS.find((p) => p.id === estado.prazo);
+    const cidade = () => CIDADES.find((c) => c.id === estado.cidade);
+    const capitulo = () => tipo()?.capitulo ?? null;
+    const salvar = () => guardar(CHAVE, estado.tipo ? { ...estado, capitulo: capitulo() } : null);
+
+    // ---- Mensagens do WhatsApp ---------------------------------------------------------------
+    const linkWa = (msg: string) => `https://wa.me/${cfg.whatsapp}?text=${encodeURIComponent(msg)}`;
+    function pedido() {
+      const t = tipo();
+      if (!t) return '';
+      const e = estilo();
+      return [t.frase, e?.frase].filter(Boolean).join(' ');
+    }
+    function cidadeFrase() {
+      if (estado.cidade === 'outra' && estado.cidadeTexto) return `em ${estado.cidadeTexto}`;
+      return cidade()?.frase ?? '';
+    }
+    function mensagemOrcamento() {
+      const linhas = [
+        prazo() ? `Para quando: ${prazo()!.resposta}` : '',
+        estado.cidade ? `Cidade: ${estado.cidade === 'outra' ? estado.cidadeTexto || 'outra cidade' : cidade()!.resposta}` : '',
+        'Data e detalhes: ',
+      ].filter(Boolean);
+      return cfg.modelo.replace('{pedido}', pedido() || 'um serviço fotográfico').replace('{completar}: ', linhas.join('\n'));
+    }
+    function mensagemContato(nome: string, assunto: string) {
+      let m = `Olá, ${cfg.fotografo}! Meu nome é ${nome}.\nAssunto: ${assunto}`;
+      if (estado.tipo) m += `\n\nPelo assistente do site, procuro ${[pedido(), prazo()?.frase, cidadeFrase()].filter(Boolean).join(', ')}.`;
+      return m + '\n\n';
+    }
+
+    // ---- Listas da página: o que combina vem primeiro (sem rolar a tela) ----------------------
+    function ordenar(cap: string | null, animar: boolean) {
+      const aplicar = () => {
+        document.querySelectorAll<HTMLElement>('[data-reordenar]').forEach((lista) => {
+          const itens = [...lista.querySelectorAll<HTMLElement>(':scope > [data-tipo]')];
+          itens.forEach((li, i) => (li.dataset.ordem ??= String(i)));
+          itens.sort((a, b) => Number(a.dataset.ordem) - Number(b.dataset.ordem));
+          const sim = cap ? itens.filter((li) => li.dataset.tipo === cap) : [];
+          const nao = itens.filter((li) => !sim.includes(li));
+          itens.forEach((li) => li.classList.toggle('combina', sim.includes(li)));
+          const divisor = lista.querySelector<HTMLElement>(':scope > [data-divisor]');
+          if (divisor) divisor.hidden = !(sim.length && nao.length);
+          lista.append(...sim, ...(divisor && sim.length && nao.length ? [divisor] : []), ...nao);
+          if (lista.classList.contains('trilho')) lista.scrollLeft = 0;
+        });
+        document.querySelectorAll<HTMLAnchorElement>('a[data-wa-auto]').forEach((a) => {
+          a.dataset.waOriginal ??= a.href;
+          a.href = cap ? linkWa(mensagemOrcamento()) : a.dataset.waOriginal;
+        });
+      };
+      const vt = (document as Document & { startViewTransition?: (f: () => void) => unknown }).startViewTransition;
+      if (animar && !calmo && vt && !chat!.open) {
+        const t = vt.call(document, aplicar) as { ready?: Promise<void>; finished?: Promise<void> } | undefined;
+        t?.ready?.catch(() => {});
+        t?.finished?.catch(() => {});
+      } else aplicar();
+    }
+
+    // ---- Desenho da conversa ------------------------------------------------------------------
+    const descer = () => requestAnimationFrame(() => rolo.scrollTo({ top: rolo.scrollHeight, behavior: calmo ? 'auto' : 'smooth' }));
+
+    function balao(texto: string, quem: 'eu' | 'voce' = 'eu') {
+      const li = document.createElement('li');
+      li.className = `chat-balao chat-${quem}`;
+      li.textContent = texto;
+      conversa.append(li);
+      descer();
+      return li;
+    }
+    function nota(texto: string) {
+      const li = document.createElement('li');
+      li.className = 'chat-nota';
+      li.textContent = texto;
+      conversa.append(li);
+    }
+    async function digitar(texto: string) {
+      const li = document.createElement('li');
+      li.className = 'chat-balao chat-eu chat-digitando';
+      li.setAttribute('aria-hidden', 'true');
+      li.innerHTML = '<span></span><span></span><span></span>';
+      conversa.append(li);
+      descer();
+      await espera(Math.min(1100, 380 + texto.length * 9));
+      li.remove();
+      return balao(texto);
+    }
+    function mini(id: string) {
+      const m = minis.content.querySelector(`[data-mini="${id}"]`);
+      return m ? (m.cloneNode(true) as HTMLElement) : null;
+    }
+    function seta() {
+      const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      s.setAttribute('viewBox', '0 0 24 24');
+      s.setAttribute('width', '18');
+      s.setAttribute('height', '18');
+      s.setAttribute('aria-hidden', 'true');
+      s.innerHTML = '<path d="M4.5 12h15M13.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
+      return s;
+    }
+    function botoes(lista: Opcao[]) {
+      const els = lista.map((o, i) => {
+        const el = document.createElement(o.href ? 'a' : 'button');
+        el.className = o.classe ?? 'chip chat-chip';
+        const foto = o.mini ? mini(o.mini) : null;
+        if (foto) {
+          el.className = 'chat-foto';
+          const r = document.createElement('span');
+          r.className = 'chat-foto-rotulo';
+          r.textContent = o.rotulo;
+          el.append(foto, r);
+        } else el.textContent = o.rotulo;
+        if (o.icone === 'seta') el.append(seta());
+        el.style.setProperty('--i', String(i));
+        if (o.href) (el as HTMLAnchorElement).href = o.href;
+        else (el as HTMLButtonElement).type = 'button';
+        if (o.acao) el.addEventListener('click', o.acao);
+        return el;
+      });
+      opcoes.replaceChildren(...els);
+      opcoes.classList.toggle('com-fotos', lista.some((o) => o.mini));
+      reexibir = () => botoes(lista);
+      descer();
+    }
+    const limpar = () => opcoes.replaceChildren();
+
+    function cartoes(ids: string[]) {
+      const li = document.createElement('li');
+      li.className = 'chat-cartoes';
+      for (const id of ids) {
+        const a = cfg.albuns[id];
+        if (!a) continue;
+        const el = document.createElement('a');
+        el.className = 'chat-album';
+        el.href = `/trabalhos/${id}`;
+        const foto = mini(id);
+        const texto = document.createElement('span');
+        texto.className = 'chat-album-texto';
+        const nome = document.createElement('strong');
+        nome.textContent = a.nome;
+        const rotulo = document.createElement('span');
+        rotulo.textContent = a.rotulo;
+        texto.append(nome, rotulo);
+        if (foto) el.append(foto);
+        el.append(texto, seta());
+        li.append(el);
+      }
+      conversa.append(li);
+      descer();
+    }
+
+    /** O que o assistente entendeu de uma frase com erro: aparece pequeno, sob a mensagem. */
+    function correcoes(cs: Correcao[]) {
+      if (!cs.length) return;
+      nota(`Entendi: ${[...new Set(cs.map((c) => c.para))].join(', ')}`);
+    }
+
+    // ---- Guia ---------------------------------------------------------------------------------
+    async function proximo() {
+      modo = 'guia';
+      atualizarModo();
+      const t = tipo();
+      if (!t) return perguntarTipo();
+      if (!estado.estilo) return perguntarSegunda(t);
+      if (!estado.prazo) return perguntarLista('prazo', PERGUNTAS.prazo, PRAZOS);
+      if (!estado.cidade) return perguntarLista('cidade', PERGUNTAS.cidade, CIDADES);
+      return resultado();
+    }
+
+    async function perguntarTipo() {
+      etapa = 'tipo';
+      await digitar(PERGUNTAS.tipo);
+      botoes([
+        ...TIPOS.map((t) => ({ rotulo: t.resposta, mini: t.mini, acao: () => escolher({ tipo: t.id }, t.resposta) })),
+        { rotulo: NAO_SEI.resposta, classe: 'chip chat-chip chat-chip-leve', acao: () => naoSei(true) },
+      ]);
+    }
+
+    async function naoSei(clicou: boolean) {
+      if (clicou) balao(NAO_SEI.resposta, 'voce');
+      limpar();
+      etapa = 'naosei';
+      await digitar('Sem problema. Toque na foto que mais chama a sua atenção:');
+      botoes(
+        NAO_SEI.opcoes.flatMap((id) => {
+          const t = TIPOS.find((x) => x.id === id);
+          return t ? [{ rotulo: t.resposta, mini: t.mini, acao: () => escolher({ tipo: t.id }, t.resposta) }] : [];
+        }),
+      );
+    }
+
+    async function perguntarSegunda(t: TipoGuia) {
+      etapa = 'segunda';
+      await digitar(t.segunda.pergunta);
+      botoes(t.segunda.opcoes.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ estilo: o.id }, o.resposta) })));
+    }
+
+    async function perguntarLista(qual: 'prazo' | 'cidade', pergunta: string, lista: readonly OpcaoGuia[]) {
+      etapa = qual;
+      await digitar(pergunta);
+      botoes(lista.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ [qual]: o.id }, o.resposta) })));
+    }
+
+    /** Guarda uma resposta (por toque ou por texto) e segue para a próxima pergunta. */
+    async function escolher(novo: Estado, falado?: string) {
+      if (falado) balao(falado, 'voce');
+      limpar();
+      if (novo.tipo && novo.tipo !== estado.tipo) {
+        // Trocou o tipo: o estilo era do tipo anterior.
+        estado.estilo = undefined;
+      }
+      estado = { ...estado, ...novo };
+      salvar();
+      await proximo();
+    }
+
+    async function resultado() {
+      etapa = null;
+      const t = tipo()!;
+      const e = estilo();
+      salvar();
+      ordenar(t.capitulo, true);
+      const ids = [...new Set([...(e?.albuns ?? []), ...(t.albuns ?? [])])].filter((id) => cfg.albuns[id]).slice(0, 3);
+      await digitar(e?.albuns?.length ? 'Pronto! Pelo que você me contou, estes álbuns têm o estilo que você procura:' : `Pronto! Separei ${t.titulo} para você ver:`);
+      if (t.nota) balao(t.nota);
+      cartoes(ids);
+      await digitar(`Para o orçamento, anotei: ${[pedido(), prazo()?.frase, cidadeFrase()].filter(Boolean).join(', ')}.`);
+      const cap = t.capitulo;
+      botoes([
+        { rotulo: 'Solicitar orçamento', href: linkWa(mensagemOrcamento()), classe: 'botao chat-acao', icone: 'whatsapp' },
+        { rotulo: `Ver todos: ${CAPITULOS[cap].nome.toLowerCase()}`, href: `/trabalhos?c=${cap}`, classe: 'botao-fantasma chat-acao-sec', icone: 'seta' },
+        { rotulo: 'Tirar dúvidas', classe: 'chip chat-chip', acao: () => menuDuvidas(true) },
+        { rotulo: 'Recomeçar', classe: 'chat-refazer', acao: recomecar },
+      ]);
+      // Ícone do WhatsApp no botão de orçamento
+      const wa = opcoes.querySelector('.chat-acao');
+      if (wa) wa.prepend(iconeWhats());
+    }
+
+    function iconeWhats() {
+      const ico = chat!.querySelector('.chat-humano svg')!.cloneNode(true) as SVGElement;
+      return ico;
+    }
+
+    async function recomecar() {
+      estado = {};
+      salvar();
+      ordenar(null, true);
+      conversa.replaceChildren();
+      limpar();
+      balao('Vamos de novo.');
+      await proximo();
+    }
+
+    // ---- Dúvidas ------------------------------------------------------------------------------
+    function atualizarModo() {
+      modoTexto.textContent = modo === 'duvidas' ? 'Voltar ao guia' : 'Tirar dúvidas';
+    }
+
+    async function menuDuvidas(clicou: boolean) {
+      if (clicou) balao('Tirar dúvidas', 'voce');
+      limpar();
+      modo = 'duvidas';
+      etapa = null;
+      atualizarModo();
+      await digitar(TEXTOS.menuDuvidas);
+      botoes(MENU_DUVIDAS.flatMap((id) => {
+        const d = DUVIDAS.find((x) => x.id === id);
+        return d ? [{ rotulo: d.pergunta, acao: () => responder(d.id, true) }] : [];
+      }));
+    }
+
+    async function responder(id: string, clicou: boolean) {
+      const d = DUVIDAS.find((x) => x.id === id);
+      if (!d) return;
+      if (clicou) balao(d.pergunta, 'voce');
+      limpar();
+      modo = 'duvidas';
+      etapa = null;
+      ultimaDuvida = d.id;
+      atualizarModo();
+      for (const [i, p] of d.resposta.entries()) {
+        if (i === 0) await digitar(p);
+        else {
+          await espera(240);
+          balao(p);
+        }
+      }
+      const lista: Opcao[] = [];
+      d.links?.forEach((l) => lista.push({ rotulo: l.rotulo, href: l.href, classe: 'botao-fantasma chat-acao-sec', icone: 'seta' }));
+      if (d.contato) lista.push({ rotulo: `Falar com ${cfg.fotografo}`, classe: 'botao chat-acao', acao: () => falar(true), icone: 'whatsapp' });
+      (d.seguintes ?? []).slice(0, 7).forEach((s) => {
+        const prox = DUVIDAS.find((x) => x.id === s);
+        if (prox) lista.push({ rotulo: prox.pergunta, acao: () => responder(prox.id, true) });
+      });
+      lista.push({ rotulo: 'Outra dúvida', classe: 'chip chat-chip chat-chip-leve', acao: () => menuDuvidas(true) });
+      lista.push({ rotulo: 'Voltar ao guia', classe: 'chat-refazer', acao: () => voltarAoGuia(true) });
+      botoes(lista);
+      const wa = opcoes.querySelector('button.chat-acao');
+      if (wa) wa.prepend(iconeWhats());
+    }
+
+    async function voltarAoGuia(clicou: boolean) {
+      if (clicou) balao('Voltar ao guia', 'voce');
+      limpar();
+      if (tipo()) await digitar('Vamos voltar ao que você procura.');
+      await proximo();
+    }
+
+    // ---- Falar com José Renato ----------------------------------------------------------------
+    async function falar(clicou: boolean) {
+      if (clicou) balao(`Falar com ${cfg.fotografo}`, 'voce');
+      limpar();
+      etapa = null;
+      await digitar(TEXTOS.falar);
+      const nomeSalvo = lerGuardado(CHAVE_NOME) ?? '';
+      const assunto = ultimaDuvida && modo === 'duvidas'
+        ? `Dúvida: ${DUVIDAS.find((d) => d.id === ultimaDuvida)?.pergunta.toLowerCase() ?? ''}`
+        : estado.tipo ? 'Orçamento' : '';
+      const form = document.createElement('form');
+      form.className = 'chat-falar';
+      form.noValidate = true;
+      form.innerHTML = `
+        <label class="chat-campo"><span>Seu nome</span><input name="nome" autocomplete="name" maxlength="60" required /></label>
+        <div class="chat-campo"><span id="chat-assunto-rotulo">Assunto</span>
+          <div class="chat-assuntos" role="group" aria-labelledby="chat-assunto-rotulo"></div>
+          <input name="assunto" maxlength="120" aria-labelledby="chat-assunto-rotulo" placeholder="Ou escreva o assunto" />
+        </div>
+        <p class="chat-erro" role="alert" hidden></p>
+        <button type="submit" class="botao chat-acao">Abrir o WhatsApp</button>
+        <p class="chat-falar-nota">A conversa abre no WhatsApp com a mensagem pronta. Você revisa antes de enviar.</p>`;
+      const nome = form.querySelector<HTMLInputElement>('[name=nome]')!;
+      const campoAssunto = form.querySelector<HTMLInputElement>('[name=assunto]')!;
+      const erro = form.querySelector<HTMLElement>('.chat-erro')!;
+      nome.value = nomeSalvo;
+      campoAssunto.value = assunto;
+      const grupo = form.querySelector<HTMLElement>('.chat-assuntos')!;
+      for (const a of ASSUNTOS) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'chip chat-chip';
+        b.textContent = a;
+        b.setAttribute('aria-pressed', String(campoAssunto.value === a));
+        b.addEventListener('click', () => {
+          campoAssunto.value = a;
+          grupo.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        });
+        grupo.append(b);
+      }
+      campoAssunto.addEventListener('input', () => grupo.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.textContent === campoAssunto.value))));
+      form.querySelector('button[type=submit]')!.prepend(iconeWhats());
+      form.addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        const n = nome.value.trim().replace(/\s+/g, ' ');
+        const s = campoAssunto.value.trim();
+        const falta = !/\p{L}{2,}/u.test(n) ? nome : s.length < 3 ? campoAssunto : null;
+        if (falta) {
+          erro.hidden = false;
+          erro.textContent = falta === nome ? 'Escreva seu nome, por favor.' : 'Escolha ou escreva o assunto.';
+          falta.setAttribute('aria-invalid', 'true');
+          falta.focus();
+          return;
+        }
+        nome.removeAttribute('aria-invalid');
+        campoAssunto.removeAttribute('aria-invalid');
+        guardar(CHAVE_NOME, n);
+        balao(`${n} · ${s}`, 'voce');
+        limpar();
+        balao('Abrindo o WhatsApp com a sua mensagem…');
+        location.href = linkWa(mensagemContato(n, s));
+      });
+      opcoes.replaceChildren(form);
+      reexibir = () => falar(false);
+      descer();
+      if (matchMedia('(pointer: fine)').matches) (nomeSalvo ? campoAssunto : nome).focus();
+    }
+
+    // ---- Texto livre --------------------------------------------------------------------------
+    const GERAL: Intencao[] = [...TIPOS, NAO_SEI, ...DUVIDAS.filter((d) => !d.id.startsWith('servico-')), ...ESPECIAIS];
+    const FRACAS = ['oi', 'obrigado', 'orcamento', 'naosei'];
+    const ROTULOS: Record<string, string> = {
+      ...Object.fromEntries(TIPOS.map((t) => [t.id, t.resposta])),
+      ...Object.fromEntries(DUVIDAS.map((d) => [d.id, d.pergunta])),
+      naosei: 'Ainda não sei o que quero',
+      falar: `Falar com ${cfg.fotografo}`,
+      orcamento: 'Pedir orçamento',
+    };
+
+    async function executar(id: string, frase: string) {
+      if (TIPOS.some((t) => t.id === id)) {
+        const extra = extrair(frase, { prazo: PRAZOS, cidade: CIDADES }).valores;
+        return escolher({ tipo: id, ...extra });
+      }
+      if (DUVIDAS.some((d) => d.id === id)) return responder(id, false);
+      if (id === 'naosei') return naoSei(false);
+      if (id === 'falar') return falar(false);
+      if (id === 'recomecar') return recomecar();
+      if (id === 'oi') {
+        await digitar(TEXTOS.oi);
+        return reexibir();
+      }
+      if (id === 'obrigado') {
+        await digitar(TEXTOS.obrigado);
+        return reexibir();
+      }
+      if (id === 'orcamento') {
+        if (tipo() && estado.estilo && estado.prazo && estado.cidade) return resultado();
+        await digitar('Para preparar o orçamento, me conte um pouco do que você procura.');
+        return proximo();
+      }
+    }
+
+    async function aoEscrever(frase: string) {
+      balao(frase, 'voce');
+      limpar();
+      // 1. Resposta à pergunta da vez
+      const daVez: Record<string, readonly Intencao[] | undefined> = {
+        tipo: [...TIPOS, NAO_SEI],
+        naosei: [...TIPOS],
+        segunda: tipo()?.segunda.opcoes,
+        prazo: PRAZOS,
+        cidade: CIDADES,
+      };
+      const lista = etapa ? daVez[etapa] : undefined;
+      // O que a frase já diz de prazo e cidade (e as palavras corrigidas para isso)
+      const ex = extrair(frase, { prazo: PRAZOS, cidade: CIDADES });
+      if (lista) {
+        const r = entender(frase, lista);
+        if (r.tipo === 'certa') {
+          correcoes([...r.correcoes, ...ex.correcoes]);
+          if (etapa === 'tipo' || etapa === 'naosei') return executar(r.id, frase);
+          const chave = etapa === 'segunda' ? 'estilo' : etapa!;
+          return escolher({ ...ex.valores, [chave]: r.id, ...(etapa === 'cidade' && r.id === 'outra' ? { cidadeTexto: nomeCidade(frase) } : {}) });
+        }
+      }
+      // 2. Qualquer assunto
+      const g = entender(frase, GERAL, FRACAS);
+      if (g.tipo === 'certa') {
+        const doGuia = TIPOS.some((t) => t.id === g.id);
+        correcoes([...g.correcoes, ...(doGuia ? ex.correcoes : [])]);
+        return executar(g.id, frase);
+      }
+      if (g.tipo === 'duvida') {
+        const ids = g.ids.filter((id) => ROTULOS[id]);
+        if (ids.length) {
+          await digitar(TEXTOS.quisDizer);
+          return botoes([
+            ...ids.map((id) => ({ rotulo: ROTULOS[id], acao: () => { limpar(); executar(id, frase); } })),
+            { rotulo: 'Nenhuma dessas', classe: 'chat-refazer', acao: () => naoEntendi() },
+          ]);
+        }
+      }
+      // 3. Cidade escrita por extenso, quando é ela que estamos perguntando
+      if (etapa === 'cidade' && frase.trim().length >= 3 && frase.trim().split(/\s+/).length <= 4) {
+        return escolher({ cidade: 'outra', cidadeTexto: nomeCidade(frase) });
+      }
+      return naoEntendi();
+    }
+
+    /** "vou fazer em são luís" vira "São Luís". */
+    function nomeCidade(frase: string) {
+      const limpa = frase
+        .replace(/^(em|na|no|de|vai ser em|vou fazer em|sera em|é em|e em|fica em)\s+/i, '')
+        .replace(/[?.!]+$/, '')
+        .trim();
+      return limpa.replace(/(^|\s)(\p{Ll})/gu, (m, e, l) => (['de', 'da', 'do', 'dos', 'das'].includes(m.trim()) ? m : e + l.toUpperCase()));
+    }
+
+    async function naoEntendi() {
+      limpar();
+      await digitar(TEXTOS.naoEntendi);
+      if (etapa) return reexibirEtapa();
+      if (modo === 'duvidas') return menuDuvidas(false);
+      return proximo();
+    }
+    function reexibirEtapa() {
+      const t = tipo();
+      if (etapa === 'segunda' && t) return botoes(t.segunda.opcoes.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ estilo: o.id }, o.resposta) })));
+      if (etapa === 'prazo') return botoes(PRAZOS.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ prazo: o.id }, o.resposta) })));
+      if (etapa === 'cidade') return botoes(CIDADES.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ cidade: o.id }, o.resposta) })));
+      return reexibir();
+    }
+
+    escrever.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const frase = campo.value.trim();
+      if (!frase) return;
+      campo.value = '';
+      aoEscrever(frase.slice(0, 300));
+    });
+
+    // ---- Abrir e fechar ------------------------------------------------------------------------
+    async function iniciar() {
+      iniciado = true;
+      const t = tipo();
+      if (t) {
+        balao(TEXTOS.retorno(t.titulo));
+        botoes([
+          { rotulo: 'Continuar', classe: 'botao chat-acao', acao: () => { limpar(); proximo(); } },
+          { rotulo: 'Começar de novo', classe: 'chip chat-chip', acao: recomecar },
+          { rotulo: 'Tirar dúvidas', classe: 'chip chat-chip', acao: () => menuDuvidas(true) },
+        ]);
+        return;
+      }
+      balao(TEXTOS.boasVindas(saudacao()));
+      await proximo();
+    }
+    function saudacao() {
+      const hora = new Date().getHours();
+      return hora < 5 ? 'Boa noite' : hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    }
+
+    let quemAbriu: HTMLElement | null = null;
+    function abrir(origem: HTMLElement | null, pedidoModo?: string) {
+      quemAbriu = origem;
+      if (!chat!.open) chat!.showModal();
+      document.documentElement.classList.add('chat-aberto');
+      fab!.setAttribute('data-fechado', '');
+      if (pedidoModo === 'duvidas' || pedidoModo === 'falar') {
+        if (!iniciado) balao(TEXTOS.boasVindas(saudacao()));
+        iniciado = true;
+        if (pedidoModo === 'duvidas') menuDuvidas(false);
+        else falar(false);
+      } else if (!iniciado) iniciar();
+    }
+    // Sair da página com a conversa aberta (tocar num álbum indicado, numa página do site): a troca
+    // de página acontece sem a transição. Com a janela aberta na captura, a transição não termina
+    // e a página nova fica sem rolar.
+    addEventListener('pageswap', (ev) => {
+      const t = (ev as Event & { viewTransition?: { skipTransition(): void } | null }).viewTransition;
+      if (chat.open && t) t.skipTransition();
+    });
+    chat.addEventListener('close', () => {
+      document.documentElement.classList.remove('chat-aberto');
+      fab!.removeAttribute('data-fechado');
+      (quemAbriu ?? fab!.querySelector('button'))?.focus({ preventScroll: true });
+    });
+    // Toque fora da caixa (no fundo escurecido) fecha.
+    chat.addEventListener('click', (ev) => {
+      if (ev.target === chat) chat.close();
+    });
+    chat.querySelector('[data-fechar]')!.addEventListener('click', () => chat.close());
+    chat.querySelector('[data-falar]')!.addEventListener('click', () => falar(true));
+    modoBotao.addEventListener('click', () => (modo === 'duvidas' ? voltarAoGuia(true) : menuDuvidas(true)));
+    document.addEventListener('click', (ev) => {
+      const b = (ev.target as Element | null)?.closest<HTMLElement>('[data-abrir-assistente]');
+      if (!b) return;
+      ev.preventDefault();
+      abrir(b, b.dataset.modo);
+    });
+
+    // ---- Botão flutuante: aparece descendo, fecha como obturador subindo -----------------------
+    fab.hidden = false;
+    let antes = scrollY;
+    let pedidoQuadro = 0;
+    let rodapeNaTela = false;
+    const atualizarFab = () => {
+      pedidoQuadro = 0;
+      const y = scrollY;
+      if (Math.abs(y - antes) < 8 && !rodapeNaTela) return;
+      const subindo = y < antes;
+      antes = y;
+      const esconder =
+        chat.open || rodapeNaTela || document.documentElement.classList.contains('menu-aberto') || (subindo && y > 120);
+      if (fab.contains(document.activeElement) && !chat.open) return fab.removeAttribute('data-fechado');
+      fab.toggleAttribute('data-fechado', esconder);
+    };
+    addEventListener('scroll', () => (pedidoQuadro ||= requestAnimationFrame(atualizarFab)), { passive: true });
+    const rodape = document.querySelector('[data-rodape]');
+    if (rodape) {
+      new IntersectionObserver(([e]) => {
+        rodapeNaTela = e.isIntersecting;
+        fab.toggleAttribute('data-fechado', rodapeNaTela || chat.open);
+      }).observe(rodape);
+    }
+    fab.addEventListener('focusin', () => fab.removeAttribute('data-fechado'));
+
+    // "Posso ajudar?" ao lado do botão, só na primeira visita
+    const chamada = fab.querySelector<HTMLElement>('[data-fab-chamada]')!;
+    if (!lerGuardado(CHAVE_CHAMADA)) {
+      setTimeout(() => chamada.classList.add('visivel'), 1400);
+      setTimeout(() => {
+        chamada.classList.remove('visivel');
+        guardar(CHAVE_CHAMADA, '1');
+      }, 7400);
+    }
+
+    // A escolha guardada já arruma as listas desta página.
+    if (estado.tipo) ordenar(capitulo(), false);
+  }
+</script>
+
+<style>
+  .sineta-defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* ---------- Botão flutuante ---------- */
+  @property --obt-iris {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 100%;
+  }
+  @property --obt-giro {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
+  }
+  .fab {
+    position: fixed;
+    right: var(--margem);
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition:
+      transform 300ms var(--curva),
+      opacity 220ms;
+  }
+  .fab[hidden] {
+    display: none;
+  }
+  /* No computador, a abertura da home tem legenda, marcas e pausa no pé da foto, à direita:
+     o botão sobe para não cobrir os controles. */
+  @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+    :global(body:has(.heroi-palco)) .fab {
+      bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+  }
+  .fab[data-fechado] {
+    transform: translateY(14px) scale(0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition-delay: 230ms, 250ms;
+  }
+  .fab-botao {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: #15211d var(--textura);
+    background-blend-mode: overlay;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      inset 0 -4px 10px rgb(0 0 0 / 0.5),
+      0 0 0 1px rgb(0 0 0 / 0.45),
+      0 16px 30px -12px rgb(0 0 0 / 0.75);
+    transition: transform var(--t-estado) var(--curva);
+  }
+  /* Costura em volta, como num botão de couro */
+  .fab-botao::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1.5px dashed rgb(0 252 168 / 0.62);
+    border-radius: 50%;
+    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.55));
+    z-index: -1;
+  }
+  .fab-botao:hover {
+    transform: translateY(-2px);
+  }
+  .fab-botao:active {
+    transform: scale(0.94);
+  }
+  .fab-botao:focus-visible {
+    outline: 2px solid var(--verde);
+    outline-offset: 4px;
+  }
+  .sineta {
+    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.6));
+  }
+  /* Obturador: lâminas que fecham de fora para dentro, girando, e abrem ao contrário */
+  .fab-obturador {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    --obt-iris: 100%;
+    background: repeating-conic-gradient(from var(--obt-giro), #0a100e 0deg 52deg, #2b3a34 52deg 60deg);
+    -webkit-mask: radial-gradient(circle, transparent calc(var(--obt-iris) * 0.72), #000 calc(var(--obt-iris) * 0.72 + 0.5px));
+    mask: radial-gradient(circle, transparent calc(var(--obt-iris) * 0.72), #000 calc(var(--obt-iris) * 0.72 + 0.5px));
+  }
+  .fab[data-fechado] .fab-obturador {
+    animation: iris-fecha 210ms cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+  }
+  .fab:not([data-fechado]) .fab-obturador {
+    animation: iris-abre 320ms 70ms var(--curva) backwards;
+  }
+  @keyframes iris-fecha {
+    from {
+      --obt-iris: 100%;
+      --obt-giro: 0deg;
+    }
+    to {
+      --obt-iris: 0%;
+      --obt-giro: 70deg;
+    }
+  }
+  @keyframes iris-abre {
+    from {
+      --obt-iris: 0%;
+      --obt-giro: 70deg;
+    }
+    to {
+      --obt-iris: 100%;
+      --obt-giro: 0deg;
+    }
+  }
+  /* Clarão do disparo, no instante em que o obturador fecha */
+  .fab-clarao {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, #fff 0 22%, rgb(255 255 255 / 0) 72%);
+    opacity: 0;
+  }
+  .fab[data-fechado] .fab-clarao {
+    animation: fab-clarao 260ms 150ms ease-out;
+  }
+  @keyframes fab-clarao {
+    30% {
+      opacity: 0.9;
+    }
+  }
+  /* "Posso ajudar?": etiqueta de couro ao lado do botão, na primeira visita */
+  .fab-chamada {
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: #15211d var(--textura);
+    background-blend-mode: overlay;
+    color: var(--papel);
+    font-size: 14.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow:
+      inset 0 0 0 1px rgb(0 252 168 / 0.3),
+      0 10px 22px -10px rgb(0 0 0 / 0.7);
+    opacity: 0;
+    transform: translateX(10px);
+    pointer-events: none;
+    transition:
+      opacity 300ms,
+      transform 300ms var(--curva);
+  }
+  .fab-chamada:global(.visivel) {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---------- Janela da conversa ---------- */
+  :global(html.chat-aberto) {
+    overflow: hidden;
+  }
+  .chat {
+    --fundo: #121b18;
+    --texto: var(--papel);
+    --texto-2: #b9b4aa;
+    --link-hover: var(--verde);
+    --costura: rgb(0 252 168 / 0.55);
+    --destaque: var(--verde);
+    color-scheme: dark;
+    width: 100%;
+    max-width: 100%;
+    height: min(90dvh, 760px);
+    max-height: 100dvh;
+    margin: auto 0 0;
+    padding: 0;
+    border: 0;
+    border-radius: 26px 26px 0 0;
+    background: var(--couro-painel) var(--textura);
+    background-blend-mode: overlay;
+    color: var(--texto);
+    box-shadow: 0 -20px 50px -20px rgb(0 0 0 / 0.8);
+    overflow: hidden;
+    transition:
+      translate 340ms var(--curva),
+      opacity 240ms,
+      overlay 340ms allow-discrete,
+      display 340ms allow-discrete;
+  }
+  .chat[open] {
+    display: block;
+  }
+  @starting-style {
+    .chat[open] {
+      translate: 0 40px;
+      opacity: 0;
+    }
+  }
+  .chat::backdrop {
+    background: rgb(4 7 6 / 0.62);
+  }
+  .chat-caixa {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Costura por dentro da borda */
+  .chat-caixa::before {
+    content: '';
+    position: absolute;
+    inset: 8px 8px 0;
+    border: 1.5px dashed var(--costura-suave);
+    border-bottom: 0;
+    border-radius: 19px 19px 0 0;
+    pointer-events: none;
+  }
+  @media (min-width: 700px) {
+    .chat {
+      width: 410px;
+      height: min(680px, calc(100dvh - 48px));
+      margin: auto 24px 24px auto;
+      border-radius: 26px;
+    }
+    .chat-caixa {
+      padding-bottom: 0;
+    }
+    .chat-caixa::before {
+      inset: 8px;
+      border-bottom: 1.5px dashed var(--costura-suave);
+      border-radius: 19px;
+    }
+    .chat::backdrop {
+      background: rgb(4 7 6 / 0.22);
+    }
+  }
+
+  .chat-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 18px 12px 22px;
+    border-bottom: 1.5px dashed var(--costura-suave);
+  }
+  .chat-avatar {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--couro-fundo);
+    box-shadow:
+      inset 0 0 0 1px rgb(0 252 168 / 0.35),
+      0 6px 14px -6px rgb(0 0 0 / 0.7);
+  }
+  .chat-quem {
+    flex: 1;
+    min-width: 0;
+  }
+  .chat-titulo {
+    font-family: var(--serifa);
+    font-size: 21px;
+    font-weight: 450;
+    line-height: 1.1;
+  }
+  .chat-sub {
+    font-size: 13px;
+    color: var(--texto-2);
+  }
+  .chat-fechar {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border: 1.5px dashed var(--costura);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--texto);
+    cursor: pointer;
+  }
+  .chat-fechar:hover {
+    color: var(--verde);
+    border-style: solid;
+  }
+
+  .chat-rolo {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px 18px 12px 22px;
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    scrollbar-width: thin;
+  }
+  .chat-conversa {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .chat-conversa :global(.chat-balao) {
+    max-width: 88%;
+    padding: 11px 15px;
+    border-radius: 20px;
+    font-size: 15.5px;
+    line-height: 1.45;
+    white-space: pre-line;
+    animation: chat-entra 360ms var(--curva) both;
+  }
+  .chat-conversa :global(.chat-eu) {
+    justify-self: start;
+    border-bottom-left-radius: 6px;
+    background: rgb(255 255 255 / 0.07);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  }
+  .chat-conversa :global(.chat-voce) {
+    justify-self: end;
+    border-bottom-right-radius: 6px;
+    background: #0e6a4e var(--textura);
+    background-blend-mode: overlay;
+    color: #f4f0e8;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgb(0 252 168 / 0.25);
+  }
+  .chat-conversa :global(.chat-nota) {
+    justify-self: end;
+    margin-top: -6px;
+    font-size: 12.5px;
+    color: var(--texto-2);
+    animation: chat-entra 360ms var(--curva) both;
+  }
+  .chat-conversa :global(.chat-digitando) {
+    display: flex;
+    gap: 5px;
+    padding: 15px 17px;
+  }
+  .chat-conversa :global(.chat-digitando span) {
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: currentColor;
+    opacity: 0.4;
+    animation: chat-ponto 900ms ease-in-out infinite;
+  }
+  .chat-conversa :global(.chat-digitando span:nth-child(2)) {
+    animation-delay: 150ms;
+  }
+  .chat-conversa :global(.chat-digitando span:nth-child(3)) {
+    animation-delay: 300ms;
+  }
+
+  /* Álbuns indicados */
+  .chat-conversa :global(.chat-cartoes) {
+    display: grid;
+    gap: 8px;
+    animation: chat-entra 360ms var(--curva) both;
+  }
+  .chat-conversa :global(.chat-album) {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 18px;
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(0 252 168 / 0.22);
+    color: var(--texto);
+    text-decoration: none;
+  }
+  .chat-conversa :global(.chat-album:hover) {
+    box-shadow: inset 0 0 0 1.5px var(--verde);
+  }
+  .chat-conversa :global(.chat-album .chat-mini),
+  .chat-conversa :global(.chat-album .foto) {
+    display: block;
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+  }
+  .chat-conversa :global(.chat-album-texto) {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .chat-conversa :global(.chat-album-texto strong) {
+    font-family: var(--serifa);
+    font-size: 18px;
+    font-weight: 450;
+    line-height: 1.15;
+  }
+  .chat-conversa :global(.chat-album-texto span) {
+    font-size: 13px;
+    color: var(--texto-2);
+  }
+  .chat-conversa :global(.chat-album > svg) {
+    color: var(--verde);
+  }
+
+  /* Respostas */
+  .chat-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .chat-opcoes:empty {
+    display: none;
+  }
+  .chat-opcoes > :global(*) {
+    animation: chat-entra 360ms var(--curva) both;
+    animation-delay: calc(var(--i, 0) * 50ms);
+  }
+  .chat-opcoes :global(.chat-chip) {
+    min-height: 44px;
+    padding-inline: 16px;
+    font-size: 14.5px;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.2;
+  }
+  .chat-opcoes :global(.chat-chip-leve) {
+    background: transparent;
+  }
+  .chat-opcoes :global(.chat-acao),
+  .chat-opcoes :global(.chat-acao-sec) {
+    width: 100%;
+    min-height: 50px;
+    gap: 10px;
+    font-size: 15.5px;
+  }
+  .chat-opcoes :global(.chat-acao-sec) {
+    justify-content: space-between;
+  }
+  .chat-opcoes :global(.chat-refazer) {
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--texto-2);
+    font: inherit;
+    font-size: 14.5px;
+    text-decoration: underline dashed;
+    text-underline-offset: 0.3em;
+    cursor: pointer;
+  }
+  .chat-opcoes :global(.chat-refazer:hover) {
+    color: var(--verde);
+  }
+  /* Opções com foto: a capa de um álbum, com a resposta por cima */
+  .chat-opcoes.com-fotos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .chat-opcoes.com-fotos > :global(.chat-chip) {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+  .chat-opcoes :global(.chat-foto) {
+    position: relative;
+    isolation: isolate;
+    aspect-ratio: 3 / 2;
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #0b110f;
+    color: #f2eee6;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -12px rgb(0 0 0 / 0.8);
+    transition: transform var(--t-estado) var(--curva);
+  }
+  .chat-opcoes :global(.chat-foto:active) {
+    transform: scale(0.96);
+  }
+  .chat-opcoes :global(.chat-foto .chat-mini) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .chat-opcoes :global(.chat-foto .foto) {
+    height: 100%;
+    border-radius: 0;
+  }
+  .chat-opcoes :global(.chat-foto::after) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(0deg, rgb(8 12 11 / 0.9) 0%, rgb(8 12 11 / 0.35) 50%, rgb(8 12 11 / 0) 80%);
+  }
+  .chat-opcoes :global(.chat-foto::before) {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1.5px dashed rgb(242 238 230 / 0.36);
+    border-radius: 11px;
+    pointer-events: none;
+    transition: border-color 300ms;
+  }
+  .chat-opcoes :global(.chat-foto:hover::before),
+  .chat-opcoes :global(.chat-foto:focus-visible::before) {
+    border-color: rgb(0 252 168 / 0.85);
+  }
+  .chat-opcoes :global(.chat-foto-rotulo) {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 0 12px 11px;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.2;
+    text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+  }
+
+  /* Falar com José Renato */
+  .chat-opcoes :global(.chat-falar) {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
+  .chat-opcoes :global(.chat-campo) {
+    display: grid;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--texto-2);
+  }
+  .chat-opcoes :global(.chat-campo input) {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 16px;
+    border: 1.5px dashed var(--costura);
+    border-radius: 14px;
+    background: rgb(0 0 0 / 0.22);
+    color: var(--texto);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .chat-opcoes :global(.chat-campo input:focus) {
+    border-style: solid;
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(0 252 168 / 0.25);
+  }
+  .chat-opcoes :global(.chat-campo input[aria-invalid='true']) {
+    border-color: #ff9a8a;
+  }
+  .chat-opcoes :global(.chat-assuntos) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chat-opcoes :global(.chat-assuntos .chip) {
+    min-height: 40px;
+    padding-inline: 14px;
+    font-size: 13.5px;
+  }
+  .chat-opcoes :global(.chat-erro) {
+    color: #ffb4a8;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .chat-opcoes :global(.chat-falar-nota) {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--texto-2);
+  }
+
+  /* Campo de texto */
+  .chat-escrever {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px 8px 18px;
+    border-top: 1.5px dashed var(--costura-suave);
+  }
+  .chat-escrever input {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 1.5px solid rgb(255 255 255 / 0.1);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.25);
+    color: var(--texto);
+    font: inherit;
+    font-size: 16px;
+  }
+  .chat-escrever input::placeholder {
+    color: #8f8a80;
+  }
+  .chat-escrever input:focus {
+    outline: none;
+    border-color: rgb(0 252 168 / 0.6);
+    box-shadow: 0 0 0 3px rgb(0 252 168 / 0.18);
+  }
+  .chat-enviar {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: none;
+    border: 0;
+    border-radius: 50%;
+    background: #0e6a4e var(--textura);
+    background-blend-mode: overlay;
+    color: #f4f0e8;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 6px 14px -8px rgb(0 0 0 / 0.8);
+  }
+  .chat-enviar:active {
+    transform: scale(0.92);
+  }
+
+  /* Base fixa: dúvidas e falar com o fotógrafo, sempre à vista */
+  .chat-base {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 14px 14px 18px;
+  }
+  .chat-modo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--texto-2);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .chat-modo:hover {
+    color: var(--verde);
+  }
+  .chat-humano {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1.5px dashed var(--costura);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.18);
+    color: var(--texto);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .chat-humano:hover {
+    border-style: solid;
+    color: var(--verde);
+  }
+  .chat-humano :global(svg) {
+    color: var(--verde);
+  }
+
+  @keyframes chat-entra {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+  @keyframes chat-ponto {
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fab,
+    .fab[data-fechado] {
+      transition: opacity 150ms;
+      transform: none;
+    }
+    .fab-obturador,
+    .fab-clarao {
+      display: none;
+    }
+    .chat {
+      transition: none;
+    }
+    .chat-conversa :global(*),
+    .chat-opcoes > :global(*) {
+      animation: none !important;
+    }
+  }
+</style>
