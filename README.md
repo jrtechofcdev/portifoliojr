@@ -122,7 +122,7 @@ O painel fica em https://analytics.jrtechofc.com.br, com senha. A senha está no
 - **O que conta**: páginas vistas, cliques no WhatsApp, e-mail, Instagram, álbuns e Stories (com o lugar da página), etapas do atendimento, de onde a pessoa veio, cidade aproximada e aparelho. Sem cookies, sem IP guardado e sem o que a pessoa escreve. Os dados se apagam depois de 13 meses.
 - **Não contar as suas visitas**: abra uma vez em cada aparelho seu `https://portifolio.jrtechofc.com.br/?analytics=ignorar` (para voltar a contar: `?analytics=contar`).
 - **Saber de onde veio cada divulgação**: use links como `https://portifolio.jrtechofc.com.br/?utm_source=instagram&utm_campaign=bio`.
-- **Link curto da bio do Instagram**: `portifolio.jrtechofc.com.br/ig` leva ao link acima (redirecionamento em `vercel.json`). Para criar outro atalho, copie o bloco `/ig` no `vercel.json` com outro nome e outra campanha.
+- **Links curtos** (redirecionamentos em `vercel.json`): `portifolio.jrtechofc.com.br/ig` (bio do Instagram), `/s` (story do Instagram) e `/wa` (bio do WhatsApp). Cada um leva ao site com a etiqueta da origem. Para criar outro atalho, copie um desses blocos no `vercel.json` com outro nome e outra campanha.
 - **Código**: pasta `analytics/` (Cloudflare Worker e banco D1). Para publicar uma mudança: dentro dela, `npx wrangler@4 deploy`. Para trocar a senha: `npx wrangler@4 secret put SENHA`.
 
 ## Onde mudar cada coisa

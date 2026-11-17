@@ -44,6 +44,26 @@
       "source": "/ig/",
       "destination": "/?utm_source=instagram&utm_campaign=bio",
       "permanent": false
+    },
+    {
+      "source": "/s",
+      "destination": "/?utm_source=instagram&utm_campaign=stories",
+      "permanent": false
+    },
+    {
+      "source": "/s/",
+      "destination": "/?utm_source=instagram&utm_campaign=stories",
+      "permanent": false
+    },
+    {
+      "source": "/wa",
+      "destination": "/?utm_source=whatsapp&utm_campaign=bio",
+      "permanent": false
+    },
+    {
+      "source": "/wa/",
+      "destination": "/?utm_source=whatsapp&utm_campaign=bio",
+      "permanent": false
     }
   ],
   "headers": [
