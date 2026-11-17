@@ -39,7 +39,7 @@ const descricao = `${d.rotulo} de ${d.nome}${lugar}, ${mesAno(d.data)}. ${fotos.
 const temCapaProx = proximo ? !!capaDe(proximo) : false;
 ---
 
-<Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
+<Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og} heroi="tela">
   <article data-capitulo={tipo}>
     <Heroi foto={abertura} foco={d.abertura.foco} transicao={`capa-${ensaio.id}`}>
       <a class="sobretitulo entra" style="--i:0" href={`/trabalhos?c=${tipo}`}>{CAPITULOS[tipo].nome}</a>

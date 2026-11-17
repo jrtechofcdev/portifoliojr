@@ -3,13 +3,14 @@ import Base from '../layouts/Base.astro';
 import Foto from '../components/Foto.astro';
 import Heroi, { type Quadro } from '../components/Heroi.astro';
 import Capitulos from '../components/Capitulos.astro';
-import Historias, { type Historia } from '../components/Historias.astro';
+import Historias from '../components/Historias.astro';
+import { historiaDoEnsaio } from '../lib/historias';
 import ChamadaFinal from '../components/ChamadaFinal.astro';
 import Icone from '../components/Icone.astro';
 import Capa from '../components/Capa.astro';
 import SecaoServicos from '../components/SecaoServicos.astro';
 import SecaoSobre from '../components/SecaoSobre.astro';
-import { capaDe, capasDe, emDestaque, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, maisRecente, type Ensaio, type FotoEnsaio } from '../lib/fotos';
+import { capaDe, emDestaque, ensaiosPublicaveis, fotoDe, fotosDoEnsaio, maisRecente, type Ensaio, type FotoEnsaio } from '../lib/fotos';
 import { CAPA_SOCIAL, CHAMADA, linkInstagram, linkWhatsApp, site, tipoDoEnsaio } from '../data/site';
 
 // Home pensada para o celular: abertura com a foto no alto e o botão de orçamento, destaques no
@@ -37,19 +38,10 @@ const titulo: [string, boolean?][][] = [
   [['Seu'], ['álbum.', true]],
 ];
 
-// Cada álbum vira uma história: a capa (ou as duas, quando se alternam) e as primeiras fotos.
+// Cada álbum vira uma história (src/lib/historias.ts); os dados vão em /historias.json.
 const totalFotos = ensaios.reduce((n, e) => n + fotosDoEnsaio(e).length, 0);
 const tipos = ensaios.map((e) => tipoDoEnsaio(e.data.categoria, e.data.rotulo));
-const historias: Historia[] = ensaios.map((e) => {
-  const capas = capasDe(e);
-  const resto = fotosDoEnsaio(e).filter((f) => !capas.includes(f));
-  return {
-    nome: e.data.nome,
-    legenda: ficha(e),
-    href: `/trabalhos/${e.id}`,
-    fotos: [...capas, ...resto.slice(0, 8 - capas.length)],
-  };
-});
+const historias = ensaios.map(historiaDoEnsaio);
 // Fileira "Em destaque": só os álbuns escolhidos pelo fotógrafo, na ordem dele. `i` é a posição
 // do álbum na lista de Stories.
 const escolhidos = ensaios.map((e, i) => ({ e, i })).filter(({ e }) => emDestaque(e));
@@ -91,6 +83,7 @@ const jsonld = {
 ---
 
 <Base
+  heroi="palco"
   titulo="Jr_Tech_OFC Fotografia | Ensaios e eventos em Bacabal e Imperatriz"
   descricao={descricao}
   imagem={CAPA_SOCIAL.imagem}
@@ -161,7 +154,7 @@ const jsonld = {
     )
   }
 
-  <section class="secao trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
+  <section class="secao trabalhos adiada" style="--altura: 2600px" data-ate-abrir id="trabalhos" aria-labelledby="trabalhos-titulo">
     <div class="wrap secao-topo surge">
       <p class="sobretitulo">Portfólio</p>
       <h2 class="h2" id="trabalhos-titulo">O portfólio em <em>capítulos</em></h2>
@@ -181,7 +174,7 @@ const jsonld = {
 
   {
     pausa && (
-      <figure class="pausa">
+      <figure class="pausa adiada" style="--altura: 280px" data-ate-abrir>
         <div class="pausa-foto revela">
           <Foto slug={pausa.slug} arquivo={pausa.arquivo} alt={pausa.alt} sizes="100vw" />
         </div>
@@ -189,14 +182,26 @@ const jsonld = {
     )
   }
 
-  <div class="papel tema-claro">
+  <div class="papel tema-claro adiada" style="--altura: 1500px">
     <SecaoServicos resumo />
     <SecaoSobre resumo />
   </div>
 
   <ChamadaFinal auto />
 
-  <Historias historias={historias} slot="depois" />
+  <Historias fonte="/historias.json" slot="depois" />
+  <script>
+    // Os capítulos e a foto de pausa ficam fora do cálculo só enquanto a abertura acontece. Depois
+    // eles são liberados com folga, para as fotos começarem a baixar bem antes de a pessoa rolar
+    // até elas (adiadas, as fotos só começariam a baixar quando chegassem perto da tela).
+    const liberar = () => document.querySelectorAll('[data-ate-abrir]').forEach((e) => e.classList.remove('adiada'));
+    const depois = document.documentElement.classList.contains('ja-abriu') ? 1500 : 4200;
+    addEventListener('load', () =>
+      setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(liberar, { timeout: 1500 }) : liberar()), depois),
+    );
+    // Se a pessoa começar a rolar antes, libera na hora.
+    addEventListener('scroll', liberar, { once: true, passive: true });
+  </script>
 </Base>
 
 <style>

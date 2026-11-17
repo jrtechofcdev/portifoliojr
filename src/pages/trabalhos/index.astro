@@ -1,22 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ListaAlbuns from '../../components/ListaAlbuns.astro';
-import Historias, { type Historia } from '../../components/Historias.astro';
-import { capasDe, ensaiosPublicaveis, fotosDoEnsaio } from '../../lib/fotos';
+import Historias from '../../components/Historias.astro';
+import { ensaiosPublicaveis } from '../../lib/fotos';
 import ChamadaFinal from '../../components/ChamadaFinal.astro';
 import { CAPA_SOCIAL } from '../../data/site';
 
+// As histórias (Stories) vão em /historias.json, na mesma ordem dos álbuns da lista.
 const ensaios = await ensaiosPublicaveis();
-const historias: Historia[] = ensaios.map((e) => {
-  const capas = capasDe(e);
-  const resto = fotosDoEnsaio(e).filter((f) => !capas.includes(f));
-  return {
-    nome: e.data.nome,
-    legenda: [e.data.rotulo, e.data.cidade, e.data.data.slice(0, 4)].filter(Boolean).join(' · '),
-    href: `/trabalhos/${e.id}`,
-    fotos: [...capas, ...resto.slice(0, 8 - capas.length)],
-  };
-});
 ---
 
 <Base
@@ -39,7 +30,7 @@ const historias: Historia[] = ensaios.map((e) => {
 
   <ChamadaFinal auto />
 
-  <Historias historias={historias} slot="depois" />
+  <Historias fonte="/historias.json" slot="depois" />
 </Base>
 
 <style>

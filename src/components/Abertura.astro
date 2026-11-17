@@ -10,6 +10,15 @@
 import Simbolo from './Simbolo.astro';
 import { site } from '../data/site';
 
+// As quatro peças do símbolo (as mesmas de Simbolo.astro), cada uma no próprio SVG: assim a montagem
+// anima só posição e tamanho de camadas prontas, sem redesenhar o símbolo e as sombras a cada quadro.
+const PECAS = [
+  'M158 40h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H106a10 10 0 0 1-9.6-12.8l52-174A10 10 0 0 1 158 40Z',
+  'M350 125h94a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2h-94a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 350 125Z',
+  'M90 265h96a10 10 0 0 1 9.6 12.8l-26.6 89a10 10 0 0 1-9.6 7.2H63a10 10 0 0 1-9.6-12.8l26.6-89A10 10 0 0 1 90 265Z',
+  'M225 265h176a10 10 0 0 1 9.6 12.8l-52 174a10 10 0 0 1-9.6 7.2H173a10 10 0 0 1-9.6-12.8l52-174a10 10 0 0 1 9.6-7.2Z',
+];
+
 // Cada letra recebe a própria cor ao longo do degradê do símbolo (verde para ciano).
 const letras = [...site.marca];
 const DE = [0, 252, 168];
@@ -42,8 +51,24 @@ const monograma = encodeURIComponent(
         <span class="capa-canto capa-canto-baixo"></span>
         <p class="capa-rotulo capa-rotulo-alto">Portfólio</p>
         <div class="capa-miolo">
-          <span class="capa-gravacao"><Simbolo tamanho={112} class="capa-simbolo" /></span>
-          <p class="capa-nome">{letras.map((l, i) => <span style={`--i:${i};--cor:${corDa(i)}`}>{l}</span>)}</p>
+          <span class="capa-gravacao">
+            <span class="capa-simbolo">
+              {
+                PECAS.map((d, i) => (
+                  <svg class={`capa-peca p${i + 1}`} viewBox="44 34 412 432" aria-hidden="true">
+                    <defs>
+                      <linearGradient id={`capa-folha-${i}`} gradientUnits="userSpaceOnUse" x1="120" y1="40" x2="380" y2="470">
+                        <stop offset="0" stop-color="#00FCA8" />
+                        <stop offset="1" stop-color="#22D8FF" />
+                      </linearGradient>
+                    </defs>
+                    <path d={d} fill={`url(#capa-folha-${i})`} />
+                  </svg>
+                ))
+              }
+            </span>
+          </span>
+          <p class="capa-nome">{letras.map((l, i) => <span style={`--i:${i};--cor:${corDa(i)}`} data-l={l}>{l}</span>)}</p>
           <span class="capa-ornamento"><i></i></span>
           <p class="capa-slogan">Nossa Arte, Seu Sucesso</p>
         </div>
@@ -260,11 +285,21 @@ const monograma = encodeURIComponent(
     inset: calc(var(--u) * 4.4) calc(var(--u) * 4.4) calc(var(--u) * 4.4) calc(var(--u) * 12.4);
     border: 1.5px dashed rgb(0 252 168 / 0.62);
     border-radius: calc(var(--u) * 1.6) calc(var(--u) * 2.6) calc(var(--u) * 2.6) calc(var(--u) * 1.6);
-    filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.6));
     -webkit-mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
     mask: conic-gradient(from 180deg, #000 var(--volta), transparent 0);
     --volta: 360deg;
     animation: capa-costurar 1s cubic-bezier(0.5, 0, 0.3, 1) 0.28s both;
+  }
+  /* Sombra de cada ponto: uma segunda costura escura, 1 px abaixo (no lugar de um filtro, que era
+     recalculado a cada quadro enquanto a costura se desenha) */
+  .capa-costura::before {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    z-index: -1;
+    border: 1.5px dashed rgb(0 0 0 / 0.6);
+    border-radius: inherit;
+    translate: 0 1px;
   }
   /* Friso em baixo-relevo: uma moldura prensada no couro, sem tinta */
   .capa-friso {
@@ -341,31 +376,42 @@ const monograma = encodeURIComponent(
     filter: drop-shadow(0 1px 0 rgb(255 255 255 / 0.14)) drop-shadow(0 -1px 0 rgb(0 0 0 / 0.7))
       drop-shadow(0 calc(var(--u) * 3) calc(var(--u) * 6) rgb(0 252 168 / 0.2));
   }
-  .capa-miolo :global(.capa-simbolo) {
+  .capa-simbolo {
+    position: relative;
+    display: block;
     width: calc(var(--u) * 31);
-    height: auto;
+    aspect-ratio: 412 / 432;
     animation: capa-lampejo-simbolo 640ms ease-out 1.02s both;
   }
-  .capa-miolo :global(.capa-simbolo path) {
-    transform-box: fill-box;
-    transform-origin: 50% 50%;
+  /* Cada peça ocupa a área do símbolo inteiro; o deslocamento e o centro do giro são os da peça
+     (em % dessa área), para a montagem ficar igual à de antes. */
+  .capa-peca {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
     animation: capa-peca 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
-  .capa-miolo :global(.capa-simbolo .p1) {
+  .capa-peca.p1 {
     animation-delay: 0.56s;
-    --de: -30%, -22%;
+    transform-origin: 42.6% 23.8%;
+    --de: -13.5%, -10%;
   }
-  .capa-miolo :global(.capa-simbolo .p2) {
+  .capa-peca.p2 {
     animation-delay: 0.66s;
-    --de: 34%, -26%;
+    transform-origin: 82.6% 33.7%;
+    --de: 8.5%, -6.5%;
   }
-  .capa-miolo :global(.capa-simbolo .p3) {
+  .capa-peca.p3 {
     animation-delay: 0.76s;
-    --de: -34%, 26%;
+    transform-origin: 19.5% 66.1%;
+    --de: -8.5%, 6.5%;
   }
-  .capa-miolo :global(.capa-simbolo .p4) {
+  .capa-peca.p4 {
     animation-delay: 0.86s;
-    --de: 30%, 22%;
+    transform-origin: 58.9% 75.9%;
+    --de: 13.5%, 10%;
   }
 
   /* Nome em folha metálica: cada letra tem a sua cor do degradê e entra na sua vez */
@@ -379,15 +425,27 @@ const monograma = encodeURIComponent(
     white-space: nowrap;
   }
   .capa-nome span {
+    position: relative;
     display: inline-block;
     color: var(--cor, var(--verde));
     text-shadow: 0 1px 0 rgb(0 0 0 / 0.65);
-    animation:
-      capa-letra 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both,
-      capa-lampejo 760ms ease-in-out both;
-    animation-delay:
-      calc(0.92s + var(--i) * 44ms),
-      calc(1.62s + var(--i) * 40ms);
+    animation: capa-letra 560ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.92s + var(--i) * 44ms);
+  }
+  /* Brilho de folha metálica que passa letra por letra: uma cópia clara e luminosa da letra, por
+     cima, que acende e apaga (só opacidade, sem redesenhar o texto a cada quadro) */
+  .capa-nome span::after {
+    content: attr(data-l);
+    position: absolute;
+    inset: 0;
+    color: #f4fffb;
+    text-shadow:
+      0 1px 0 rgb(0 0 0 / 0.65),
+      0 0 calc(var(--u) * 4) rgb(170 255 232 / 0.6);
+    opacity: 0;
+    pointer-events: none;
+    animation: capa-lampejo 760ms ease-in-out both;
+    animation-delay: calc(1.62s + var(--i) * 40ms);
   }
   .capa-ornamento {
     display: flex;
@@ -531,10 +589,7 @@ const monograma = encodeURIComponent(
   }
   @keyframes capa-lampejo {
     45% {
-      color: #f4fffb;
-      text-shadow:
-        0 1px 0 rgb(0 0 0 / 0.65),
-        0 0 calc(var(--u) * 4) rgb(170 255 232 / 0.6);
+      opacity: 1;
     }
   }
   @keyframes capa-refletir {

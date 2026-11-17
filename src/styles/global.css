@@ -171,7 +171,6 @@ body {
   line-height: 1.62;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
 ::selection {
@@ -198,11 +197,22 @@ ul {
   margin: 0;
 }
 
-/* Quebra de linha cuidada: títulos equilibrados, parágrafos sem palavra sozinha no fim */
+/* Quebra de linha cuidada: títulos equilibrados, parágrafos sem palavra sozinha no fim.
+   O ajuste fino de kerning e ligaduras (optimizeLegibility) fica só nos títulos: no corpo inteiro ele
+   deixava o cálculo do texto bem mais lento no celular (medição de 17/11/2026). */
 h1,
 h2,
 h3 {
   text-wrap: balance;
+  text-rendering: optimizeLegibility;
+}
+
+/* Desempenho (17/11/2026): partes que começam fora da tela só são calculadas e desenhadas quando
+   chegam perto dela. A abertura e a primeira tela ficam com o celular só para elas. --altura é a
+   altura estimada antes do primeiro desenho; depois o navegador lembra a altura real. */
+.adiada {
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--altura, 900px);
 }
 p,
 li,
@@ -689,7 +699,7 @@ html.menu-aberto {
 main {
   padding-top: var(--cab);
 }
-body:has(.heroi) main {
+body.com-heroi main {
   padding-top: 0;
 }
 
@@ -850,10 +860,10 @@ body:has(.heroi) main {
     animation-delay: calc(var(--j, 0) * 85ms + 200ms);
   }
   /* Na home, os textos da abertura esperam a capa de couro abrir */
-  html:not(.ja-abriu):not(.capa-pulada) body:has([data-capa]) .heroi .entra {
+  html:not(.ja-abriu):not(.capa-pulada) body.com-capa .heroi .entra {
     animation-delay: calc(var(--i, 0) * 130ms + 2.85s);
   }
-  html:not(.ja-abriu):not(.capa-pulada) body:has([data-capa]) .heroi .palavras .p > span {
+  html:not(.ja-abriu):not(.capa-pulada) body.com-capa .heroi .palavras .p > span {
     animation-delay: calc(var(--j, 0) * 85ms + 2.75s);
   }
 }

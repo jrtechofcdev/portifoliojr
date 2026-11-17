@@ -3,34 +3,26 @@
 // na esquerda volta, segurar pausa, deslizar para baixo fecha, deslizar para o lado troca de álbum.
 // Abre por qualquer elemento com data-historia="<indice>" (e data-foto="<n>" opcional).
 // Avanço automático com botão de pausa (WCAG 2.2.2); Esc fecha (dialog nativo).
-import type { FotoEnsaio } from '../lib/fotos';
+// Na home e no portfólio os dados vêm de um arquivo à parte (`fonte`, /historias.json), baixado
+// depois da abertura; na página do álbum, que tem uma história só, vêm junto com a página.
 import Icone from './Icone.astro';
+import { dadosHistorias, type Historia } from '../lib/historias';
 
-export type Historia = { nome: string; legenda: string; href?: string; fotos: FotoEnsaio[] };
+export type { Historia };
 
 interface Props {
-  historias: Historia[];
+  /** Histórias junto com a página (página do álbum). */
+  historias?: Historia[];
+  /** Endereço do arquivo com as histórias, baixado depois da abertura (home e portfólio). */
+  fonte?: string;
   /** Texto do link no rodapé de cada história, quando ela tem href. */
   convite?: string;
 }
-const { historias, convite = 'Ver o álbum completo' } = Astro.props;
-
-const dados = historias.map((h) => ({
-  nome: h.nome,
-  legenda: h.legenda,
-  href: h.href ?? null,
-  fotos: h.fotos.map((f) => ({
-    avif: f.dados.srcset.avif,
-    webp: f.dados.srcset.webp,
-    src: f.dados.src,
-    alt: f.alt,
-    cor: f.dados.cor,
-    lqip: f.dados.lqip,
-  })),
-}));
+const { historias = [], fonte, convite = 'Ver o álbum completo' } = Astro.props;
+const dados = fonte ? null : dadosHistorias(historias);
 ---
 
-<dialog class="hist" aria-label="Fotos em tela cheia" data-convite={convite}>
+<dialog class="hist" aria-label="Fotos em tela cheia" data-convite={convite} data-fonte={fonte}>
   <div class="hist-palco">
     <picture class="hist-foto">
       <source type="image/avif" sizes="100vw" />
@@ -63,16 +55,31 @@ const dados = historias.map((h) => ({
     </div>
   </div>
 </dialog>
-<script type="application/json" id="historias-dados" set:html={JSON.stringify(dados)} />
+{dados && <script type="application/json" id="historias-dados" set:html={JSON.stringify(dados)} />}
 
 <script>
   type F = { avif: string; webp: string; src: string; alt: string; cor: string; lqip: string };
   type H = { nome: string; legenda: string; href: string | null; fotos: F[] };
 
   const dialogo = document.querySelector<HTMLDialogElement>('dialog.hist');
-  const fonte = document.getElementById('historias-dados');
-  if (dialogo && fonte) {
-    const historias: H[] = JSON.parse(fonte.textContent || '[]');
+  const embutido = document.getElementById('historias-dados');
+  const endereco = dialogo?.dataset.fonte;
+  if (dialogo && (embutido || endereco)) {
+    // Os dados (endereços das fotos de todas as histórias) só são lidos quando precisam: o arquivo à
+    // parte é baixado com folga depois da abertura da página, e um toque antes disso espera por ele.
+    let cache: H[] = [];
+    let pedido: Promise<H[]> | null = null;
+    const carregar = () =>
+      (pedido ??= (
+        endereco
+          ? fetch(endereco).then((r) => r.json() as Promise<H[]>)
+          : Promise.resolve(JSON.parse(embutido?.textContent || '[]') as H[])
+      ).then((d) => (cache = d)));
+    const lista = (): H[] => cache;
+    if (endereco)
+      addEventListener('load', () =>
+        setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(() => carregar()) : carregar()), 4000),
+      );
     const DURACAO = 5000;
     const palco = dialogo.querySelector<HTMLElement>('.hist-palco')!;
     const foto = dialogo.querySelector<HTMLElement>('.hist-foto')!;
@@ -98,7 +105,7 @@ const dados = historias.map((h) => ({
     let quadro = 0;
     let origem: HTMLElement | null = null;
 
-    const atual = () => historias[h];
+    const atual = () => lista()[h];
 
     function montarBarras() {
       barras.replaceChildren(
@@ -142,11 +149,11 @@ const dados = historias.map((h) => ({
         ultimo = performance.now();
       };
       img.decode().then(pronto, pronto);
-      preCarregar(atual().fotos[f + 1] ?? historias[h + 1]?.fotos[0]);
+      preCarregar(atual().fotos[f + 1] ?? lista()[h + 1]?.fotos[0]);
     }
 
     function abrirHistoria(i: number, inicio = 0) {
-      h = (i + historias.length) % historias.length;
+      h = (i + lista().length) % lista().length;
       f = Math.min(inicio, atual().fotos.length - 1);
       nome.textContent = atual().nome;
       legenda.textContent = atual().legenda;
@@ -163,14 +170,14 @@ const dados = historias.map((h) => ({
       if (f < atual().fotos.length - 1) {
         f++;
         mostrar();
-      } else if (h < historias.length - 1) abrirHistoria(h + 1);
+      } else if (h < lista().length - 1) abrirHistoria(h + 1);
       else dialogo!.close();
     }
     function voltar() {
       if (f > 0) {
         f--;
         mostrar();
-      } else if (h > 0) abrirHistoria(h - 1, historias[h - 1].fotos.length - 1);
+      } else if (h > 0) abrirHistoria(h - 1, lista()[h - 1].fotos.length - 1);
       else mostrar();
     }
 
@@ -198,14 +205,17 @@ const dados = historias.map((h) => ({
       if (!gatilho) return;
       ev.preventDefault();
       origem = gatilho;
-      definirPausa(false);
-      abrirHistoria(Number(gatilho.dataset.historia), Number(gatilho.dataset.foto ?? 0));
-      dialogo.showModal();
-      document.documentElement.classList.add('menu-aberto');
-      rodando = true;
-      ultimo = performance.now();
-      cancelAnimationFrame(quadro);
-      quadro = requestAnimationFrame(passo);
+      carregar().then(() => {
+        if (!lista().length) return;
+        definirPausa(false);
+        abrirHistoria(Number(gatilho.dataset.historia), Number(gatilho.dataset.foto ?? 0));
+        if (!dialogo.open) dialogo.showModal();
+        document.documentElement.classList.add('menu-aberto');
+        rodando = true;
+        ultimo = performance.now();
+        cancelAnimationFrame(quadro);
+        quadro = requestAnimationFrame(passo);
+      });
     });
 
     dialogo.addEventListener('close', () => {
@@ -268,7 +278,7 @@ const dados = historias.map((h) => ({
       palco.style.transform = '';
       palco.style.opacity = '';
       if (dy > 90 && Math.abs(dy) > Math.abs(dx)) dialogo.close();
-      else if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) && historias.length > 1) abrirHistoria(h + (dx < 0 ? 1 : -1));
+      else if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) && lista().length > 1) abrirHistoria(h + (dx < 0 ? 1 : -1));
       // Toque curto é tratado pelo clique nas zonas; depois de segurar, não avança.
       if (segurou || performance.now() - t0 > 400) {
         arrastou = true;

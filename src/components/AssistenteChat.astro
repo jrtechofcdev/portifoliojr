@@ -1044,7 +1044,7 @@ const gradiente = 'sineta-folha';
   /* No computador, a abertura da home tem legenda, marcas e pausa no pé da foto, à direita:
      o botão sobe para não cobrir os controles. */
   @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
-    :global(body:has(.heroi-palco)) .fab {
+    :global(body.com-palco) .fab {
       bottom: calc(96px + env(safe-area-inset-bottom));
     }
   }

@@ -23,6 +23,10 @@ Pedido do responsável: um assistente que entenda o que o cliente quer de verdad
 - **Disparo de câmera:** ao tocar, o botão afunda, se fecha um instante como obturador e um clarão sai do ponto tocado (script curto no `Base.astro`). A troca de página fecha e abre a tela numa linha horizontal, como uma cortina de obturador. Tudo desligado com movimento reduzido.
 - **Deixa de valer:** o assistente embutido na home e em /trabalhos (§0c, §0d) e o botão flutuante do WhatsApp (§7); o botão principal em folha metálica verde-ciano (§0f).
 
+## Desempenho (17/11/2026)
+
+O visual da abertura e do site não muda; mudou como ele é desenhado. Partes fora da tela só são calculadas quando chegam perto (`.adiada`, nunca em listas de fotos), os Stories vêm de `/historias.json` depois da abertura, as fontes da primeira tela são pré-carregadas, os seletores `:has()` do `body` viraram classes fixas e, na capa, as animações só mexem em posição, tamanho, opacidade e filtro (nada que obrigue a redesenhar a tela a cada quadro). Os cartões perderam o vidro desfocado (`backdrop-filter`), trocado por um fundo escuro equivalente.
+
 ## 0g. Revisão de 13/11/2026 (noite): plano de melhorias (vale sobre §0f e o resto)
 
 Pedido do responsável (arquivo "Plano de melhorias, Portfólio Jr_Tech_OFC"): mais unidade, linguagem de fotógrafo conversando com o cliente, a foto do livro da Sabrina na abertura, um encerramento claro e um ícone de álbum.

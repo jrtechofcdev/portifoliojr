@@ -7,6 +7,10 @@ import AssistenteChat from '../components/AssistenteChat.astro';
 import Estatisticas from '../components/Estatisticas.astro';
 import { PREVIA } from '../lib/fotos';
 import { site } from '../data/site';
+// As duas fontes que aparecem na primeira tela (o nome na capa e os textos) já começam a baixar com
+// a página, para não trocarem de fonte no meio da animação. São os mesmos arquivos do CSS.
+import fonteTitulos from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import fonteTexto from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
 
 interface Props {
   titulo: string;
@@ -20,9 +24,13 @@ interface Props {
   jsonld?: Record<string, unknown>;
   /** Página com a capa de couro na abertura (só a home). */
   abertura?: boolean;
+  /** Página que começa com a foto de abertura: 'palco' (home, foto ao lado do texto) ou 'tela' (álbum,
+   *  foto em tela cheia). Vira classe no <body> (com-heroi, com-palco), no lugar de seletores :has(),
+   *  que obrigavam o navegador a recalcular o estilo enquanto a página carregava. */
+  heroi?: 'palco' | 'tela';
 }
 
-const { titulo, descricao, tema = 'escuro', imagem, social, jsonld, abertura = false } = Astro.props;
+const { titulo, descricao, tema = 'escuro', imagem, social, jsonld, abertura = false, heroi } = Astro.props;
 const canonica = new URL(Astro.url.pathname, Astro.site);
 const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
 ---
@@ -32,6 +40,8 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={fonteTitulos} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={fonteTexto} as="font" type="font/woff2" crossorigin />
     <title>{titulo}</title>
     <meta name="description" content={descricao} />
     <meta name="page-type" content="service" />
@@ -73,7 +83,7 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
     <meta name="twitter:card" content={imagemAbs ? 'summary_large_image' : 'summary'} />
     {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
   </head>
-  <body class:list={{ 'tema-claro': tema === 'claro' }}>
+  <body class:list={{ 'tema-claro': tema === 'claro', 'com-heroi': !!heroi, 'com-palco': heroi === 'palco', 'com-capa': abertura }}>
     {abertura && <Abertura />}
     <Cabecalho />
     <main id="conteudo" tabindex="-1">

@@ -162,7 +162,7 @@ const links = PAGINAS.filter((p) => p.href !== '/');
     transition: opacity 300ms;
   }
   /* Sobre a foto em tela cheia, antes de rolar: sem couro, texto claro */
-  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .barra {
+  :global(body.com-heroi) .cabecalho:not([data-rolado]) .barra {
     background: transparent;
     box-shadow: none;
     --texto: #f2eee6;
@@ -171,10 +171,10 @@ const links = PAGINAS.filter((p) => p.href !== '/');
     --costura: rgb(242 238 230 / 0.7);
     color-scheme: dark;
   }
-  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .barra::before {
+  :global(body.com-heroi) .cabecalho:not([data-rolado]) .barra::before {
     opacity: 0;
   }
-  :global(body:has(.heroi)) .cabecalho:not([data-rolado]) .marca {
+  :global(body.com-heroi) .cabecalho:not([data-rolado]) .marca {
     text-shadow: 0 1px 10px rgb(0 0 0 / 0.5);
   }
   .barra {
