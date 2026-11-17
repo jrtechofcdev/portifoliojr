@@ -4,6 +4,7 @@ import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
 import Abertura from '../components/Abertura.astro';
 import AssistenteChat from '../components/AssistenteChat.astro';
+import Estatisticas from '../components/Estatisticas.astro';
 import { PREVIA } from '../lib/fotos';
 import { site } from '../data/site';
 
@@ -81,6 +82,7 @@ const imagemAbs = imagem ? new URL(imagem, Astro.site).href : undefined;
     <slot name="depois" />
     <Rodape />
     <AssistenteChat />
+    {!PREVIA && <Estatisticas />}
     <p class="aviso-protecao" data-aviso-protecao role="status" aria-live="polite"></p>
     <script>
       // Disparo de câmera nos botões (14/11/2026): ao tocar, o botão afunda, um clarão cruza o couro

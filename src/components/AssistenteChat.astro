@@ -1,10 +1,12 @@
 ---
-// Assistente de atendimento (14/11/2026). Um botão flutuante de couro com uma sineta de balcão
-// abre a conversa, em todas as páginas.
-//  - Guia: até quatro perguntas (o que registrar, estilo, para quando, cidade) e no fim os álbuns
-//    que combinam, com o orçamento pronto para o WhatsApp. Pula o que a pessoa já disse escrevendo.
-//  - Tirar dúvidas: assuntos por opção, com respostas tiradas só do que o site já diz.
-//  - Falar com José Renato: sempre à vista; pede nome e assunto e abre o WhatsApp.
+// Atendimento do site (14/11/2026; conteúdo comercial do documento mestre de 16/11/2026). Um botão
+// flutuante de couro com uma sineta de balcão abre a conversa, em todas as páginas. Fala em
+// primeira pessoa, como o fotógrafo.
+//  - Guia: o que fotografar, uma pergunta própria do tipo, o plano (ensaio ou tempo de evento),
+//    para quando e a cidade. No fim, o plano indicado com valor e condições, os álbuns que combinam
+//    e o orçamento pronto para o WhatsApp. Pula o que a pessoa já disse escrevendo.
+//  - Tirar dúvidas: assuntos por opção (planos, pagamento, entrega, agenda, preparação...).
+//  - Falar no WhatsApp: sempre à vista; pede nome e assunto e abre o WhatsApp.
 // A pessoa pode escrever com erro (src/lib/entender.ts); roteiro e textos em src/data/assistente.ts.
 // Tudo roda no aparelho de quem visita. Não se apresenta como IA.
 // O botão aparece no topo da página e enquanto a pessoa rola para baixo; ao rolar para cima ele se
@@ -64,7 +66,7 @@ const gradiente = 'sineta-folha';
     </svg>
     <span class="fab-obturador" aria-hidden="true"></span>
     <span class="fab-clarao" aria-hidden="true"></span>
-    <span class="visualmente-oculto">Abrir o assistente: escolher o ensaio ou tirar dúvidas</span>
+    <span class="visualmente-oculto">Abrir o atendimento: escolher o ensaio, ver os planos ou tirar dúvidas</span>
   </button>
 </div>
 
@@ -84,7 +86,7 @@ const gradiente = 'sineta-folha';
       </div>
       <button type="button" class="chat-fechar" data-fechar>
         <Icone nome="fechar" tamanho={18} />
-        <span class="visualmente-oculto">Fechar o assistente</span>
+        <span class="visualmente-oculto">Fechar o atendimento</span>
       </button>
     </header>
 
@@ -118,7 +120,7 @@ const gradiente = 'sineta-folha';
       </button>
       <button type="button" class="chat-humano" data-falar>
         <Icone nome="whatsapp" tamanho={18} />
-        Falar com {config.fotografo}
+        {TEXTOS.botaoContato}
       </button>
     </div>
   </div>
@@ -140,15 +142,22 @@ const gradiente = 'sineta-folha';
   import {
     ASSUNTOS,
     CIDADES,
+    CONDICOES,
     DUVIDAS,
     ESPECIAIS,
+    FRACAS,
     MENU_DUVIDAS,
     NAO_SEI,
+    PERGUNTA_PLANO,
     PERGUNTAS,
+    PLANO_NAO_SEI,
+    PLANOS_ENSAIO,
+    PLANOS_EVENTO,
     PRAZOS,
     TEXTOS,
     TIPOS,
     type OpcaoGuia,
+    type Plano,
     type TipoGuia,
   } from '../data/assistente';
   import { CAPITULOS, type TipoAssistente } from '../data/site';
@@ -159,8 +168,8 @@ const gradiente = 'sineta-folha';
     fotografo: string;
     modelo: string;
   };
-  type Estado = { tipo?: string; estilo?: string; prazo?: string; cidade?: string; cidadeTexto?: string };
-  type Etapa = 'tipo' | 'naosei' | 'segunda' | 'prazo' | 'cidade' | null;
+  type Estado = { tipo?: string; estilo?: string; plano?: string; prazo?: string; cidade?: string; cidadeTexto?: string };
+  type Etapa = 'tipo' | 'naosei' | 'segunda' | 'plano' | 'prazo' | 'cidade' | null;
   type Opcao = {
     rotulo: string;
     acao?: () => void;
@@ -202,6 +211,9 @@ const gradiente = 'sineta-folha';
         return null;
       }
     };
+    /** Avisa as estatísticas do site (Estatisticas.astro) de uma etapa do atendimento. */
+    const estatistica = (n: string, l = '', t: 'assistente' | 'clique' = 'assistente') =>
+      dispatchEvent(new CustomEvent('estatistica', { detail: { t, n, l } }));
 
     // ---- Estado da conversa ------------------------------------------------------------------
     const ANTIGOS: Record<string, string> = { ensaio: 'individual', festa: 'aniversario' };
@@ -209,8 +221,8 @@ const gradiente = 'sineta-folha';
       try {
         const v = JSON.parse(lerGuardado(CHAVE) || 'null');
         if (!v || typeof v !== 'object') return {};
-        // Escolha guardada pela versão anterior do assistente ({ tipo: 'ensaio', prazo })
-        if (v.tipo && !TIPOS.some((t) => t.id === v.tipo)) v.tipo = ANTIGOS[v.tipo] ?? (TIPOS.some((t) => t.id === v.tipo) ? v.tipo : undefined);
+        // Escolha guardada pela primeira versão do assistente ({ tipo: 'ensaio', prazo })
+        if (v.tipo && !TIPOS.some((t) => t.id === v.tipo)) v.tipo = ANTIGOS[v.tipo];
         return v;
       } catch {
         return {};
@@ -225,9 +237,13 @@ const gradiente = 'sineta-folha';
 
     const tipo = () => TIPOS.find((t) => t.id === estado.tipo);
     const estilo = () => tipo()?.segunda.opcoes.find((o) => o.id === estado.estilo);
+    const planosDe = (t?: TipoGuia): readonly Plano[] => (t?.servico === 'evento' ? PLANOS_EVENTO : t?.servico === 'ensaio' ? PLANOS_ENSAIO : []);
+    const plano = () => planosDe(tipo()).find((p) => p.id === estado.plano);
     const prazo = () => PRAZOS.find((p) => p.id === estado.prazo);
     const cidade = () => CIDADES.find((c) => c.id === estado.cidade);
     const capitulo = () => tipo()?.capitulo ?? null;
+    /** O tipo pede a pergunta do plano? Profissional e casamento/formatura vão para avaliação. */
+    const pedePlano = (t: TipoGuia) => t.servico !== 'consulta' && !estilo()?.avaliar;
     const salvar = () => guardar(CHAVE, estado.tipo ? { ...estado, capitulo: capitulo() } : null);
 
     // ---- Mensagens do WhatsApp ---------------------------------------------------------------
@@ -235,24 +251,29 @@ const gradiente = 'sineta-folha';
     function pedido() {
       const t = tipo();
       if (!t) return '';
-      const e = estilo();
-      return [t.frase, e?.frase].filter(Boolean).join(' ');
+      return [t.frase, estilo()?.frase].filter(Boolean).join(' ');
     }
-    function cidadeFrase() {
-      if (estado.cidade === 'outra' && estado.cidadeTexto) return `em ${estado.cidadeTexto}`;
-      return cidade()?.frase ?? '';
+    function cidadeNome() {
+      if (estado.cidade === 'outra') return estado.cidadeTexto || 'outra cidade';
+      return cidade()?.resposta ?? '';
     }
     function mensagemOrcamento() {
+      const p = plano();
       const linhas = [
+        p ? `Plano de interesse: ${p.frase}` : '',
         prazo() ? `Para quando: ${prazo()!.resposta}` : '',
-        estado.cidade ? `Cidade: ${estado.cidade === 'outra' ? estado.cidadeTexto || 'outra cidade' : cidade()!.resposta}` : '',
+        estado.cidade ? `Cidade: ${cidadeNome()}` : '',
         'Data e detalhes: ',
       ].filter(Boolean);
       return cfg.modelo.replace('{pedido}', pedido() || 'um serviço fotográfico').replace('{completar}: ', linhas.join('\n'));
     }
+    function resumo() {
+      const p = plano();
+      return [pedido(), p ? `plano ${p.nome}` : '', prazo()?.frase, estado.cidade ? `em ${cidadeNome()}` : ''].filter(Boolean).join(', ');
+    }
     function mensagemContato(nome: string, assunto: string) {
       let m = `Olá, ${cfg.fotografo}! Meu nome é ${nome}.\nAssunto: ${assunto}`;
-      if (estado.tipo) m += `\n\nPelo assistente do site, procuro ${[pedido(), prazo()?.frase, cidadeFrase()].filter(Boolean).join(', ')}.`;
+      if (estado.tipo) m += `\n\nPelo atendimento do site, procuro ${resumo()}.`;
       return m + '\n\n';
     }
 
@@ -325,6 +346,7 @@ const gradiente = 'sineta-folha';
       s.innerHTML = '<path d="M4.5 12h15M13.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
       return s;
     }
+    const iconeWhats = () => chat!.querySelector('.chat-humano svg')!.cloneNode(true) as SVGElement;
     function botoes(lista: Opcao[]) {
       const els = lista.map((o, i) => {
         const el = document.createElement(o.href ? 'a' : 'button');
@@ -337,10 +359,13 @@ const gradiente = 'sineta-folha';
           r.textContent = o.rotulo;
           el.append(foto, r);
         } else el.textContent = o.rotulo;
+        if (o.icone === 'whatsapp') el.prepend(iconeWhats());
         if (o.icone === 'seta') el.append(seta());
         el.style.setProperty('--i', String(i));
-        if (o.href) (el as HTMLAnchorElement).href = o.href;
-        else (el as HTMLButtonElement).type = 'button';
+        if (o.href) {
+          (el as HTMLAnchorElement).href = o.href;
+          if (/^https?:/.test(o.href) && !o.href.includes('wa.me')) (el as HTMLAnchorElement).rel = 'noopener';
+        } else (el as HTMLButtonElement).type = 'button';
         if (o.acao) el.addEventListener('click', o.acao);
         return el;
       });
@@ -350,8 +375,10 @@ const gradiente = 'sineta-folha';
       descer();
     }
     const limpar = () => opcoes.replaceChildren();
+    const contatoOpcao = (): Opcao => ({ rotulo: TEXTOS.botaoContato, classe: 'botao chat-acao', acao: () => falar(true), icone: 'whatsapp' });
 
     function cartoes(ids: string[]) {
+      if (!ids.length) return;
       const li = document.createElement('li');
       li.className = 'chat-cartoes';
       for (const id of ids) {
@@ -376,6 +403,41 @@ const gradiente = 'sineta-folha';
       descer();
     }
 
+    /** Cartões de planos: nome, valor e o que vem em cada um. */
+    function planosCartoes(lista: readonly Plano[], marcado?: string) {
+      const li = document.createElement('li');
+      li.className = 'chat-planos';
+      for (const p of lista) {
+        const c = document.createElement('div');
+        c.className = 'chat-plano' + (p.id === marcado ? ' marcado' : '');
+        const topo = document.createElement('div');
+        topo.className = 'chat-plano-topo';
+        const nome = document.createElement('strong');
+        nome.textContent = p.nome;
+        const preco = document.createElement('span');
+        preco.className = 'chat-plano-preco';
+        preco.textContent = p.preco;
+        topo.append(nome, preco);
+        c.append(topo);
+        if (p.selo) {
+          const s = document.createElement('span');
+          s.className = 'chat-plano-selo';
+          s.textContent = p.selo;
+          c.append(s);
+        }
+        const ul = document.createElement('ul');
+        for (const item of p.itens) {
+          const i = document.createElement('li');
+          i.textContent = item;
+          ul.append(i);
+        }
+        c.append(ul);
+        li.append(c);
+      }
+      conversa.append(li);
+      descer();
+    }
+
     /** O que o assistente entendeu de uma frase com erro: aparece pequeno, sob a mensagem. */
     function correcoes(cs: Correcao[]) {
       if (!cs.length) return;
@@ -389,6 +451,7 @@ const gradiente = 'sineta-folha';
       const t = tipo();
       if (!t) return perguntarTipo();
       if (!estado.estilo) return perguntarSegunda(t);
+      if (pedePlano(t) && !estado.plano) return perguntarPlano(t);
       if (!estado.prazo) return perguntarLista('prazo', PERGUNTAS.prazo, PRAZOS);
       if (!estado.cidade) return perguntarLista('cidade', PERGUNTAS.cidade, CIDADES);
       return resultado();
@@ -416,16 +479,29 @@ const gradiente = 'sineta-folha';
       );
     }
 
+    const opcoesSegunda = (t: TipoGuia) => t.segunda.opcoes.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ estilo: o.id }, o.resposta) }));
     async function perguntarSegunda(t: TipoGuia) {
       etapa = 'segunda';
       await digitar(t.segunda.pergunta);
-      botoes(t.segunda.opcoes.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ estilo: o.id }, o.resposta) })));
+      botoes(opcoesSegunda(t));
     }
 
+    const opcoesPlano = (t: TipoGuia): Opcao[] => [
+      ...planosDe(t).map((p) => ({ rotulo: p.resposta, acao: () => escolher({ plano: p.id }, p.resposta) })),
+      { rotulo: PLANO_NAO_SEI.resposta, classe: 'chip chat-chip chat-chip-leve', acao: () => escolher({ plano: PLANO_NAO_SEI.id }, PLANO_NAO_SEI.resposta) },
+    ];
+    async function perguntarPlano(t: TipoGuia) {
+      etapa = 'plano';
+      await digitar(PERGUNTA_PLANO[t.servico as 'ensaio' | 'evento']);
+      botoes(opcoesPlano(t));
+    }
+
+    const opcoesLista = (qual: 'prazo' | 'cidade', lista: readonly OpcaoGuia[]) =>
+      lista.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ [qual]: o.id }, o.resposta) }));
     async function perguntarLista(qual: 'prazo' | 'cidade', pergunta: string, lista: readonly OpcaoGuia[]) {
       etapa = qual;
       await digitar(pergunta);
-      botoes(lista.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ [qual]: o.id }, o.resposta) })));
+      botoes(opcoesLista(qual, lista));
     }
 
     /** Guarda uma resposta (por toque ou por texto) e segue para a próxima pergunta. */
@@ -433,8 +509,10 @@ const gradiente = 'sineta-folha';
       if (falado) balao(falado, 'voce');
       limpar();
       if (novo.tipo && novo.tipo !== estado.tipo) {
-        // Trocou o tipo: o estilo era do tipo anterior.
+        // Trocou o tipo: estilo e plano eram do tipo anterior.
         estado.estilo = undefined;
+        estado.plano = novo.plano;
+        estatistica('tipo', novo.tipo);
       }
       estado = { ...estado, ...novo };
       salvar();
@@ -445,28 +523,88 @@ const gradiente = 'sineta-folha';
       etapa = null;
       const t = tipo()!;
       const e = estilo();
+      const p = plano();
       salvar();
       ordenar(t.capitulo, true);
+      estatistica('resultado', [t.id, e?.avaliar ? 'avaliar' : (p?.id ?? estado.plano ?? '')].filter(Boolean).join(':'));
       const ids = [...new Set([...(e?.albuns ?? []), ...(t.albuns ?? [])])].filter((id) => cfg.albuns[id]).slice(0, 3);
-      await digitar(e?.albuns?.length ? 'Pronto! Pelo que você me contou, estes álbuns têm o estilo que você procura:' : `Pronto! Separei ${t.titulo} para você ver:`);
-      if (t.nota) balao(t.nota);
-      cartoes(ids);
-      await digitar(`Para o orçamento, anotei: ${[pedido(), prazo()?.frase, cidadeFrase()].filter(Boolean).join(', ')}.`);
-      const cap = t.capitulo;
-      botoes([
-        { rotulo: 'Solicitar orçamento', href: linkWa(mensagemOrcamento()), classe: 'botao chat-acao', icone: 'whatsapp' },
-        { rotulo: `Ver todos: ${CAPITULOS[cap].nome.toLowerCase()}`, href: `/trabalhos?c=${cap}`, classe: 'botao-fantasma chat-acao-sec', icone: 'seta' },
+      const lista: Opcao[] = [];
+
+      if (e?.avaliar) {
+        // Casamento, formatura: o fotógrafo avalia antes de falar em plano.
+        await digitar(e.avaliar);
+        balao('Me conta a data, o local e a programação que eu avalio com você pelo WhatsApp.');
+        if (ids.length) {
+          balao('Exemplos do meu trabalho em eventos:');
+          cartoes(ids);
+        }
+        lista.push({ rotulo: 'Solicitar orçamento', href: linkWa(mensagemOrcamento()), classe: 'botao chat-acao', icone: 'whatsapp' });
+      } else if (t.servico === 'consulta') {
+        await digitar('Esse tipo de trabalho eu orço conforme o que você precisa: quantidade de fotos, local e uso das imagens.');
+        if (ids.length) {
+          balao('Um exemplo de retrato meu:');
+          cartoes(ids);
+        }
+        lista.push({ rotulo: 'Solicitar orçamento', href: linkWa(mensagemOrcamento()), classe: 'botao chat-acao', icone: 'whatsapp' });
+      } else {
+        const todos = planosDe(t);
+        if (!p) {
+          await digitar(t.servico === 'ensaio' ? 'Sem problema. Estes são os meus três planos de ensaio:' : 'Estes são os planos para festas e eventos, pelo tempo de cobertura:');
+          planosCartoes(todos, t.servico === 'ensaio' ? 'destaque' : undefined);
+          balao(
+            t.servico === 'ensaio'
+              ? 'O Destaque é o de melhor custo-benefício para quem quer mais fotos e variedade. Se for algo mais rápido, o Essencial resolve.'
+              : 'Se você me contar a programação da festa, eu te ajudo a ver quanto tempo de cobertura faz sentido.',
+          );
+        } else {
+          await digitar(`Pelo que você me contou, o plano que mais combina é o ${p.nome}:`);
+          planosCartoes([p], p.id);
+          if (p.id === 'essencial') balao('Se quiser mais fotos e 2 looks, o Destaque, por R$ 297,00, é o de melhor custo-benefício.');
+        }
+        await espera(300);
+        if (t.servico === 'ensaio') {
+          balao(CONDICOES.ensaio);
+          balao(CONDICOES.entregaEnsaio);
+        } else {
+          balao(CONDICOES.evento);
+          balao(CONDICOES.horaExtra);
+        }
+        if (t.nota) balao(t.nota);
+        if (ids.length) {
+          balao(t.servico === 'ensaio' ? 'Veja como ficam os meus ensaios:' : 'Exemplos do meu trabalho:');
+          cartoes(ids);
+        }
+        lista.push({
+          rotulo: p ? `Quero o plano ${p.nome}` : 'Solicitar orçamento',
+          href: linkWa(mensagemOrcamento()),
+          classe: 'botao chat-acao',
+          icone: 'whatsapp',
+        });
+        if (p) lista.push({ rotulo: 'Comparar os planos', classe: 'chip chat-chip', acao: comparar });
+      }
+
+      await digitar(
+        `Anotei para o orçamento: ${resumo()}. ${CONDICOES.agenda}` + (estado.cidade === 'outra' ? ` ${CONDICOES.deslocamento}` : ''),
+      );
+      lista.push(
+        { rotulo: `Ver todos: ${CAPITULOS[t.capitulo].nome.toLowerCase()}`, href: `/trabalhos?c=${t.capitulo}`, classe: 'botao-fantasma chat-acao-sec', icone: 'seta' },
         { rotulo: 'Tirar dúvidas', classe: 'chip chat-chip', acao: () => menuDuvidas(true) },
         { rotulo: 'Recomeçar', classe: 'chat-refazer', acao: recomecar },
-      ]);
-      // Ícone do WhatsApp no botão de orçamento
-      const wa = opcoes.querySelector('.chat-acao');
-      if (wa) wa.prepend(iconeWhats());
+      );
+      botoes(lista);
     }
 
-    function iconeWhats() {
-      const ico = chat!.querySelector('.chat-humano svg')!.cloneNode(true) as SVGElement;
-      return ico;
+    async function comparar() {
+      const t = tipo();
+      if (!t) return;
+      balao('Comparar os planos', 'voce');
+      limpar();
+      await digitar(t.servico === 'ensaio' ? 'Estes são os três planos de ensaio:' : 'Estes são os planos de eventos:');
+      planosCartoes(planosDe(t), estado.plano);
+      botoes([
+        ...planosDe(t).map((pl) => ({ rotulo: `Escolher ${pl.nome}`, acao: () => escolher({ plano: pl.id }, pl.nome) })),
+        { rotulo: 'Tirar dúvidas', classe: 'chat-refazer', acao: () => menuDuvidas(true) },
+      ]);
     }
 
     async function recomecar() {
@@ -491,10 +629,12 @@ const gradiente = 'sineta-folha';
       etapa = null;
       atualizarModo();
       await digitar(TEXTOS.menuDuvidas);
-      botoes(MENU_DUVIDAS.flatMap((id) => {
-        const d = DUVIDAS.find((x) => x.id === id);
-        return d ? [{ rotulo: d.pergunta, acao: () => responder(d.id, true) }] : [];
-      }));
+      botoes(
+        MENU_DUVIDAS.flatMap((id) => {
+          const d = DUVIDAS.find((x) => x.id === id);
+          return d ? [{ rotulo: d.pergunta, acao: () => responder(d.id, true) }] : [];
+        }),
+      );
     }
 
     async function responder(id: string, clicou: boolean) {
@@ -506,44 +646,47 @@ const gradiente = 'sineta-folha';
       etapa = null;
       ultimaDuvida = d.id;
       atualizarModo();
-      for (const [i, p] of d.resposta.entries()) {
-        if (i === 0) await digitar(p);
-        else {
-          await espera(240);
-          balao(p);
-        }
+      estatistica('duvida', d.id);
+      const [primeiro, ...resto] = d.resposta;
+      await digitar(primeiro);
+      if (d.planos) planosCartoes(d.planos === 'evento' ? PLANOS_EVENTO : PLANOS_ENSAIO, d.planos === 'ensaio' ? 'destaque' : undefined);
+      for (const p of resto) {
+        await espera(260);
+        balao(p);
       }
       const lista: Opcao[] = [];
+      if (d.guia) lista.push({ rotulo: 'Me ajude a escolher', classe: 'botao chat-acao', acao: () => voltarAoGuia(true, 'Me ajude a escolher') });
       d.links?.forEach((l) => lista.push({ rotulo: l.rotulo, href: l.href, classe: 'botao-fantasma chat-acao-sec', icone: 'seta' }));
-      if (d.contato) lista.push({ rotulo: `Falar com ${cfg.fotografo}`, classe: 'botao chat-acao', acao: () => falar(true), icone: 'whatsapp' });
-      (d.seguintes ?? []).slice(0, 7).forEach((s) => {
+      if (d.contato) lista.push(contatoOpcao());
+      (d.seguintes ?? []).slice(0, 6).forEach((s) => {
         const prox = DUVIDAS.find((x) => x.id === s);
         if (prox) lista.push({ rotulo: prox.pergunta, acao: () => responder(prox.id, true) });
       });
       lista.push({ rotulo: 'Outra dúvida', classe: 'chip chat-chip chat-chip-leve', acao: () => menuDuvidas(true) });
       lista.push({ rotulo: 'Voltar ao guia', classe: 'chat-refazer', acao: () => voltarAoGuia(true) });
       botoes(lista);
-      const wa = opcoes.querySelector('button.chat-acao');
-      if (wa) wa.prepend(iconeWhats());
     }
 
-    async function voltarAoGuia(clicou: boolean) {
-      if (clicou) balao('Voltar ao guia', 'voce');
+    async function voltarAoGuia(clicou: boolean, texto = 'Voltar ao guia') {
+      if (clicou) balao(texto, 'voce');
       limpar();
       if (tipo()) await digitar('Vamos voltar ao que você procura.');
       await proximo();
     }
 
-    // ---- Falar com José Renato ----------------------------------------------------------------
+    // ---- Falar no WhatsApp (nome e assunto) ----------------------------------------------------
     async function falar(clicou: boolean) {
-      if (clicou) balao(`Falar com ${cfg.fotografo}`, 'voce');
+      if (clicou) balao(TEXTOS.botaoContato, 'voce');
       limpar();
       etapa = null;
       await digitar(TEXTOS.falar);
       const nomeSalvo = lerGuardado(CHAVE_NOME) ?? '';
-      const assunto = ultimaDuvida && modo === 'duvidas'
-        ? `Dúvida: ${DUVIDAS.find((d) => d.id === ultimaDuvida)?.pergunta.toLowerCase() ?? ''}`
-        : estado.tipo ? 'Orçamento' : '';
+      const assunto =
+        ultimaDuvida && modo === 'duvidas'
+          ? `Dúvida: ${DUVIDAS.find((d) => d.id === ultimaDuvida)?.pergunta.toLowerCase() ?? ''}`
+          : estado.tipo
+            ? 'Orçamento'
+            : '';
       const form = document.createElement('form');
       form.className = 'chat-falar';
       form.noValidate = true;
@@ -574,7 +717,9 @@ const gradiente = 'sineta-folha';
         });
         grupo.append(b);
       }
-      campoAssunto.addEventListener('input', () => grupo.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.textContent === campoAssunto.value))));
+      campoAssunto.addEventListener('input', () =>
+        grupo.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x.textContent === campoAssunto.value))),
+      );
       form.querySelector('button[type=submit]')!.prepend(iconeWhats());
       form.addEventListener('submit', (ev) => {
         ev.preventDefault();
@@ -594,6 +739,8 @@ const gradiente = 'sineta-folha';
         balao(`${n} · ${s}`, 'voce');
         limpar();
         balao('Abrindo o WhatsApp com a sua mensagem…');
+        estatistica('falar', (ASSUNTOS as readonly string[]).includes(s) ? s : 'Outro');
+        estatistica('whatsapp', 'Atendimento: falar', 'clique');
         location.href = linkWa(mensagemContato(n, s));
       });
       opcoes.replaceChildren(form);
@@ -603,22 +750,32 @@ const gradiente = 'sineta-folha';
     }
 
     // ---- Texto livre --------------------------------------------------------------------------
-    const GERAL: Intencao[] = [...TIPOS, NAO_SEI, ...DUVIDAS.filter((d) => !d.id.startsWith('servico-')), ...ESPECIAIS];
-    const FRACAS = ['oi', 'obrigado', 'orcamento', 'naosei'];
+    const GERAL: Intencao[] = [...TIPOS, NAO_SEI, ...DUVIDAS, ...ESPECIAIS];
+    const EH_DUVIDA = new Set(DUVIDAS.map((d) => d.id));
+    const PRECO = DUVIDAS.filter((d) => d.id === 'valores' || d.id === 'valores-eventos');
     const ROTULOS: Record<string, string> = {
       ...Object.fromEntries(TIPOS.map((t) => [t.id, t.resposta])),
       ...Object.fromEntries(DUVIDAS.map((d) => [d.id, d.pergunta])),
       naosei: 'Ainda não sei o que quero',
-      falar: `Falar com ${cfg.fotografo}`,
+      falar: TEXTOS.botaoContato,
       orcamento: 'Pedir orçamento',
     };
 
     async function executar(id: string, frase: string) {
-      if (TIPOS.some((t) => t.id === id)) {
-        const extra = extrair(frase, { prazo: PRAZOS, cidade: CIDADES }).valores;
-        return escolher({ tipo: id, ...extra });
+      const t = TIPOS.find((x) => x.id === id);
+      if (t) {
+        const extra = extrair(frase, { prazo: PRAZOS, cidade: CIDADES, plano: planosDe(t) });
+        correcoes(extra.correcoes);
+        return escolher({ tipo: id, ...extra.valores });
       }
-      if (DUVIDAS.some((d) => d.id === id)) return responder(id, false);
+      if (EH_DUVIDA.has(id)) {
+        // Preço com festa ou evento na conversa: os planos de eventos.
+        if (id === 'valores') {
+          const tipoNaFrase = TIPOS.find((x) => x.id === extrair(frase, { tipo: TIPOS }).valores.tipo);
+          if ((tipoNaFrase ?? tipo())?.servico === 'evento') return responder('valores-eventos', false);
+        }
+        return responder(id, false);
+      }
       if (id === 'naosei') return naoSei(false);
       if (id === 'falar') return falar(false);
       if (id === 'recomecar') return recomecar();
@@ -631,8 +788,9 @@ const gradiente = 'sineta-folha';
         return reexibir();
       }
       if (id === 'orcamento') {
-        if (tipo() && estado.estilo && estado.prazo && estado.cidade) return resultado();
-        await digitar('Para preparar o orçamento, me conte um pouco do que você procura.');
+        const tt = tipo();
+        if (tt && estado.estilo && (!pedePlano(tt) || estado.plano) && estado.prazo && estado.cidade) return resultado();
+        await digitar('Para preparar o orçamento, me conta um pouco do que você procura.');
         return proximo();
       }
     }
@@ -640,31 +798,47 @@ const gradiente = 'sineta-folha';
     async function aoEscrever(frase: string) {
       balao(frase, 'voce');
       limpar();
-      // 1. Resposta à pergunta da vez
-      const daVez: Record<string, readonly Intencao[] | undefined> = {
+      const t = tipo();
+      const daVez: Partial<Record<NonNullable<Etapa>, readonly Intencao[]>> = {
         tipo: [...TIPOS, NAO_SEI],
         naosei: [...TIPOS],
-        segunda: tipo()?.segunda.opcoes,
+        segunda: t?.segunda.opcoes,
+        plano: t ? [...planosDe(t), PLANO_NAO_SEI] : undefined,
         prazo: PRAZOS,
         cidade: CIDADES,
       };
       const lista = etapa ? daVez[etapa] : undefined;
-      // O que a frase já diz de prazo e cidade (e as palavras corrigidas para isso)
-      const ex = extrair(frase, { prazo: PRAZOS, cidade: CIDADES });
-      if (lista) {
-        const r = entender(frase, lista);
-        if (r.tipo === 'certa') {
-          correcoes([...r.correcoes, ...ex.correcoes]);
-          if (etapa === 'tipo' || etapa === 'naosei') return executar(r.id, frase);
-          const chave = etapa === 'segunda' ? 'estilo' : etapa!;
-          return escolher({ ...ex.valores, [chave]: r.id, ...(etapa === 'cidade' && r.id === 'outra' ? { cidadeTexto: nomeCidade(frase) } : {}) });
-        }
+      const r = lista ? entender(frase, lista) : null;
+      const g = entender(frase, GERAL, [...FRACAS]);
+      // 1. Uma dúvida clara vem antes: responde primeiro ao que foi perguntado.
+      if (g.tipo === 'certa' && EH_DUVIDA.has(g.id) && !(r?.tipo === 'certa' && r.pontos >= g.pontos)) {
+        correcoes(g.correcoes);
+        estatistica('texto', g.id);
+        return executar(g.id, frase);
       }
-      // 2. Qualquer assunto
-      const g = entender(frase, GERAL, FRACAS);
+      // 2. Resposta à pergunta da vez
+      if (r?.tipo === 'certa') {
+        const extra = extrair(frase, { prazo: PRAZOS, cidade: CIDADES });
+        correcoes([...r.correcoes, ...extra.correcoes]);
+        estatistica('texto', `${etapa}:${r.id}`);
+        if (etapa === 'tipo' || etapa === 'naosei') return executar(r.id, frase);
+        const chave = etapa === 'segunda' ? 'estilo' : etapa!;
+        return escolher({ ...extra.valores, [chave]: r.id, ...(etapa === 'cidade' && r.id === 'outra' ? { cidadeTexto: nomeCidade(frase) } : {}) });
+      }
+      // 3. Pergunta de preço junto com o tipo ("festa de 15 anos, quanto fica?"): mostra os planos
+      //    daquele serviço e guarda o tipo, para o guia seguir dali.
+      const tipoDito = g.tipo === 'certa' ? TIPOS.find((x) => x.id === g.id) : undefined;
+      if (g.tipo === 'certa' && tipoDito && entender(frase, PRECO).tipo !== 'nada') {
+        correcoes(g.correcoes);
+        if (tipoDito.id !== estado.tipo) estado = { tipo: tipoDito.id, prazo: estado.prazo, cidade: estado.cidade, cidadeTexto: estado.cidadeTexto };
+        salvar();
+        estatistica('texto', `${tipoDito.id}:preco`);
+        return responder(tipoDito.servico === 'evento' ? 'valores-eventos' : tipoDito.servico === 'consulta' ? 'profissional-info' : 'valores', false);
+      }
+      // 4. Qualquer outro assunto
       if (g.tipo === 'certa') {
-        const doGuia = TIPOS.some((t) => t.id === g.id);
-        correcoes([...g.correcoes, ...(doGuia ? ex.correcoes : [])]);
+        correcoes(g.correcoes);
+        estatistica('texto', g.id);
         return executar(g.id, frase);
       }
       if (g.tipo === 'duvida') {
@@ -672,12 +846,18 @@ const gradiente = 'sineta-folha';
         if (ids.length) {
           await digitar(TEXTOS.quisDizer);
           return botoes([
-            ...ids.map((id) => ({ rotulo: ROTULOS[id], acao: () => { limpar(); executar(id, frase); } })),
+            ...ids.map((id) => ({
+              rotulo: ROTULOS[id],
+              acao: () => {
+                limpar();
+                executar(id, frase);
+              },
+            })),
             { rotulo: 'Nenhuma dessas', classe: 'chat-refazer', acao: () => naoEntendi() },
           ]);
         }
       }
-      // 3. Cidade escrita por extenso, quando é ela que estamos perguntando
+      // 5. Cidade escrita por extenso, quando é ela que estamos perguntando
       if (etapa === 'cidade' && frase.trim().length >= 3 && frase.trim().split(/\s+/).length <= 4) {
         return escolher({ cidade: 'outra', cidadeTexto: nomeCidade(frase) });
       }
@@ -695,6 +875,7 @@ const gradiente = 'sineta-folha';
 
     async function naoEntendi() {
       limpar();
+      estatistica('naoentendeu');
       await digitar(TEXTOS.naoEntendi);
       if (etapa) return reexibirEtapa();
       if (modo === 'duvidas') return menuDuvidas(false);
@@ -702,9 +883,10 @@ const gradiente = 'sineta-folha';
     }
     function reexibirEtapa() {
       const t = tipo();
-      if (etapa === 'segunda' && t) return botoes(t.segunda.opcoes.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ estilo: o.id }, o.resposta) })));
-      if (etapa === 'prazo') return botoes(PRAZOS.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ prazo: o.id }, o.resposta) })));
-      if (etapa === 'cidade') return botoes(CIDADES.map((o) => ({ rotulo: o.resposta, acao: () => escolher({ cidade: o.id }, o.resposta) })));
+      if (etapa === 'segunda' && t) return botoes(opcoesSegunda(t));
+      if (etapa === 'plano' && t) return botoes(opcoesPlano(t));
+      if (etapa === 'prazo') return botoes(opcoesLista('prazo', PRAZOS));
+      if (etapa === 'cidade') return botoes(opcoesLista('cidade', CIDADES));
       return reexibir();
     }
 
@@ -717,13 +899,24 @@ const gradiente = 'sineta-folha';
     });
 
     // ---- Abrir e fechar ------------------------------------------------------------------------
+    function saudacao() {
+      const hora = new Date().getHours();
+      return hora < 5 ? 'Boa noite' : hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    }
     async function iniciar() {
       iniciado = true;
       const t = tipo();
       if (t) {
         balao(TEXTOS.retorno(t.titulo));
         botoes([
-          { rotulo: 'Continuar', classe: 'botao chat-acao', acao: () => { limpar(); proximo(); } },
+          {
+            rotulo: 'Continuar',
+            classe: 'botao chat-acao',
+            acao: () => {
+              limpar();
+              proximo();
+            },
+          },
           { rotulo: 'Começar de novo', classe: 'chip chat-chip', acao: recomecar },
           { rotulo: 'Tirar dúvidas', classe: 'chip chat-chip', acao: () => menuDuvidas(true) },
         ]);
@@ -732,10 +925,6 @@ const gradiente = 'sineta-folha';
       balao(TEXTOS.boasVindas(saudacao()));
       await proximo();
     }
-    function saudacao() {
-      const hora = new Date().getHours();
-      return hora < 5 ? 'Boa noite' : hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
-    }
 
     let quemAbriu: HTMLElement | null = null;
     function abrir(origem: HTMLElement | null, pedidoModo?: string) {
@@ -743,6 +932,7 @@ const gradiente = 'sineta-folha';
       if (!chat!.open) chat!.showModal();
       document.documentElement.classList.add('chat-aberto');
       fab!.setAttribute('data-fechado', '');
+      estatistica('abrir', pedidoModo || 'guia');
       if (pedidoModo === 'duvidas' || pedidoModo === 'falar') {
         if (!iniciado) balao(TEXTOS.boasVindas(saudacao()));
         iniciado = true;
@@ -1186,6 +1376,62 @@ const gradiente = 'sineta-folha';
     animation-delay: 300ms;
   }
 
+  /* Planos: nome, valor, selo e o que vem em cada um */
+  .chat-conversa :global(.chat-planos) {
+    display: grid;
+    gap: 8px;
+    animation: chat-entra 360ms var(--curva) both;
+  }
+  .chat-conversa :global(.chat-plano) {
+    display: grid;
+    gap: 6px;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: inset 0 0 0 1px rgb(242 238 230 / 0.1);
+  }
+  .chat-conversa :global(.chat-plano.marcado) {
+    background: rgb(0 252 168 / 0.07);
+    box-shadow: inset 0 0 0 1.5px rgb(0 252 168 / 0.55);
+  }
+  .chat-conversa :global(.chat-plano-topo) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .chat-conversa :global(.chat-plano-topo strong) {
+    font-family: var(--serifa);
+    font-size: 19px;
+    font-weight: 450;
+    line-height: 1.15;
+  }
+  .chat-conversa :global(.chat-plano-preco) {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--verde);
+  }
+  .chat-conversa :global(.chat-plano-selo) {
+    justify-self: start;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #0d6449;
+    color: #f4f0e8;
+    font-size: 12px;
+    font-weight: 650;
+  }
+  .chat-conversa :global(.chat-plano ul) {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 2px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--texto-2);
+  }
+
   /* Álbuns indicados */
   .chat-conversa :global(.chat-cartoes) {
     display: grid;
@@ -1350,7 +1596,7 @@ const gradiente = 'sineta-folha';
     text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
   }
 
-  /* Falar com José Renato */
+  /* Falar no WhatsApp: nome e assunto */
   .chat-opcoes :global(.chat-falar) {
     display: grid;
     gap: 12px;

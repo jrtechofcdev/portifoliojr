@@ -1,0 +1,14 @@
+// Estatísticas do portfólio em https://analytics.jrtechofc.com.br (Cloudflare Worker + D1).
+// Publicar: npx wrangler@4 deploy (dentro desta pasta). Senha do painel: segredo SENHA.
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "jr-analytics",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "routes": [{ "pattern": "analytics.jrtechofc.com.br", "custom_domain": true }],
+  "d1_databases": [{ "binding": "DB", "database_name": "jr-analytics", "database_id": "2445a779-7848-46d4-a0da-e00ae782ca6a" }],
+  // A limpeza diária (eventos com mais de 13 meses, sais antigos) roda na primeira visita de cada dia.
+  "workers_dev": false,
+  "vars": { "SITE": "https://portifolio.jrtechofc.com.br" },
+  "observability": { "enabled": false }
+}

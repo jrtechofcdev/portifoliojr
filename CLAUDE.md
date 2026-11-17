@@ -27,8 +27,11 @@ Revisão de 14/11/2026 (noite): novo álbum "José", ensaio infantil country (`j
 
 Revisão de 14/11/2026 (noite, 2): assistente de atendimento (docs/DESIGN.md §0h). Botão flutuante de couro com sineta em todas as páginas (`AssistenteChat.astro`), que some com um obturador ao rolar para cima. Guia de até 4 perguntas, tirar dúvidas por opção e "Falar com José Renato" (nome e assunto para o WhatsApp). Entende texto com erro (`src/lib/entender.ts`, sem IA, só no aparelho); roteiro e respostas em `src/data/assistente.ts`, sem preço nem prazo inventado. Páginas próprias `/servicos`, `/como-funciona`, `/sobre`, `/contato`: nenhum botão rola a tela. Botões de couro costurado com disparo de câmera; troca de página como obturador. Saíram `Assistente.astro` e `BarraWhatsApp.astro`. Cuidado: `@property` é global; nomes de variável CSS registrados não podem repetir os de outro componente (o `--giro` da abertura quebrou uma vez).
 
+Revisão de 16/11/2026: atendimento com o conteúdo comercial do responsável (`docs/DOCUMENTO_MESTRE_ASSISTENTE.md`, fonte de verdade de planos, preços, pagamento, prazos, locais e limites). O atendimento fala em primeira pessoa, sem nome próprio ("Atendimento"), indica plano com valor (ensaio: Essencial, Destaque, Premium; eventos: por horas), trata casamento e formatura como avaliação e nunca apresenta a política de cancelamento como vigente. Preços aprovados pelo responsável valem no atendimento; nas páginas do site continuam fora até ele pedir. Estatísticas próprias em https://analytics.jrtechofc.com.br (pasta `analytics/`, Worker `jr-analytics` + D1 `jr-analytics`, senha em `.env` `ANALYTICS_SENHA`), sem cookies e sem IP; script `Estatisticas.astro` no `Base.astro`; `?analytics=ignorar` exclui um aparelho. A limpeza de dados antigos roda na primeira visita de cada dia (a conta não tem workers.dev para cron).
+
 ## Comandos
-- `npm run test:assistente`: frases reais, com erro de digitação, que o assistente precisa entender. Rodar depois de mudar `src/data/assistente.ts` ou `src/lib/entender.ts`.
+- `npm run test:assistente`: frases reais, com erro de digitação, que o atendimento precisa entender (inclui as perguntas frequentes do documento mestre). Rodar depois de mudar `src/data/assistente.ts` ou `src/lib/entender.ts`.
+- Estatísticas: `cd analytics && npx wrangler@4 deploy` publica o painel; `npx wrangler@4 secret put SENHA` troca a senha.
 - Mudar as fotos de um álbum: editar o YAML do ensaio (lista `fotos` na ordem do álbum, `capa`, `abertura`, `alt` de cada foto), depois `npm run fotos:publicar` e `npm run build`. Passo a passo no `README.md`.
 - `npm run dev`: gera as fotos (inclui pendentes, com aviso) e abre o site; `/sistema` mostra tokens, tipos e todas as fotos.
 - `npm run build`: fotos só com `autorizacao: sim`, `astro check`, build e `scripts/verificar-dist.mjs`.
@@ -53,4 +56,4 @@ Revisão de 14/11/2026 (noite, 2): assistente de atendimento (docs/DESIGN.md §0
 
 ## Regras de arquivo
 - `Fotos Para Potifolio/`, os prints e o briefing são originais: nunca editar, mover, renomear nem recomprimir. Versões web são geradas como cópias derivadas.
-- Não publicar dados dos insights do Instagram, preços ou nomes de pacotes sem confirmação.
+- Não publicar dados dos insights do Instagram, preços ou nomes de pacotes sem confirmação. Exceção confirmada em 16/11/2026: os planos e valores do documento mestre, dentro do atendimento.

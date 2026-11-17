@@ -1,0 +1,108 @@
+---
+// Estatísticas próprias (16/11/2026): avisa o painel em analytics.jrtechofc.com.br (pasta
+// analytics/) de cada página vista e dos cliques que importam (WhatsApp, e-mail, Instagram,
+// álbuns, Stories, assistente). Sem cookies, sem guardar nada no aparelho além da opção de não
+// ser contado. Só roda no endereço oficial; respeita "não rastrear" (DNT/GPC).
+// Para não contar um aparelho: abra o site com ?analytics=ignorar (para voltar: ?analytics=contar).
+// O assistente avisa as próprias etapas com: dispatchEvent(new CustomEvent('estatistica', { detail: { t, n, l } })).
+---
+
+<script>
+  const COLETOR = 'https://analytics.jrtechofc.com.br/e';
+  const OFICIAL = 'portifolio.jrtechofc.com.br';
+  const CHAVE = 'analytics-ignorar';
+
+  const pedido = new URLSearchParams(location.search).get('analytics');
+  try {
+    if (pedido === 'ignorar') localStorage.setItem(CHAVE, '1');
+    if (pedido === 'contar') localStorage.removeItem(CHAVE);
+  } catch {}
+  if (pedido === 'ignorar' || pedido === 'contar') {
+    const aviso = document.querySelector<HTMLElement>('[data-aviso-protecao]');
+    if (aviso) {
+      aviso.textContent = pedido === 'ignorar' ? 'Este aparelho não entra mais nas estatísticas.' : 'Este aparelho voltou a entrar nas estatísticas.';
+      aviso.classList.add('visivel');
+      setTimeout(() => aviso.classList.remove('visivel'), 4000);
+    }
+  }
+
+  const ignorado = (() => {
+    try {
+      return localStorage.getItem(CHAVE) === '1';
+    } catch {
+      return false;
+    }
+  })();
+  const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
+  const ativo = location.hostname === OFICIAL && !ignorado && nav.doNotTrack !== '1' && !nav.globalPrivacyControl;
+
+  type Evento = { t: 'ver' | 'clique' | 'assistente'; n?: string; l?: string };
+  function enviar(e: Evento) {
+    if (!ativo) return;
+    const q = new URLSearchParams(location.search);
+    const corpo = JSON.stringify({
+      ...e,
+      p: location.pathname,
+      ...(e.t === 'ver' ? { r: document.referrer, u: q.get('utm_source') ?? '', c: q.get('utm_campaign') ?? '' } : {}),
+    });
+    try {
+      if (navigator.sendBeacon?.(COLETOR, new Blob([corpo], { type: 'text/plain' }))) return;
+    } catch {}
+    fetch(COLETOR, { method: 'POST', body: corpo, keepalive: true, mode: 'cors', credentials: 'omit' }).catch(() => {});
+  }
+
+  // Página vista (também ao voltar pelo botão "voltar" do celular, que reaproveita a página)
+  enviar({ t: 'ver' });
+  addEventListener('pageshow', (ev) => ev.persisted && enviar({ t: 'ver' }));
+
+  /** Em que parte da página foi o clique, num nome que o fotógrafo reconhece. */
+  function onde(el: Element): string {
+    const servico = el.closest('.servico');
+    if (servico) return 'Serviço: ' + (servico.querySelector('h2, h3')?.textContent?.trim() ?? '');
+    const partes: [string, string][] = [
+      ['[data-chat]', 'Assistente'],
+      ['.cabecalho', 'Menu'],
+      ['.heroi', 'Abertura'],
+      ['.destaques', 'Em destaque'],
+      ['.capitulos', 'Capítulos'],
+      ['.chamada', 'Chamada final'],
+      ['[data-rodape]', 'Rodapé'],
+      ['.contato', 'Página de contato'],
+      ['.galeria, .fotos', 'Galeria'],
+      ['.lista-albuns', 'Lista de álbuns'],
+    ];
+    for (const [sel, nome] of partes) if (el.closest(sel)) return nome;
+    return '';
+  }
+
+  document.addEventListener(
+    'click',
+    (ev) => {
+      const el = ev.target instanceof Element ? ev.target : null;
+      if (!el) return;
+      const a = el.closest<HTMLAnchorElement>('a[href]');
+      if (a) {
+        const href = a.href;
+        if (/wa\.me|whatsapp\.com/.test(href)) return enviar({ t: 'clique', n: 'whatsapp', l: onde(a) });
+        if (href.startsWith('mailto:')) return enviar({ t: 'clique', n: 'email', l: onde(a) });
+        if (href.startsWith('tel:')) return enviar({ t: 'clique', n: 'telefone', l: onde(a) });
+        if (/instagram\.com/.test(href)) return enviar({ t: 'clique', n: 'instagram', l: onde(a) });
+        const m = a.pathname.match(/^\/trabalhos\/([^/]+)/);
+        if (a.host === location.host && m) return enviar({ t: 'clique', n: 'album', l: [m[1], onde(a)].filter(Boolean).join(' · ') });
+        return;
+      }
+      const story = el.closest<HTMLElement>('[data-historia]');
+      if (story) {
+        const nome = story.querySelector('.destaque-nome, .cartao-nome')?.textContent?.trim() || story.closest('.cartao')?.querySelector('h2, h3')?.textContent?.trim() || '';
+        enviar({ t: 'clique', n: 'stories', l: [nome, onde(story)].filter(Boolean).join(' · ') });
+      }
+    },
+    { capture: true },
+  );
+
+  // Etapas do assistente (AssistenteChat.astro)
+  addEventListener('estatistica', (ev) => {
+    const d = (ev as CustomEvent<Evento>).detail;
+    if (d && (d.t === 'assistente' || d.t === 'clique')) enviar(d);
+  });
+</script>

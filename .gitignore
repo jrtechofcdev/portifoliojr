@@ -29,3 +29,6 @@ shots/
 # Vercel e logs
 .vercel/
 *.log
+
+# Estado local do wrangler (Cloudflare)
+.wrangler/
