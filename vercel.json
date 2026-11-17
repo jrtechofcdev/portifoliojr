@@ -34,6 +34,16 @@
       "source": "/trabalhos/dalila-e-maria/",
       "destination": "/trabalhos",
       "permanent": false
+    },
+    {
+      "source": "/ig",
+      "destination": "/?utm_source=instagram&utm_campaign=bio",
+      "permanent": false
+    },
+    {
+      "source": "/ig/",
+      "destination": "/?utm_source=instagram&utm_campaign=bio",
+      "permanent": false
     }
   ],
   "headers": [
