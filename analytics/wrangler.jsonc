@@ -9,6 +9,8 @@
   "d1_databases": [{ "binding": "DB", "database_name": "jr-analytics", "database_id": "2445a779-7848-46d4-a0da-e00ae782ca6a" }],
   // A limpeza diária (eventos com mais de 13 meses, sais antigos) roda na primeira visita de cada dia.
   "workers_dev": false,
+  // O painel envia o código de cliente() para o navegador como texto: sem os nomes extras do empacotador.
+  "keep_names": false,
   "vars": { "SITE": "https://portifolio.jrtechofc.com.br" },
   "observability": { "enabled": false }
 }

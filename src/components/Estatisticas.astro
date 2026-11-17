@@ -1,22 +1,38 @@
 ---
-// Estatísticas próprias (16/11/2026): avisa o painel em analytics.jrtechofc.com.br (pasta
-// analytics/) de cada página vista e dos cliques que importam (WhatsApp, e-mail, Instagram,
-// álbuns, Stories, assistente). Sem cookies, sem guardar nada no aparelho além da opção de não
-// ser contado. Só roda no endereço oficial; respeita "não rastrear" (DNT/GPC).
+// Estatísticas próprias (16/11/2026; aparelhos e entradas em 17/11/2026): avisa o painel em
+// analytics.jrtechofc.com.br (pasta analytics/) de cada página vista e de cada clique (WhatsApp,
+// e-mail, Instagram, álbuns, fotos, Stories, menu, filtros, links e etapas do atendimento).
+// Cada aparelho recebe um código aleatório guardado no navegador (sem nome, telefone ou IP), para
+// contar quantas vezes ele volta. Uma entrada termina depois de 30 minutos sem atividade.
+// Só roda no endereço oficial; respeita "não rastrear" (DNT/GPC).
 // Para não contar um aparelho: abra o site com ?analytics=ignorar (para voltar: ?analytics=contar).
-// O assistente avisa as próprias etapas com: dispatchEvent(new CustomEvent('estatistica', { detail: { t, n, l } })).
+// O atendimento avisa as próprias etapas com: dispatchEvent(new CustomEvent('estatistica', { detail: { t, n, l } })).
 ---
 
 <script>
   const COLETOR = 'https://analytics.jrtechofc.com.br/e';
   const OFICIAL = 'portifolio.jrtechofc.com.br';
   const CHAVE = 'analytics-ignorar';
+  const CHAVE_APARELHO = 'jr-aparelho';
+  const CHAVE_ENTRADA = 'jr-entrada';
+  const PAUSA_MS = 30 * 60 * 1000;
+
+  const ler = (k: string) => {
+    try {
+      return localStorage.getItem(k);
+    } catch {
+      return null;
+    }
+  };
+  const gravar = (k: string, v: string | null) => {
+    try {
+      v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
+    } catch {}
+  };
 
   const pedido = new URLSearchParams(location.search).get('analytics');
-  try {
-    if (pedido === 'ignorar') localStorage.setItem(CHAVE, '1');
-    if (pedido === 'contar') localStorage.removeItem(CHAVE);
-  } catch {}
+  if (pedido === 'ignorar') gravar(CHAVE, '1');
+  if (pedido === 'contar') gravar(CHAVE, null);
   if (pedido === 'ignorar' || pedido === 'contar') {
     const aviso = document.querySelector<HTMLElement>('[data-aviso-protecao]');
     if (aviso) {
@@ -26,15 +42,37 @@
     }
   }
 
-  const ignorado = (() => {
-    try {
-      return localStorage.getItem(CHAVE) === '1';
-    } catch {
-      return false;
-    }
-  })();
   const nav = navigator as Navigator & { globalPrivacyControl?: boolean };
-  const ativo = location.hostname === OFICIAL && !ignorado && nav.doNotTrack !== '1' && !nav.globalPrivacyControl;
+  const ativo = location.hostname === OFICIAL && ler(CHAVE) !== '1' && nav.doNotTrack !== '1' && !nav.globalPrivacyControl;
+
+  // ---- Código do aparelho e da entrada ----------------------------------------------------------
+  const sortear = () => {
+    const b = crypto.getRandomValues(new Uint8Array(12));
+    return [...b].map((x) => x.toString(36).padStart(2, '0')).join('').slice(0, 20);
+  };
+  let novo = false;
+  let aparelho = ler(CHAVE_APARELHO);
+  if (ativo && (!aparelho || !/^[a-z0-9]{12,40}$/.test(aparelho))) {
+    aparelho = sortear();
+    novo = true;
+    gravar(CHAVE_APARELHO, aparelho);
+    // Navegador que não guarda nada: código só desta página (o painel usa o código do dia).
+    if (ler(CHAVE_APARELHO) !== aparelho) aparelho = null;
+  }
+  let entradaMemoria = { id: sortear(), ultimo: 0 };
+  function entrada() {
+    const agora = Date.now();
+    let e = entradaMemoria;
+    try {
+      const salva = JSON.parse(ler(CHAVE_ENTRADA) || 'null');
+      if (salva && typeof salva.id === 'string') e = salva;
+    } catch {}
+    if (!e.ultimo || agora - e.ultimo > PAUSA_MS) e = { id: sortear(), ultimo: agora };
+    e.ultimo = agora;
+    entradaMemoria = e;
+    gravar(CHAVE_ENTRADA, JSON.stringify(e));
+    return e.id;
+  }
 
   type Evento = { t: 'ver' | 'clique' | 'assistente'; n?: string; l?: string };
   function enviar(e: Evento) {
@@ -43,8 +81,19 @@
     const corpo = JSON.stringify({
       ...e,
       p: location.pathname,
-      ...(e.t === 'ver' ? { r: document.referrer, u: q.get('utm_source') ?? '', c: q.get('utm_campaign') ?? '' } : {}),
+      d: aparelho ?? undefined,
+      s: entrada(),
+      ...(novo ? { novo: 1 } : {}),
+      ...(e.t === 'ver'
+        ? {
+            r: document.referrer,
+            u: q.get('utm_source') ?? '',
+            c: q.get('utm_campaign') ?? '',
+            g: document.querySelector<HTMLElement>('[data-capitulo]')?.dataset.capitulo ?? '',
+          }
+        : {}),
     });
+    novo = false;
     try {
       if (navigator.sendBeacon?.(COLETOR, new Blob([corpo], { type: 'text/plain' }))) return;
     } catch {}
@@ -60,20 +109,25 @@
     const servico = el.closest('.servico');
     if (servico) return 'Serviço: ' + (servico.querySelector('h2, h3')?.textContent?.trim() ?? '');
     const partes: [string, string][] = [
-      ['[data-chat]', 'Assistente'],
-      ['.cabecalho', 'Menu'],
+      ['[data-chat]', 'Atendimento'],
+      ['.menu-movel', 'Menu do celular'],
+      ['.cabecalho', 'Cabeçalho'],
       ['.heroi', 'Abertura'],
       ['.destaques', 'Em destaque'],
       ['.capitulos', 'Capítulos'],
       ['.chamada', 'Chamada final'],
       ['[data-rodape]', 'Rodapé'],
       ['.contato', 'Página de contato'],
+      ['.servicos-resumo', 'Resumo de serviços'],
+      ['.sobre', 'Sobre'],
       ['.galeria, .fotos', 'Galeria'],
       ['.lista-albuns', 'Lista de álbuns'],
+      ['.proximo, [data-proximo]', 'Próximo álbum'],
     ];
     for (const [sel, nome] of partes) if (el.closest(sel)) return nome;
     return '';
   }
+  const junto = (...p: string[]) => p.filter(Boolean).join(' · ');
 
   document.addEventListener(
     'click',
@@ -87,20 +141,31 @@
         if (href.startsWith('mailto:')) return enviar({ t: 'clique', n: 'email', l: onde(a) });
         if (href.startsWith('tel:')) return enviar({ t: 'clique', n: 'telefone', l: onde(a) });
         if (/instagram\.com/.test(href)) return enviar({ t: 'clique', n: 'instagram', l: onde(a) });
+        if (a.host !== location.host) return enviar({ t: 'clique', n: 'externo', l: junto(a.hostname, onde(a)) });
+        // Foto da galeria aberta em tela cheia
+        if (a.matches('[data-galeria] a.item')) {
+          const album = location.pathname.match(/^\/trabalhos\/([^/]+)/)?.[1] ?? '';
+          return enviar({ t: 'clique', n: 'foto', l: junto(album, 'foto ' + (Number(a.dataset.indice ?? 0) + 1)) });
+        }
         const m = a.pathname.match(/^\/trabalhos\/([^/]+)/);
-        if (a.host === location.host && m) return enviar({ t: 'clique', n: 'album', l: [m[1], onde(a)].filter(Boolean).join(' · ') });
-        return;
+        if (m) return enviar({ t: 'clique', n: 'album', l: junto(m[1], onde(a)) });
+        if (a.closest('[data-chat]')) return; // o atendimento avisa as próprias etapas
+        return enviar({ t: 'clique', n: 'link', l: junto(a.pathname + a.search, onde(a)) });
       }
-      const story = el.closest<HTMLElement>('[data-historia]');
+      const b = el.closest<HTMLElement>('button');
+      if (!b || b.closest('[data-chat]')) return;
+      const story = b.closest<HTMLElement>('[data-historia]');
       if (story) {
         const nome = story.querySelector('.destaque-nome, .cartao-nome')?.textContent?.trim() || story.closest('.cartao')?.querySelector('h2, h3')?.textContent?.trim() || '';
-        enviar({ t: 'clique', n: 'stories', l: [nome, onde(story)].filter(Boolean).join(' · ') });
+        return enviar({ t: 'clique', n: 'stories', l: junto(nome, onde(story)) });
       }
+      if (b.closest('[data-filtro]')) return enviar({ t: 'clique', n: 'filtro', l: b.dataset.c ?? '' });
+      if (b.classList.contains('menu-abrir')) return enviar({ t: 'clique', n: 'menu', l: 'abrir' });
     },
     { capture: true },
   );
 
-  // Etapas do assistente (AssistenteChat.astro)
+  // Etapas do atendimento (AssistenteChat.astro)
   addEventListener('estatistica', (ev) => {
     const d = (ev as CustomEvent<Evento>).detail;
     if (d && (d.t === 'assistente' || d.t === 'clique')) enviar(d);

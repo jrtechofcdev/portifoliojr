@@ -40,7 +40,7 @@ const temCapaProx = proximo ? !!capaDe(proximo) : false;
 ---
 
 <Base titulo={titulo} descricao={descricao} tema={d.tema} imagem={abertura.dados.og}>
-  <article>
+  <article data-capitulo={tipo}>
     <Heroi foto={abertura} foco={d.abertura.foco} transicao={`capa-${ensaio.id}`}>
       <a class="sobretitulo entra" style="--i:0" href={`/trabalhos?c=${tipo}`}>{CAPITULOS[tipo].nome}</a>
       <h1 class="ensaio-titulo serifa entra" style="--i:1">{d.nome}</h1>

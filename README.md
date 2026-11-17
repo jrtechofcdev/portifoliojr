@@ -9,7 +9,7 @@ No ar em **https://portifolio.jrtechofc.com.br**.
 
 - **Álbuns de clientes reais**, um por ensaio, com abertura em tela cheia, Stories e visualização ampliada.
 - **Atendimento**: um botão flutuante de couro com uma sineta abre a conversa em qualquer página, falando em primeira pessoa, como o fotógrafo. Ele entende o que a pessoa procura (algumas perguntas de um toque, ou uma frase escrita, mesmo com erro de digitação), indica o plano com valor e condições, mostra álbuns de exemplo, tira dúvidas (pagamento, entrega, agenda, preparação) e leva ao WhatsApp com nome e assunto. Funciona só no aparelho, sem IA e sem servidor.
-- **Estatísticas próprias** em https://analytics.jrtechofc.com.br: visitas, cliques no WhatsApp, álbuns mais vistos, de onde as pessoas vieram, cidades e o que foi escolhido no atendimento. Sem cookies e sem guardar IP.
+- **Estatísticas próprias** em https://analytics.jrtechofc.com.br: ao vivo, por aparelho (quantas vezes entrou e onde clicou), por clique e por página, com análise automática, previsão e resumo para baixar. Sem cookies e sem guardar IP.
 - **Páginas próprias**: Portfólio, Serviços, Como funciona, Sobre e Contato. Os botões abrem a página na mesma janela, sem rolar a tela.
 - **Orçamento pelo WhatsApp** em um toque, com a mensagem já escrita.
 - **Botões de couro costurado** com disparo de câmera ao tocar, e troca de página como um obturador.
@@ -119,11 +119,14 @@ As regras comerciais (planos, valores, pagamento, prazos, locais, o que não é 
 
 O painel fica em https://analytics.jrtechofc.com.br, com senha. A senha está no arquivo `.env` deste computador (`ANALYTICS_SENHA`), que não vai para o Git.
 
-- **O que conta**: páginas vistas, cliques no WhatsApp, e-mail, Instagram, álbuns e Stories (com o lugar da página), etapas do atendimento, de onde a pessoa veio, cidade aproximada e aparelho. Sem cookies, sem IP guardado e sem o que a pessoa escreve. Os dados se apagam depois de 13 meses.
+- **O que conta**: cada página vista e cada clique (WhatsApp, e-mail, Instagram, álbuns, fotos ampliadas, Stories, menu, filtros e links, com o lugar da página), as etapas do atendimento, de onde a pessoa veio, cidade aproximada e aparelho. Cada aparelho tem um código aleatório guardado no navegador, para contar quantas vezes ele volta; uma entrada termina depois de 30 minutos sem atividade. Sem cookies, sem IP guardado e sem o que a pessoa escreve. Os dados se apagam depois de 13 meses.
+- **Abas do painel**: Resumo (números e gráficos), Ao vivo (quem está no site e cada clique, atualizando a cada 5 segundos), Aparelhos (cada aparelho, suas entradas e a linha do tempo) e Análise (leitura automática do período, previsão, áreas, origens, álbuns e caminhos, com conversão).
+- **Baixar resumo**: arquivo `.md` com os números do período, a leitura automática, a previsão e um pedido pronto para colar numa IA montar a campanha.
+- **Limpar dados**: apaga tudo e o painel recomeça do zero (pede para escrever LIMPAR).
 - **Não contar as suas visitas**: abra uma vez em cada aparelho seu `https://portifolio.jrtechofc.com.br/?analytics=ignorar` (para voltar a contar: `?analytics=contar`).
 - **Saber de onde veio cada divulgação**: use links como `https://portifolio.jrtechofc.com.br/?utm_source=instagram&utm_campaign=bio`.
 - **Links curtos** (redirecionamentos em `vercel.json`): `portifolio.jrtechofc.com.br/ig` (bio do Instagram), `/s` (story do Instagram) e `/wa` (bio do WhatsApp). Cada um leva ao site com a etiqueta da origem. Para criar outro atalho, copie um desses blocos no `vercel.json` com outro nome e outra campanha.
-- **Código**: pasta `analytics/` (Cloudflare Worker e banco D1). Para publicar uma mudança: dentro dela, `npx wrangler@4 deploy`. Para trocar a senha: `npx wrangler@4 secret put SENHA`.
+- **Código**: pasta `analytics/` (Cloudflare Worker e banco D1): `src/index.js` (coletor e consultas), `src/analise.js` (leitura automática, previsão e resumo; o contexto do negócio no topo deve seguir o documento mestre) e `src/painel.js` (telas). Para publicar uma mudança: dentro dela, `npx wrangler@4 deploy`. Para trocar a senha: `npx wrangler@4 secret put SENHA`. Banco novo: `esquema.sql`; o banco atual já recebeu `migracao-002.sql`.
 
 ## Onde mudar cada coisa
 
